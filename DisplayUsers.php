@@ -1,101 +1,109 @@
-<HTML>
-    <HEAD>
-        <TITLE>SVBX - Users</TITLE>
-        <link rel="stylesheet" href="styles.css" type="text/css"/>
-    </HEAD>
-<BODY>
-<?php include('filestart.php') ?>
-    <h1>Users</h1>
-
-<?php
-
-    $link = f_sqlConnect();
-    $table = Users;
-        //echo '<br>Source table: ' .$table;
-    $adminID = $_SESSION['UserID'];
-    $admin = "SELECT Role FROM Users WHERE UserID = ".$adminID;
-        /*echo "<br>".$sql."<br>";*/
-        
-        /*execute the sql statement*/
-        if($result=mysqli_query($link,$admin)) {
-          /*from the sql results, assign the username that returned to the $username variable*/    
-          while($row = mysqli_fetch_assoc($result)) {
-            $Role = $row['Role'];
-          }
-        }
+<?php 
+include('session.php');
+include('SQLFunctions.php');
+$link = f_sqlConnect();
+$table = users_enc;
+$title = "SVBX - Display Users";
+include('filestart.php');
+$adminID = $_SESSION['UserID'];
+$Role = $_SESSION['Role'];
         
     if(!f_tableExists($link, $table, DB_Name)) {
         die('<br>Destination table does not exist: '.$table);
     }
     
-    $sql = "SELECT UserID, username, firstname, lastname, Role, LastUpdated, Updated_by, DateAdded, Created_by, Email FROM $table ORDER BY lastname";
+    $sql = "SELECT UserID, Username, firstname, lastname, Role, LastUpdated, Updated_by, DateAdded, Created_by, Email, Company, LastLogin FROM $table ORDER BY lastname";
     $sql1 = "SELECT COUNT(*) FROM $table";
     
     if($result = mysqli_query($link,$sql1)) {
-        echo"   <table>
-                    <tr>
-                        <td>Users in Database: </td>";
+        echo"   
+                <div class='jumbotron'>
+                    <h1>Users</h1>
+                <table class='sumtable' style='margin-left:40%'>
+                    <tr class='sumtr'>
+                        <td class='sumtd'>Users in Database: </td>";
             while ($row = mysqli_fetch_array($result)) {
-                    echo "<td>{$row[0]}</td>";
+                    echo "<td class='sumtd'>{$row[0]}</td>";
             }    
-            echo "</table><br>";
+            echo "</table><br></div>";
 }
     if($result = mysqli_query($link,$sql)) {
-        echo"   <table>
-                    <tr>
-                        <th>First name</th>
-                        <th>Last name</th>
-                        <th>Email</th>";
+        echo"   
+                <div class='container' style='max-width: 1600px;'>
+                <table class='usertable'>
+                    <tr class='usertr'>
+                        <th class='userth'>First name</th>
+                        <th class='userth'>Last name</th>
+                        <th class='userth'>Email</th>";
                         if(!isset($_SESSION['UserID'])) 
                         {
                         echo "</tr>";
                         } else {
                         echo "
-                            <th>User ID</th>
-                            <th>Username</th>
-                            <th>Role</th>";
+                            <th class='userth'>User ID</th>
+                            <th class='userth'>Username</th>
+                            <th class='userth'>Role</th>
+                            <th class='userth'>Company</th>";
                             }
                         if($Role == 'A' OR $Role == 'S')
                         {
                         echo "
-                            <th>Date Created</th>
-                            <th>Created By</th></th>
-                            <th>Last Updated</th>
-                            <th>Updated By</th>
-                            <th>Edit</th>
-                            <th>Delete</th>
+                            <th class='userth'>Last Login</th>
+                            <th class='userth'>Date Created</th>
+                            <th class='userth'>Created By</th></th>
+                            <th class='userth'>Last Updated</th>
+                            <th class='userth'>Updated By</th>
+                            <th class='userth'>Edit</th>";
+                            if($Role == 'S') {
+                                echo "
+                            <th class='userth'>Delete</th>";
+                            }
+                            echo "
                             </tr>"; 
                         }
             while ($row = mysqli_fetch_array($result)) {
-        echo"       <tr>
+        echo"       <tr class='usertr'>
                         
-                        <td>{$row[2]}</td>
-                        <td>{$row[3]}</td>
-                        <td><a href='mailto:{$row[9]}' style='color:black'>{$row[9]}</a></td>";
+                        <td class='usertd'>{$row[2]}</td>
+                        <td class='usertd'>{$row[3]}</td>
+                        <td class='usertd'><a href='mailto:{$row[9]}' style='color:black'>{$row[9]}</a></td>";
                         if(!isset($_SESSION['UserID'])) 
                         {
                             echo "</tr>";
                         } else {
                         echo "
-                        <td style='text-align:center'>{$row[0]}</td>
-                        <td>{$row[1]}</td>
-                        <td style='text-align:center'>{$row[4]}</td>";
+                        <td style='text-align:center' class='usertd'>{$row[0]}</td>
+                        <td class='usertd'>{$row[1]}</td>
+                        <td style='text-align:center' class='usertd'>{$row[4]}</td>
+                        <td class='usertd'>{$row[10]}</td>";
                         }
                         if($Role == 'A' OR $Role == 'S')
                         {
-                        echo "
-                        <td>{$row[7]}</td>
-                        <td>{$row[8]}</td>
-                        <td>{$row[5]}</td>
-                        <td>{$row[6]}</td>
-                        <td><form action='UpdateUser.php' method='POST' onsubmit=''/>
-                        <input type='hidden' name='q' value='".$row[0]."'/><input type='submit' value='Update'></form></td>
-                        <td><form action='DeleteUser.php' method='POST' onsubmit='' onsubmit='' onclick='return confirm(`do you want to delete user {$row[2]} {$row[3]}`)'/>
-                        <input type='hidden' name='q' value='".$row[0]."' /><input type='Submit' value='delete'></form></td>
+                            if($row[11] == '0000-00-00 00:00:00') {
+                                echo "
+                                <td class='usertd'>Never</td>";
+                            } else {
+                                echo "
+                                <td class='usertd'>{$row[11]}</td>";
+                            }
+                    echo "    
+                        <td class='usertd'>{$row[7]}</td>
+                        <td class='usertd'>{$row[8]}</td>
+                        <td class='usertd'>{$row[5]}</td>
+                        <td class='usertd'>{$row[6]}</td>
+                        <td class='usertd'>
+                        <form action='UpdateUser.php' method='POST' onsubmit=''/>
+                        <input type='hidden' name='q' value='".$row[0]."'/><input type='submit' value='Update'></form></td>";
+                            if($Role == 'S') {
+                                echo "
+                        <td class='usertd'><form action='DeleteUser.php' method='POST' onsubmit='' onsubmit='' onclick='return confirm(`do you want to delete user {$row[2]} {$row[3]}`)'/>
+                        <input type='hidden' name='q' value='".$row[0]."' /><input type='Submit' value='delete'></form></td>";
+                            }
+                            echo "
                     </tr>";
                     }
             }    
-            echo "</table><br>";
+            echo "</table><br></div>";
     }
     mysqli_free_result($result);
     

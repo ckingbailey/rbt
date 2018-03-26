@@ -16,7 +16,7 @@ session_destroy();
   </head>
   <body>
   <?php include('filestart.php'); 
-        header("Location: index.php");
+        header("Location: login.php");
         include 'fileend.php'; ?>
   </body>
 </html>

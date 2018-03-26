@@ -10,14 +10,8 @@
     $link = f_sqlConnect();
     $check = "SELECT * FROM $table WHERE System = '".$_POST['Status']."'";
     $UserID = $_SESSION['UserID'];
-    $user = "SELECT Username FROM Users WHERE UserID = ".$UserID;
-    if($result=mysqli_query($link,$user)) 
-        {
-          /*from the sql results, assign the username that returned to the $username variable*/    
-          while($row = mysqli_fetch_assoc($result)) {
-            $Username = $row['Username'];
-          }
-        }
+    $Username = $_SESSION['Username'];
+    
     $keys = implode(", ", (array_keys($_POST)));
     echo '<br>Parsed Key: ' .$keys;
     $values = implode("', '", (array_values($_POST)));

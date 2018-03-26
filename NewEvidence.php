@@ -1,37 +1,29 @@
 <?php
 include('session.php');
-?>
-
-<HTML>
-    <HEAD>
-        <TITLE>New Location</TITLE>
-        <link rel="stylesheet" href="styles.css" type="text/css"/>
-    </HEAD>
-    <?php 
-            include('SQLFunctions.php');
-            
-            $link = f_sqlConnect();
-            $table = Location;
-                //echo '<br>Source table: ' .$table;
+$title = "SVBX - Add New Evidence Type";
+include('filestart.php');
+    if($Role == 'U' OR $Role == 'V' OR $Role == 'A') {
+        header('location: unauthorised.php');
+    }
     ?>
-    <BODY>
-<?php include('filestart.php') ?>
-        <H1>Enter a new evidence type into the database</H1>
+        <div class="jumbotron">
+        <div class="container">
+          <h1 class="display-3">Add New Evidence type</h1>
+        </div>
+    </div>
+        <div class="container"> 
         <FORM action="RecEvidence.php" method="POST">
-            <table>
-                <tr>
-                    <th colspan='2'>New Evidence Type</th>
-                </tr>
-                <tr>
-                    <td>Evidence Type Name:</td>
-                    <td>
+            <table class='usertable'>
+                <tr class='usertr'>
+                    <th class='userth'>Evidence Type Name:</th>
+                    <td class='usertd'>
                         <input type="text" name="EviType" maxlength="50" required/>
                     </td>
                 </tr>
             </table>
-            <input type="submit" class="button">
-            <input type="reset" class="button">
+            <br />
+            <input type='submit' value='submit' class='btn btn-primary btn-lg' style='margin-left:40%' />
+            <input type='reset' value='reset' class='btn btn-primary btn-lg' />
         </FORM>
+        </div>
 <?php include('fileend.php') ?>
-    </BODY>
-</HTML>

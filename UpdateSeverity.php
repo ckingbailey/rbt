@@ -1,58 +1,52 @@
-<?php
-include('session.php');
-session_start();
+<?php 
+    include('session.php');
+    include('SQLFunctions.php');
+    $link = f_sqlConnect();
+    $table = Severity;
+    $q = $_POST["q"];
+    $title = "SVBX - Update Severity";
+    $Loc = "SELECT SeverityName, Description FROM $table WHERE SeverityID = ".$q;
+    include('filestart.php');
+    
+    if($Role == 'U' OR $Role == 'V' OR $Role == 'A') {
+        header('location: unauthorised.php');
+    }
 ?>
-
-<HTML>
-    <HEAD>
-        <TITLE>SVBX - Update Severity</TITLE>
-        <link rel="stylesheet" href="styles.css" type="text/css"/>
-    </HEAD>
-    <?php 
-            include('SQLFunctions.php');
-            
-            $link = f_sqlConnect();
-            $table = Severity;
-            $q = $_POST["q"];
-            $Loc = "SELECT SeverityName, Description FROM $table WHERE SeverityID = ".$q;
-                //echo '<br>Source table: ' .$table;
-    ?>
-    <BODY>
-<?php include('filestart.php') ?>
-        <H1>Update Severity</H1>
+    <div class="jumbotron">
+        <div class="container">
+            <h1 class="display-3">Update Severity</h1>
+        </div>
+    </div>
 <?php       if($stmt = $link->prepare($Loc)) {
             $stmt->execute();
             $stmt->bind_result($SeverityName, $Description);
             while ($stmt->fetch()) {
                 echo "
-        <FORM action='UpdateSeverityCommit.php' method='POST' onsubmit='' />
-            <input type='hidden' name='SeverityID' value='".$q."'>
-            <table>
-                <tr>
-                    <th colspan='2'>Severity</th>
-                </tr>
-                <tr>
-                    <td>Severity Name:</td>
-                    <td>
-                        <input type='text' name='SeverityName' maxlength='50' required value='".$SeverityName."'/>
-                    </td>
-                </tr>
-                <tr>
-                    <td coldpan='2'>Severity Description:</td>
-                    <td>
-                        <textarea type='message'  rows='5' cols='99%' name='Description' max='255' required>$Description</textarea>
-                    </td>
-                </tr>
-            </table>
-            <input type='submit' class='button'>
-            <input type='reset' class='button'>
-        </FORM>";
-        //echo "Description: ".$Description;
-            }
-                } else {
-                    echo '<br>Unable to connect';
-                    exit();
+                    <div class='container'> 
+                        <FORM action='UpdateSeverityCommit.php' method='POST'>
+                            <input type='hidden' name='SeverityID' value='".$q."'>
+                            <table class='usertable'>
+                                <tr class='usertr'>
+                                    <th class='userth'>Severity Name:</th>
+                                    <td class='usertd'>
+                                        <input type='text' name='SeverityName' maxlength='50' required value='".$SeverityName."'/>
+                                    </td>
+                                </tr>
+                                <tr class='usertr'>
+                                    <th coldpan='2' class='userth'>Severity Description:</th>
+                                    <td class='usertd'>
+                                        <textarea type='message'  rows='5' cols='99%' name='Description' max='255' required>$Description</textarea>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br />
+                            <input type='submit' value='submit' class='btn btn-primary btn-lg' style='margin-left:40%' />
+                            <input type='reset' value='reset' class='btn btn-primary btn-lg' />
+                        </FORM>
+                    </div>";
                 }
+            } else {
+                echo '<br>Unable to connect';
+                exit();
+            }
         include('fileend.php') ?>
-    </BODY>
-</HTML>

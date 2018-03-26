@@ -11,7 +11,7 @@ if(!empty($_POST)) {
     $link = f_sqlConnect();
  
     $sql = "DELETE 
-            FROM Users
+            FROM users_enc
             WHERE UserID = ".$UserID.";";
     //echo "sql: " .$sql. "Comment out Later";
     

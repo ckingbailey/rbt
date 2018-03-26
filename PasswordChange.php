@@ -25,34 +25,35 @@ elseif ($_POST['newpw'] <> $_POST['conpw'])
 }
 elseif(!empty($_POST)) {
     $UserID = $_POST['UserID'];
-    $oldpwd = filter_var($_POST['oldpwd'], FILTER_SANITIZE_STRING);
-    $newpwd = filter_var($_POST['newpwd'], FILTER_SANITIZE_STRING);
+    $oldpwd = filter_var($_POST['oldpw'], FILTER_SANITIZE_STRING);
+    $newpwd = filter_var($_POST['newpw'], FILTER_SANITIZE_STRING);
     
     try {
         
         include('SQLFunctions.php');
         $link = f_sqlConnect();
-        $oldpw = Sha1($oldpw);
-        $newps = Sha1($newpw);
-
-        // check whether username exists and check that $oldpass is correct!
         
-        $query = "SELECT Password FROM Users WHERE Password='".$oldpw."' AND  Username='".$Username."'";
-
-        $result = mysqli_query($link, $query);
-        if(!$result){
-
-            $message = "<p class='message'>Error: Your username and or password are incorrect.</p>" ;
-        }else{
-
-            // Test with mysqli_num_rows()
-            if (mysqli_num_rows($result) > 0) {
+        // check whether username exists
+        $query = "SELECT Password FROM users_enc WHERE  Username='".$Username."'";
+        if($result=mysqli_query($link,$query)) {
+        while($row = mysqli_fetch_assoc($result)) {
+            $get_password = $row['Password'];
+            }
+        } else {
+            $message = "Username does not exist";
+        }
+        
+        // check that old password is correct
+        $auth = password_verify($oldpwd, $get_password);
+            
+        if($auth == 1) {
+        $new_pwd = password_hash($newpwd, PASSWORD_BCRYPT);
         
                 $query = "
                         UPDATE 
-                            Users 
+                            users_enc 
                         SET 
-                            Password = '$newpw'
+                            Password = '$new_pwd'
                             ,Updated_by = '$Username'
                             ,LastUpdated = NOW()
                         WHERE 
@@ -64,13 +65,11 @@ elseif(!empty($_POST)) {
               $message = "<p class='message'>Your password has been changed</p>";
               
               mysqli_free_result($result);
-            }
-            else {
+            } else {
                // Username or password is incorrect
                 $message = "<p class='message'>Error: Your username and password do not match.</p>" ;
             } 
-        }
-} catch(Exception $e) { $message = "Unable to process request";
+        } catch(Exception $e) { $message = "Unable to process request";
 }
 }
 ?>

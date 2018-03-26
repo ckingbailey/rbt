@@ -17,9 +17,19 @@ SELECT
     D.LastUpdated,
     D.Updated_by,
     D.Created_by,
-    D.Comments
+    D.Comments,
+    R.RequiredBy,
+    D.Repo,
+    D.Pics,
+    D.ClosureComments,
+    D.DueDate,
+    D.SafetyCert
 FROM
     CDL D
+LEFT JOIN 
+    RequiredBy R
+ON 
+    R.ReqByID = D.RequiredBy
 LEFT JOIN 
     Location L
 ON 

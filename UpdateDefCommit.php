@@ -1,35 +1,33 @@
 <?php
 include('SQLFunctions.php');
 include('session.php');
-session_start();
 
 if(!empty($_POST)) {
+    $link = f_sqlConnect();
     $DefID = $_POST['DefID'];
     $SystemAffected = $_POST['SystemAffected'];
     $LocationName = $_POST['LocationName'];
-    $SpecLoc = $_POST['SpecLoc'];
+    $SpecLoc = $link->real_escape_string($_POST['SpecLoc']);
     $Status = $_POST['Status'];
     $SeverityName = $_POST['SeverityName'];
     $GroupToResolve = $_POST['GroupToResolve'];
-    $IdentifiedBy = $_POST['IdentifiedBy'];
-    $Description = $_POST['Description'];
+    $IdentifiedBy = $link->real_escape_string($_POST['IdentifiedBy']);
+    $Description = $link->real_escape_string($_POST['Description']);
     $EvidenceType = $_POST['EviType'];
-    $EvidenceLink = $_POST['EvidenceLink'];
-    $ActionOwner = $_POST['ActionOwner'];
-    $OldID = $_POST['OldID'];
-    $Comments = $_POST['Comments'];
-    $Spec = $_POST['Spec'];
+    $EvidenceLink = $link->real_escape_string($_POST['EvidenceLink']);
+    $ActionOwner = $link->real_escape_string($_POST['ActionOwner']);
+    $OldID = $link->real_escape_string($_POST['OldID']);
+    $Comments = $link->real_escape_string($_POST['Comments']);
+    $Spec = $link->real_escape_string($_POST['Spec']);
+    $ClosureComments = $link->real_escape_string($_POST['ClosureComments']);
+    $RequiredBy = $_POST['RequiredBy'];
+    $Repo = $_POST['Repo'];
+    $Pics = $_POST['Pics'];
+    $DueDate = $_POST['DueDate'];
+    $SafetyCert = $_POST['SafetyCert'];
     $UserID = $_SESSION['UserID'];
-    $link = f_sqlConnect();
+    $Username = $_SESSION['Username'];
     
-    $user = "SELECT Username FROM Users WHERE UserID = ".$UserID;
-    if($result=mysqli_query($link,$user)) 
-        {
-          /*from the sql results, assign the username that returned to the $username variable*/    
-          while($row = mysqli_fetch_assoc($result)) {
-            $Username = $row['Username'];
-          }
-        }
     
     $sql = "UPDATE CDL
             SET  
@@ -47,6 +45,12 @@ if(!empty($_POST)) {
                 ,EvidenceType = '".$EvidenceType."'
                 ,EvidenceLink = '".$EvidenceLink."'
                 ,Comments = '".$Comments."'
+                ,SafetyCert = '".$SafetyCert."'
+                ,Requiredby = '".$RequiredBy."'
+                ,Repo = '".$Repo."'
+                ,Pics = '".$Pics."'
+                ,ClosureComments = '".$ClosureComments."'
+                ,DueDate = '".$DueDate."'
                 ,Updated_by = '".$Username."'
                 ,LastUpdated = NOW()
             WHERE DefID = ".$DefID.";";
@@ -59,5 +63,7 @@ if(!empty($_POST)) {
         mysqli_close($link);
         header("Location: DisplayDefs.php?msg=1");
         //echo "<br>SQL: ".$sql;
+        //echo "<br>SafetyCert: ".$SafetyCert;
+        //echo "<br>Repo: ".$Repo;
 }
 ?>

@@ -1,51 +1,46 @@
-<?php
-include('session.php');
-session_start();
+<?php 
+    include('SQLFunctions.php');
+    $link = f_sqlConnect();
+    $table = EvidenceType;
+    $q = $_POST["q"];
+    $title = "SVBX - Update Evidence Type";
+    $Loc = "SELECT EviType FROM $table WHERE EviTypeID = ".$q;
+    include('filestart.php'); 
+    
+    if($Role == 'U' OR $Role == 'V' OR $Role == '') {
+        header('location: unauthorised.php');
+    }
 ?>
-
-<HTML>
-    <HEAD>
-        <TITLE>SVBX - Update Evidence Type</TITLE>
-        <link rel="stylesheet" href="styles.css" type="text/css"/>
-    </HEAD>
-    <?php 
-            include('SQLFunctions.php');
-            
-            $link = f_sqlConnect();
-            $table = EvidenceType;
-            $q = $_POST["q"];
-            $Loc = "SELECT EviType FROM $table WHERE EviTypeID = ".$q;
-                //echo '<br>Source table: ' .$table;
-    ?>
-    <BODY>
-<?php include('filestart.php') ?>
-        <H1>Update Evidence Type</H1>
-<?php       if($stmt = $link->prepare($Loc)) {
-            $stmt->execute();
-            $stmt->bind_result($EviType);
-            while ($stmt->fetch()) {
-                echo "
-        <FORM action='UpdateEvidenceCommit.php' method='POST' onsubmit='' />
-            <input type='hidden' name='EviTypeID' value='".$q."'>
-            <table>
-                <tr>
-                    <th colspan='2'>Update Evidence</th>
-                </tr>
-                <tr>
-                    <td>Location Name:</td>
-                    <td>
-                        <input type='text' name='EviType' maxlength='50' required value='".$EviType."'/>
-                    </td>
-                </tr>
-            </table>
-            <input type='submit' class='button'>
-            <input type='reset' class='button'>
-        </FORM>";
-            }
-                } else {
-                    echo '<br>Unable to connect';
-                    exit();
+    <div class="jumbotron">
+        <div class="container">
+            <h1 class="display-3">Update Evidence Type</h1>
+        </div>
+    </div>
+        <?php       
+            if($stmt = $link->prepare($Loc)) {
+                $stmt->execute();
+                $stmt->bind_result($EviType);
+                while ($stmt->fetch()) {
+                    echo "
+                        <div class='container'> 
+                            <FORM action='UpdateEvidenceCommit.php' method='POST'>
+                                <input type='hidden' name='EviTypeID' value='".$q."'>
+                                <table class='usertable'>
+                                    <tr class='usertr'>
+                                        <th class='userth'>Evidence Type Name:</th>
+                                        <td class='usertd'>
+                                            <input type='text' name='EviType' maxlength='50' required value='".$EviType."'/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br />
+                                <input type='submit' value='submit' class='btn btn-primary btn-lg' style='margin-left:40%' />
+                                <input type='reset' value='reset' class='btn btn-primary btn-lg' /><br />
+                            </FORM>
+                        </div>";
                 }
+            } else {
+                echo '<br>Unable to connect';
+                exit();
+            }
         include('fileend.php') ?>
-    </BODY>
-</HTML>

@@ -1,51 +1,47 @@
-<?php
-include('session.php');
-session_start();
+<?php 
+    include('session.php');
+    include('SQLFunctions.php');
+    $link = f_sqlConnect();
+    $table = Location;
+    $q = $_POST["q"];
+    $title = "SVBX - Update Location";
+    $Loc = "SELECT LocationName FROM $table WHERE LocationID = ".$q;
+    include('filestart.php');
+    
+    if($Role == 'U' OR $Role == 'V') {
+        header('location: unauthorised.php');
+    }
 ?>
-
-<HTML>
-    <HEAD>
-        <TITLE>Update Location</TITLE>
-        <link rel="stylesheet" href="styles.css" type="text/css"/>
-    </HEAD>
-    <?php 
-            include('SQLFunctions.php');
-            
-            $link = f_sqlConnect();
-            $table = Location;
-            $q = $_POST["q"];
-            $Loc = "SELECT LocationName FROM Location WHERE LocationID = ".$q;
-                //echo '<br>Source table: ' .$table;
-    ?>
-    <BODY>
-<?php include('filestart.php') ?>
-        <H1>Enter a new location into the database</H1>
-<?php       if($stmt = $link->prepare($Loc)) {
-            $stmt->execute();
-            $stmt->bind_result($LocationName);
-            while ($stmt->fetch()) {
-                echo "
-        <FORM action='UpdateLocationCommit.php' method='POST' onsubmit='' />
-            <input type='hidden' name='LocationID' value='".$q."'>
-            <table>
-                <tr>
-                    <th colspan='2'>Update Location</th>
-                </tr>
-                <tr>
-                    <td>Location Name:</td>
-                    <td>
-                        <input type='text' name='LocationName' maxlength='50' required value='".$LocationName."'/>
-                    </td>
-                </tr>
-            </table>
-            <input type='submit' class='button'>
-            <input type='reset' class='button'>
-        </FORM>";
-            }
-                } else {
-                    echo '<br>Unable to connect';
-                    exit();
+    <div class="jumbotron">
+        <div class="container">
+            <h1 class="display-3">Update Location</h1>
+        </div>
+    </div>
+        <?php       
+            if($stmt = $link->prepare($Loc)) {
+                $stmt->execute();
+                $stmt->bind_result($Location);
+                while ($stmt->fetch()) {
+                    echo "
+                        <div class='container'> 
+                            <FORM action='UpdateLocationCommit.php' method='POST'>
+                                <input type='hidden' name='LocationID' value='".$q."'>
+                                <table class='usertable'>
+                                    <tr class='usertr'>
+                                        <th class='userth'>Evidence Type Name:</th>
+                                        <td class='usertd'>
+                                            <input type='text' name='LocationName' maxlength='50' required value='".$Location."'/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br />
+                                <input type='submit' value='submit' class='btn btn-primary btn-lg' style='margin-left:40%' />
+                                <input type='reset' value='reset' class='btn btn-primary btn-lg' />
+                            </FORM>
+                        </div>";
                 }
+            } else {
+                echo '<br>Unable to connect';
+                exit();
+            }
         include('fileend.php') ?>
-    </BODY>
-</HTML>

@@ -1,17 +1,11 @@
-<HTML>
-    <HEAD>
-        <TITLE>SVBX - Status Types</TITLE>
-        <link rel="stylesheet" href="styles.css" type="text/css"/>
-    </HEAD>
-<BODY>
-<?php include('filestart.php') ?>
-    <h1>Status Types</h1>
+<?php 
+include('session.php');
+include('SQLFunctions.php');
+$link = f_sqlConnect();
+$table = Status;
+$title = "SVBX - Display Status Types";
+include('filestart.php');
 
-<?php
-
-    $link = f_sqlConnect();
-    $table = Status;
-    
         //echo '<br>Source table: ' .$table;
         
     if(!f_tableExists($link, $table, DB_Name)) {
@@ -22,49 +16,61 @@
     $sql1 = "SELECT COUNT(*) FROM $table";
     
     if($result = mysqli_query($link,$sql1)) {
-        echo"   <table>
-                    <tr>
-                        <td>Status Types in Database: </td>";
+        echo"   <div class='jumbotron'>
+                <h1>Status Types</h1><br />
+                <table class='sumtable'>
+                    <tr class='sumtr'>
+                        <td class='sumtd'>Status Types: </td>";
             while ($row = mysqli_fetch_array($result)) {
-                    echo "<td>{$row[0]}</td>";
+                    echo "<td class='sumtd'>{$row[0]}</td>";
             }    
-            echo "</table><br>";
+            echo "</table><br></div>";
 }
     if($result = mysqli_query($link,$sql)) {
-        echo"   <table>
-                    <tr>
-                        <th>Status ID</th>
-                        <th>Status</th>";
+        echo"   
+                <div class='container'>
+                <table class='usertable'>
+                    <tr class='usertr'>
+                        <th class='userth'>Status ID</th>
+                        <th class='userth'>Status</th>";
                         if(!isset($_SESSION['UserID'])) 
                         {
                         echo "</tr>";
                         } else {
                         echo "
-                            <th>Last Updated</th>
-                            <th>Last Updated By</th>
-                            <th>Edit</th>
-                            <th>Delete</th>
+                            <th class='userth'>Last Updated</th>
+                            <th class='userth'>Last Updated By</th>
+                            <th class='userth'>Edit</th>";
+                            if($Role == 'S') {
+                                echo "
+                            <th class='userth'>Delete</th>";
+                            }
+                            echo "
                             </tr>"; 
                         }
             while ($row = mysqli_fetch_array($result)) {
-        echo"       <tr>
-                        <td style='text-align:center'>{$row[0]}</td>
-                        <td>{$row[1]}</td>";
+        echo"       <tr class='usertr'>
+                        <td style='text-align:center' class='usertd'>{$row[0]}</td>
+                        <td class='usertd'>{$row[1]}</td>";
                         if(!isset($_SESSION['UserID'])) 
                         {
                             echo "</tr>";
                         } else {
                         echo "
-                        <td>{$row[2]}</td>
-                        <td>{$row[3]}</td>
-                        <td><form action='UpdateStatus.php' method='POST' onsubmit=''/>
-                        <input type='hidden' name='q' value='".$row[0]."'/><input type='submit' value='Update'></form></td>
-                        <td><form action='DeleteStatus.php' method='POST' onsubmit='' onsubmit='' onclick='return confirm(`do you want to delete {$row[1]} Status`)'/>
-                        <input type='hidden' name='q' value='".$row[0]."' /><input type='Submit' value='delete'></form></td>
+                        <td class='usertd'>{$row[2]}</td>
+                        <td class='usertd'>{$row[3]}</td>
+                        <td class='usertd'><form action='UpdateStatus.php' method='POST' onsubmit=''/>
+                        <input type='hidden' name='q' value='".$row[0]."'/><input type='submit' value='Update'></form></td>";
+                        if($Role == 'S') {
+                                echo "
+                        <td class='usertd'><form action='DeleteStatus.php' method='POST' onsubmit='' onsubmit='' onclick='return confirm(`do you want to delete {$row[1]} Status`)'/>
+                        <input type='hidden' name='q' value='".$row[0]."' /><input type='Submit' value='delete'></form></td>";
+                        }
+                        echo "
                     </tr>";
                     }
             }    
-            echo "</table><br>";
+            echo "</table><br></div>";
     }
     mysqli_free_result($result);
     
@@ -73,8 +79,5 @@
     } else //echo '<br>Success';
     
     mysqli_close($link);
-    
+    include 'fileend.php';
 ?>
-<?php include 'fileend.php';?>
-</Body>
-</HTML>

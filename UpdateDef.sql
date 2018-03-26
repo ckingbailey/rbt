@@ -16,7 +16,13 @@ SELECT
     DateClosed,
     LastUpdated,
     Updated_by,
-    Comments
+    Comments,
+    RequiredBy,
+    Repo,
+    Pics,
+    ClosureComments,
+    DueDate,
+    SafetyCert
 FROM
     CDL
 Where DefID=

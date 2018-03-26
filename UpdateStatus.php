@@ -1,46 +1,47 @@
-<?php
-include('session.php');
+<?php 
+    include('session.php');
+    include('SQLFunctions.php');
+    $link = f_sqlConnect();
+    $table = Status;
+    $q = $_POST["q"];
+    $title = "SVBX - Update Status Type";
+    $Loc = "SELECT Status FROM $table WHERE StatusID = ".$q;
+    include('filestart.php');
+    
+    if($Role == 'U' OR $Role == 'V') {
+        header('location: unauthorised.php');
+    }
 ?>
-
-<HTML>
-    <HEAD>
-        <TITLE>Update Status</TITLE>
-        <link rel="stylesheet" href="styles.css" type="text/css"/>
-    </HEAD>
-    <?php 
-            include('SQLFunctions.php');
-            
-            $link = f_sqlConnect();
-            $table = Status;
-            $q = $_POST["q"];
-                //echo '<br>Source table: ' .$table;
-    ?>
-    <BODY>
-        <?php include('filestart.php') ?>
-        <H1>Update a status type</H1>
-        <?php 
-        $sql = "SELECT Status FROM Status WHERE StatusID = ".$q;
-        
-        if($stmt = $link->prepare($sql)) {
-            $stmt->execute();
-            $stmt->bind_result($Status);
-            while ($stmt->fetch()) {
-                echo "  <form action='UpdateStatusCommit.php' method='POST' onsubmit='' />
-                            <input type='hidden' name='StatusID' value='".$q."'>
-                            <table>
-                                <tr>
-                                    <td>Status Name:</td> 
-                                    <td><input type='text' name='Status' maxlength='50' required value='".$Status."'/></td>
-                                </tr>
-                            </table>
-                            <input type='submit' class='button'>
-                            <input type='reset' class='button'>
-                        </FORM>";
+    <div class="jumbotron">
+        <div class="container">
+            <h1 class="display-3">Update Status Type</h1>
+        </div>
+    </div>
+        <?php       
+            if($stmt = $link->prepare($Loc)) {
+                $stmt->execute();
+                $stmt->bind_result($Status);
+                while ($stmt->fetch()) {
+                    echo "
+                        <div class='container'> 
+                            <FORM action='UpdateEvidenceCommit.php' method='POST'>
+                                <input type='hidden' name='StatusID' value='".$q."'>
+                                <table class='usertable'>
+                                    <tr class='usertr'>
+                                        <th class='userth'>Evidence Type Name:</th>
+                                        <td class='usertd'>
+                                            <input type='text' name='EviType' maxlength='50' required value='".$Status."'/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br />
+                                <input type='submit' value='submit' class='btn btn-primary btn-lg' style='margin-left:40%' />
+                                <input type='reset' value='reset' class='btn btn-primary btn-lg' />
+                            </FORM>
+                        </div>";
                 }
-                } else {
-                    echo '<br>Unable to connect';
-                    exit();
-                }
+            } else {
+                echo '<br>Unable to connect';
+                exit();
+            }
         include('fileend.php') ?>
-    </BODY>
-</HTML>

@@ -1,23 +1,15 @@
 <?php
-//include('session.php');
-?>
+include('session.php');
+$DefID = $_GET['DefID'];
+$Role = $_SESSION['Role'];
+$title = "SVBX - Deficiency No".$DefID;
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL);
+include('filestart.php'); 
+$link = f_sqlConnect();
+$Def = file_get_contents("ViewDef.sql").$DefID;
 
-<HTML>
-    <HEAD>
-        <TITLE>Deficiency Details</TITLE>
-        <link rel="stylesheet" href="styles.css" type="text/css"/>
-    </HEAD>
-    <BODY>
-    <?php include('filestart.php'); 
-    $link = f_sqlConnect();
-    $DefID = $_GET['DefID'];
-    $Def = file_get_contents("ViewDef.sql").$DefID;
-    error_reporting(E_ALL);  
-    ini_set("display_errors", 1);
-    
-    
-    
-    
     if($stmt = $link->prepare($Def)) {  
         $stmt->execute();  
         $stmt->bind_result(
@@ -39,113 +31,165 @@
                 $LastUpdated, 
                 $Updated_by, 
                 $Created_by, 
-                $Comments);  
+                $Comments,
+                $RequiredBy,
+                $Repo,
+                $filename,
+                $ClosureComments,
+                $DueDate,
+                $SafetyCert);  
     while ($stmt->fetch()) { 
+    
     echo "
-        <H1>View deficiency</H1>
-            <table>
-                <tr>";
+            <table class='vdtable'>
+                <tr class='vdtr'>";
                     if($Status == "Open") {
                         $color = "Red";
-                    } else {
+                    } elseif($Status == "Closed") {
                         $color = "Green"; 
+                        } else {
+                            $color = "Black";
                         }
-            echo "        <th colspan='4' height='50' style=background-color:$color><p>
+            echo "        <th class='vdth' colspan='4' height='50' style='background-color:$color'><p>
                         Deficiency No. $DefID</p></th>
                 </tr>
-                <tr>
-                    <th colspan='4'><p>Required Information</p></th>
+                <tr class='vdtr'>
+                    <th colspan='4' class='vdth'><p>Required Information</p></th>
                 </tr>
-                <tr>
-                    <td><p>Date Created:</p></td>
-                    <td><p>$DateCreated</p></td>
-                    <td><p>System Affected:</p></td>
-                    <td><p>$SystemAffected</p></td>
+                <tr class='vdtr'>
+                    <td class='vdtdh'><p>Safety Certifiable:</p></td>
+                    <td class='vdtda'><p>";
+                        if($SafetyCert == '1') {
+                            $SafetyCert = 'Yes';
+                        } elseif($SafetyCert == '2') {
+                            $SafetyCert = 'No';
+                        } else {
+                            $SafetyCert = '';
+                        }
+                    echo " $SafetyCert</p></td>
+                    <td class='vdtdh'><p>System Affected:</p></td>
+                    <td class='vdtd'><p>$SystemAffected</p></td>
                 </tr>
-                <tr>
-                    <td><p>General Location:</p></td>
-                    <td><p>$Location</p></td>
-                    <td><p>Specific Location:</p></td>
-                    <td><p>$SpecLoc</p></td>
+                <tr class='vdtr'>
+                    <td class='vdtdh'><p>General Location:</p></td>
+                    <td class='vdtda'><p>$Location</p></td>
+                    <td class='vdtdh'><p>Specific Location:</p></td>
+                    <td class='vdtda'><p>$SpecLoc</p></td>
                 </tr>
-                <tr>
-                    <td><p>Status:</p></td>
-                    <td><p>$Status</p></td>
-                    <td><p>Severity:</p></td>
-                    <td><p>$Severity</p></td>
+                <tr class='vdtr'>
+                    <td class='vdtdh'><p>Status:</p></td>
+                    <td class='vdtda'><p>$Status</p></td>
+                    <td class='vdtdh'><p>Severity:</p></td>
+                    <td class='vdtda'><p>$Severity</p></td>
                 </tr>
-                <tr>
-                    <td><p>Group to Resolve:</p></td>
-                    <td><p>$GroupToResolve</p></td>
-                    <td><p>Identified By:</p></td>
-                    <td><p>$IdentifiedBy</p></td>
+                <tr class='vdtr'>
+                    <td class='vdtdh'><p>Due Date:</p></td>
+                    <td class='vdtda'><p>$DueDate</p></td>
+                    <td class='vdtdh'><p>Resolution required by:</p></td>
+                    <td class='vdtda'><p>$RequiredBy</p></td>
                 </tr>
-                <tr>
-                    <th colspan='4' style='text-align:center'><p>Deficiency Description</p></th>
+                <tr class='vdtr'>
+                    <td class='vdtdh'><p>Group to Resolve:</p></td>
+                    <td class='vdtda'><p>$GroupToResolve</p></td>
+                    <td class='vdtdh'><p>Identified By:</p></td>
+                    <td class='vdtda'><p>$IdentifiedBy</p></td>
                 </tr>
-                <tr>
+                <tr class='vdtr'>
+                    <td colspan='4' style='text-align:center' class='vdtd'><p>Deficiency Description</p></td>
+                </tr>
+                <tr class='vdtr'>
                     <td Colspan=4><p>"; echo nl2br($Description);
                     echo "</p></td>
                 </tr>
-                <tr>
-                    <th colspan='4'><p>Optional Information</p></th>
+                <t class='vdtr'>
+                    <th colspan='4' class='vdth'><p>Optional Information</p></th>
                 </tr>
-                <tr>
-                    <td><p>Spec or Code:</p></td>
-                    <td colspan='3'><p>$Spec</p></td>
+                <tr class='vdtr'>
+                    <td class='vdtdh'><p>Spec or Code:</p></td>
+                    <td colspan='3' class='vdtd'><p>$Spec</p></td>
                 </tr>
-                <tr>
-                    <td><p>Action Owner:</p></td>
-                    <td><p>$ActionOwner</p></td>
-                    <td><p>Old Id:</p></td>
-                    <td><p>$OldID</p></td>
-                <tr>
-                    <th colspan='4'><p>Closure Information</p></th>
+                <tr class='vdtr'>
+                    <td class='vdtdh'><p>Action Owner:</p></td>
+                    <td class='vdtda'><p>$ActionOwner</p></td>
+                    <td class='vdtdh'><p>Old Id:</p></td>
+                    <td class='vdtda'><p>$OldID</p></td>
                 </tr>
-                <tr>
-                    <td><p>Evidence Type:</p></td>
-                    <td><p>$EvidenceType</p></td>
-                    <td><p>Evidence Link:<br>(SharePoint)</p></td>
-                    <td><p>$EvidenceLink</p></td>
+                <tr class='vdtr'>
+                    <td colspan='4' style='text-align:center' class='vdtd'><p>Additional Information</p></td>
                 </tr>
-                 <tr>
-                    <th colspan='4' style='text-align:center'><p>Deficiency Comments</p></th>
-                </tr>
-                <tr>
+                <tr class='vdtr'>
                     <td Colspan=4><p>"; echo nl2br($Comments);
                     echo "</p></td>
                 </tr>
-                <tr>
-                    <th colspan='4' style='text-align:center'><p>Modification Details</p></th>
+                <tr class='vdtr'>
+                    <th colspan='4' class='vdth'><p>Closure Information</p></th>
                 </tr>
-                <tr>
-                    <td rowspan='2'><p>Last Updated:</p></td>
-                    <td rowspan='2'><p>$LastUpdated</p></td>
-                    <td><p>Created by:</p></td>
-                    <td><p>$Created_by</p></td>
+                <tr class='vdtr'>
+                    <td class='vdtdh'><p>Evidence Type:</p></td>
+                    <td class='vdtda' colspan='3'><p>$EvidenceType</p></td>
                 </tr>
-                <tr>
-                    <td><p>Updated by:</p></td>
-                    <td><p>$Updated_by</p></td>
+                <tr class='vdtr'>
+                    <td class='vdtdh'><p>Evidence Repository:</p></td>
+                    <td class='vdtda'><p>";
+                    if($Repo == '1') {
+                            $Repo = 'SharePoint';
+                        } else {
+                            $Repo = 'Aconex';
+                        }
+                    echo "    
+                        $Repo</p></td>
+                    <td class='vdtdh'><p>Repository No:</p></td>
+                    <td class='vdtda'><p>$EvidenceLink</p></td>
+                </tr>
+                 <tr class='vdtr'>
+                    <td colspan='4' style='text-align:center' class='vdtd'><p>Closure Comments</p></td>
+                </tr>
+                <tr class='vdtr'>
+                    <td Colspan=4><p>"; echo nl2br($ClosureComments);
+                    echo "</p></td>
+                </tr>
+                <tr class='vdtr'>
+                    <th colspan='4' style='text-align:center' class='vdth'><p>Modification Details</p></th>
+                </tr>
+                <tr class='vdtr'>
+                    <td class='vdtdh'><p>Date Created:</p></td>
+                    <td class='vdtda'><p>$DateCreated</p></td>
+                    <td class='vdtdh'><p>Created by:</p></td>
+                    <td class='vdtda'><p>$Created_by</p></td>
+                </tr>
+                <tr class='vdtr'>
+                    <td class='vdtdh'><p>Last Updated:</p></td>
+                    <td class='vdtda'><p>$LastUpdated</p></td>
+                    <td class='vdtdh'><p>Updated by:</p></td>
+                    <td class='vdtda'><p>$Updated_by</p></td>
                 </tr>
             </table><br>";
-            if(!isset($_SESSION['UserID'])) 
+            if($Role == 'S' OR $Role == 'A' OR $Role == 'U') 
             {
-                
+                echo "
+                    <form action='UpdateDef.php' method='POST' onsubmit='' style='text-align:center' />
+                    <input type='hidden' name='q' value='".$DefID."'/>
+                    <input type='submit' name='submit' value='Update' class='btn btn-primary btn-lg'/>
+                    </form>
+                    <br />
+                    <br />";
             } else {
-            echo "
-            <form action='UpdateDef.php' method='POST' onsubmit=''/>
-                        <input type='hidden' name='q' value='".$DefID."'/><input type='submit' value='Update'></form>";
+                
             }
                     }  
                 } else {  
-                    echo "<br>Unable to connect<br>";
-                    echo $Def;
+                    echo "
+                    <div='container'>
+                    <br />
+                    <br />
+                    <br />
+                    <br>Unable to connect<br>
+                    </div>";
+                    echo $Def.'<br /><br />';
+                    //echo mysqli_error();
                     //echo "<BR>Def ID: ".$DefID;
                   exit();  
                 } 
     include('fileend.php');
     MySqli_Close($link); 
 ?>
-    </BODY>
-</HTML>

@@ -10,7 +10,7 @@
     $link = f_sqlConnect();
     $check = "SELECT * FROM $table WHERE EviType = '".$_POST['EviType']."'";
     $UserID = $_SESSION['UserID'];
-    $user = "SELECT Username FROM Users WHERE UserID = ".$UserID;
+    $user = "SELECT Username FROM users_enc WHERE UserID = ".$UserID;
     if($result=mysqli_query($link,$user)) 
         {
           /*from the sql results, assign the username that returned to the $username variable*/    
@@ -46,7 +46,7 @@
     }    
 	
     }else if(!empty ($rejectredirecturl)) {
-            header("location: DisplayEvidence.php");
+            header("location: DisplayEviType.php");
             //echo "Success";
     }
 }

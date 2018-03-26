@@ -1,16 +1,10 @@
-<HTML>
-    <HEAD>
-        <TITLE>SVBX - Locations</TITLE>
-        <link rel="stylesheet" href="styles.css" type="text/css"/>
-    </HEAD>
-<BODY>
-<?php include('filestart.php') ?>
-    <h1>Locations</h1>
-
-<?php
-
-    $link = f_sqlConnect();
-    $table = Location;
+<?php 
+include('session.php');
+include('SQLFunctions.php');
+$link = f_sqlConnect();
+$table = Location;
+$title = "SVBX - Display Locations";
+include('filestart.php');
         //echo '<br>Source table: ' .$table;
         
     if(!f_tableExists($link, $table, DB_Name)) {
@@ -21,49 +15,68 @@
     $sql1 = "SELECT COUNT(*) FROM $table";
     
     if($result = mysqli_query($link,$sql1)) {
-        echo"   <table>
-                    <tr>
-                        <td>Locations in Database: </td>";
+        echo"   
+                <div class='jumbotron'>
+                <h1>Locations</h1><br />
+                <table class='sumtable'>
+                    <tr class='sumtr'>
+                        <td class='sumtd'>Locations in Database: </td>";
             while ($row = mysqli_fetch_array($result)) {
-                    echo "<td>{$row[0]}</td>";
+                    echo "<td class='sumtd'>{$row[0]}</td>";
             }    
-            echo "</table><br>";
+            echo "</table><br></div>";
 }
     if($result = mysqli_query($link,$sql)) {
-        echo"   <table>
-                    <tr>
-                        <th>Location ID</th>
-                        <th>Location</th>";
+        echo"   
+                <div class='container'>
+                <table class='usertable'>
+                    <tr class='usertr'>
+                        <th class='userth'>Location ID</th>
+                        <th class='userth'>Location</th>";
                         if(!isset($_SESSION['UserID'])) 
                         {
                         echo "</tr>";
                         } else {
                         echo "
-                            <th>Last Updated</th>
-                            <th>Updated By</th>
-                            <th>Edit</th>
-                            <th>Delete</th>
+                            <th class='userth'>Last Updated</th>
+                            <th class='userth'>Updated By</th>";
+                                if($Role == 'S' OR $Role == 'A') {
+                            echo "
+                            <th class='userth'>Edit</th>";
+                                }
+                            if($Role == 'S') {
+                                echo "
+                            <th class='userth'>Delete</th>";
+                            }
+                            echo "
                             </tr>"; 
                     }
             while ($row = mysqli_fetch_array($result)) {
-            echo"       <tr>
-                        <td style='text-align:center'>{$row[0]}</td>
-                        <td>{$row[1]}</td>";
+            echo"       <tr class='usertr'>
+                        <td style='text-align:center' class='usertd'>{$row[0]}</td>
+                        <td class='usertd'>{$row[1]}</td>";
                         if(!isset($_SESSION['UserID'])) 
                         {
                         echo "</tr>";
                         } else {
                         echo "
-                        <td>{$row[2]}</td>
-                        <td>{$row[3]}</td>
-                        <td><form action='UpdateLocation.php' method='POST' onsubmit=''/>
-                        <input type='hidden' name='q' value='".$row[0]."'/><input type='submit' value='Update'></form></td>
-                        <td><form action='DeleteLocation.php' method='POST' onsubmit='' onsubmit='' onclick='return confirm(`do you want to delete {$row[1]} location`)'/>
-                        <input type='hidden' name='q' value='".$row[0]."' /><input type='Submit' value='delete'></form></td>
+                        <td class='usertd'>{$row[2]}</td>
+                        <td class='usertd'>{$row[3]}</td>";
+                            if($Role == 'S' OR $Role == 'A') {
+                            echo "
+                        <td class='usertd'><form action='UpdateLocation.php' method='POST' onsubmit=''/>
+                        <input type='hidden' name='q' value='".$row[0]."'/><input type='submit' value='Update'></form></td>";
+                            }
+                        if($Role == 'S') {
+                            echo "
+                        <td class='usertd'><form action='DeleteLocation.php' method='POST' onsubmit='' onsubmit='' onclick='return confirm(`do you want to delete {$row[1]} location`)'/>
+                        <input type='hidden' name='q' value='".$row[0]."' /><input type='Submit' value='delete'></form></td>";
+                        }
+                    echo "
                     </tr>";
                     }
             }    
-            echo "</table><br>";
+            echo "</table><br></div>";
     }
     mysqli_free_result($result);
     

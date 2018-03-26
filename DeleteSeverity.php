@@ -21,7 +21,7 @@ if(!empty($_POST)) {
         echo "<br>Error: " .$sql. "<br>" .mysqli_error($link);
     }
     mysqli_close($link);
-    header("Location: index.php");
+    header("Location: DisplaySeverity.php");
     
 }
 ?>

@@ -1,14 +1,8 @@
 <?php
-//include('session.php');
-?>
+include('session.php');
+$title = "SVBX - Update Deficiency";
+include('filestart.php'); 
 
-<HTML>
-    <HEAD>
-        <TITLE>Update Deficiency</TITLE>
-        <link rel="stylesheet" href="styles.css" type="text/css"/>
-    </HEAD>
-    <BODY>
-    <?php include('filestart.php'); 
     $link = f_sqlConnect();
     $q = $_POST['q'];
     $Def = file_get_contents("UpdateDef.sql").$q;
@@ -18,42 +12,83 @@
     $list1 = mysqli_query($link,$sql1);
     $sql2 = "SELECT SystemID, System FROM System ORDER BY System";
     $list2 = mysqli_query($link,$sql2);
-    $sql3 = "SELECT StatusID, Status FROM Status ORDER BY Status";
+    $sql3 = "SELECT StatusID, Status FROM Status WHERE StatusID <> 3 ORDER BY StatusID";
     $list3 = mysqli_query($link,$sql3);
     $sql4 = "SELECT SeverityID, SeverityName FROM Severity ORDER BY SeverityName";
     $list4 = mysqli_query($link,$sql4);
     $sql5 = "SELECT EviTypeID, EviType FROM EvidenceType ORDER BY EviType";
     $list5 = mysqli_query($link,$sql5);
+    $sql6 = "SELECT ReqByID, RequiredBy FROM RequiredBy ORDER BY RequiredBy";
+    $list6 = mysqli_query($link,$sql6);
+    $sql7 = "SELECT RepoID, Repo FROM Repo ORDER BY Repo";
+    $list7 = mysqli_query($link,$sql7);
+    $sql8 = "SELECT YesNoID, YesNo FROM YesNo ORDER BY YesNo";
+    $list8 = mysqli_query($link,$sql8);
     
     
     
     
     if($stmt = $link->prepare($Def)) {  
         $stmt->execute();  
-        $stmt->bind_result($OldID, $Location, $SpecLoc, $Severity, $Description, $Spec, $DateCreated, $Status, $IdentifiedBy, $SystemAffected, $GroupToResolve, $ActionOwner, $EvidenceType, $EvidenceLink, $DateClosed, $LastUpdated, $Updated_by, $Comments);  
-    while ($stmt->fetch()) { 
+        $stmt->bind_result(
+            $OldID, 
+            $Location, 
+            $SpecLoc, 
+            $Severity, 
+            $Description, 
+            $Spec, $DateCreated, 
+            $Status, $IdentifiedBy, 
+            $SystemAffected, 
+            $GroupToResolve, 
+            $ActionOwner, 
+            $EvidenceType, 
+            $EvidenceLink, 
+            $DateClosed, 
+            $LastUpdated, 
+            $Updated_by, 
+            $Comments, 
+            $RequiredBy, 
+            $Repo, 
+            $Pics, 
+            $ClosureComments, 
+            $DueDate, 
+            $SafetyCert);  
+    while ($stmt->fetch()) {
     echo "
-        <H1>Update deficiency</H1>
+        <div class='container'> 
         <form action='UpdateDefCommit.php' method='POST' onsubmit='' />
         <input type='hidden' name='DefID' value='".$q."'>
-            <table>
-                <tr>
-                <th colspan='4' height='50'><p>
+            <table class='vdtable'>
+                <tr class='vdtr'>
+                <th colspan='4' height='50' class='vdth'><p>
                         Deficiency No. $q</p></th>
                 </tr>
-                <tr>
-                    <th colspan='4'><p>Required Information</p></th>
+                <tr class='vdtr'>
+                    <th colspan='4' class='vdth'><p>Required Information</p></th>
                 </tr>
-                <tr>
-                    <td><p>Date Created:</p></td>
-                    <td><p>$DateCreated</td>
-                    <td><p>System Affected:</p></td>
-                    <td><select name='SystemAffected' value='".$SystemAffected."' id='defdd'></option>
+                <td class='vdtd'>
+                        <p>Safety Certifiable:</p>
+                    </td>
+                <td class='vdtda'><select name='SafetyCert' value='".$SafetyCert."' id='defdd'></option>
+                        <option value=''></option>";
+                        if(is_array($list8) || is_object($list8)) {
+                        foreach($list8 as $row) {
+                            echo "<option value='$row[YesNoID]'";
+                                if($row['YesNoID'] == $SafetyCert) {
+                                    echo " selected>$row[YesNo]</option>";
+                                    } else { echo ">$row[YesNo]</option>";
+                                }
+                        }
+                        }
+                    echo "
+                    </td>
+                    <td class='vdtdh'><p>System Affected:</p></td>
+                    <td class='vdtda'><select name='SystemAffected' value='".$SystemAffected."' id='defdd'></option>
                         <option value=''></option>";
                         if(is_array($list2) || is_object($list2)) {
                         foreach($list2 as $row) {
                             echo "<option value='$row[SystemID]'";
-                                if($row[SystemID] == $SystemAffected) {
+                                if($row['SystemID'] == $SystemAffected) {
                                     echo " selected>$row[System]</option>";
                                     } else { echo ">$row[System]</option>";
                                 }
@@ -61,44 +96,44 @@
                         }
     echo "      </td>
                 </tr>
-                <tr>
-                    <td><p>General Location:</p></td>
-                    <td><select name='LocationName' value='".$Location."' id='defdd'></option>
+                <tr class='vdtr'>
+                    <td class='vdtdh'><p>General Location:</p></td>
+                    <td class='vdtda'><select name='LocationName' value='".$Location."' id='defdd'></option>
                         <option value=''></option>";
                         if(is_array($list1) || is_object($list1)) {
                         foreach($list1 as $row) {
                             echo "<option value='$row[LocationID]'";
-                                if($row[LocationID] == $Location) {
+                                if($row['LocationID'] == $Location) {
                                     echo " selected>$row[LocationName]</option>";
                                     } else { echo ">$row[LocationName]</option>";
                                 }
                         }
                         }
     echo "          </td>
-                    <td><p>Specific Location:</p></td>
-                    <td><p><input type='text' name='SpecLoc' value='".$SpecLoc."' max='55' id='defdd'/></p></td>
+                    <td class='vdtdh'><p>Specific Location:</p></td>
+                    <td class='vdtda'><p><input type='text' name='SpecLoc' value='".$SpecLoc."' max='55' id='defdd'/></p></td>
                 </tr>
-                <tr>
-                    <td><p>Status:</p></td>
-                    <td><select name='Status' value='".$Status."' id='defdd'></option>
+                <tr class='vdtr'>
+                    <td class='vdtdh'><p>Status:</p></td>
+                    <td class='vdtda'><select name='Status' value='".$Status."' id='defdd'></option>
                         <option value=''></option>";
                         if(is_array($list3) || is_object($list3)) {
                         foreach($list3 as $row) {
                             echo "<option value='$row[StatusID]'";
-                                if($row[StatusID] == $Status) {
+                                if($row['StatusID'] == $Status) {
                                     echo " selected>$row[Status]</option>";
                                     } else { echo ">$row[Status]</option>";
                                 }
                         }
                         }
     echo "          </td>
-                    <td><p>Severity:</p></td>
-                    <td><select name='SeverityName' value='".$Severity."' id='defdd'></option>
+                    <td class='vdtdh'><p>Severity:</p></td>
+                    <td class='vdtda'><select name='SeverityName' value='".$Severity."' id='defdd'></option>
                         <option value=''></option>";
                         if(is_array($list4) || is_object($list4)) {
                         foreach($list4 as $row) {
                             echo "<option value='$row[SeverityID]'";
-                                if($row[SeverityID] == $Severity) {
+                                if($row['SeverityID'] == $Severity) {
                                     echo " selected>$row[SeverityName]</option>";
                                     } else { echo ">$row[SeverityName]</option>";
                                 }
@@ -106,71 +141,134 @@
                         }
     echo "      </td>
                 </tr>
-                <tr>
-                    <td><p>Group to Resolve:</p></td>
-                    <td><select name='GroupToResolve' value='".$GroupToResolve."' id='defdd'></option>
+                <tr class='vdtr'>    
+                    <td class='vdtdh'>
+                        <p>To be resolved by:</p>
+                    </td>
+                    <td class='vdtd'>
+                        <input type='date' name='DueDate' id='defdd' value='$DueDate' required/>
+                    </td>
+                    <td class='vdtdh'>
+                        <p>Required for:</p>
+                    </td>
+                    <td class='vdtda'><select name='RequiredBy' value='".$RequiredBy."' id='defdd'></option>
+                        <option value=''></option>";
+                        if(is_array($list6) || is_object($list6)) {
+                        foreach($list6 as $row) {
+                            echo "<option value='$row[ReqByID]'";
+                                if($row['ReqByID'] == $RequiredBy) {
+                                    echo " selected>$row[RequiredBy]</option>";
+                                    } else { echo ">$row[RequiredBy]</option>";
+                                }
+                        }
+                        }
+    echo "
+                    </td>
+                </tr>
+                <tr class='vdtr'>
+                    <td class='vdtdh'><p>Group to Resolve:</p></td>
+                    <td class='vdtda'><select name='GroupToResolve' value='".$GroupToResolve."' id='defdd'></option>
                         <option value=''></option>";
                         if(is_array($list2) || is_object($list2)) {
                         foreach($list2 as $row) {
                             echo "<option value='$row[SystemID]'";
-                                if($row[SystemID] == $GroupToResolve) {
+                                if($row['SystemID'] == $GroupToResolve) {
                                     echo " selected>$row[System]</option>";
                                     } else { echo ">$row[System]</option>";
                                 }
                         }
                         }
     echo "          </td>
-                    <td><p>Identified By:</p></td>
-                    <td><input type='text' name='IdentifiedBy' value='".$IdentifiedBy."' max='24' id='defdd'/></td>
+                    <td class='vdtdh'><p>Identified By:</p></td>
+                    <td class='vdtda'><input type='text' name='IdentifiedBy' value='".$IdentifiedBy."' max='24' id='defdd'/></td>
                 </tr>
-                <tr>
-                    <th colspan='4' style='text-align:center'><p>Deficiency Description</p></th>
+                <tr class='vdtr'>
+                    <td colspan='4' style='text-align:center' class='vdtdh'><p>Deficiency Description</p></th>
                 </tr>
-                <tr>
-                    <td Colspan=4><textarea type='message' rows='5' cols='99%' name='Description' max='1000'>$Description</textarea></td>
+                <tr class='vdtr'>
+                    <td Colspan=4  style='text-align:center'><textarea type='message' rows='5' cols='99%' name='Description' max='1000'>$Description</textarea></td>
                 </tr>
-                <tr>
-                    <th colspan='4'><p>Optional Information</p></th>
+                <tr class='vdtr'>
+                    <th colspan='4' class='vdth'><p>Optional Information</p></th>
                 </tr>
-                <tr>
-                    <td><p>Spec or Code:</p></td>
-                    <td><input type='text' name='Spec' value='".$Spec."' max='24'/></td>
+                <tr class='vdtr'>
+                    <td class='vdtdh'><p>Spec or Code:</p></td>
+                    <td class='vdtda' colspan='3'><input type='text' name='Spec' value='".$Spec."' max='24'/></td>
                 </tr>
-                <tr>
-                    <td><p>Action Owner:</p></td>
-                    <td><input type='text' name='ActionOwner' value='".$ActionOwner."' max='24'/></td>
-                    <td><p>Old Id:</p></td>
-                    <td><input type='text' name='OldID' value='".$OldID."' max='24'/></td>
-                <tr>
-                    <th colspan='4'><p>Closure Information</p></th>
+                <tr class='vdtr'>
+                    <td class='vdtdh'><p>Action Owner:</p></td>
+                    <td class='vdtda'><input type='text' name='ActionOwner' value='".$ActionOwner."' max='24'/></td>
+                    <td class='vdtdh'><p>Old Id:</p></td>
+                    <td class='vdtda'><input type='text' name='OldID' value='".$OldID."' max='24'/></td>
                 </tr>
-                <tr>
-                    <td><p>Evidence Type:</p></td>
-                    <td><select name='EviType' value='".$EviType."'></option>
+                <tr class='vdtr'>
+                    <td colspan='4' style='text-align:center' class='vdtdh'>
+                        <p>More Information</p>
+                    </td>
+                </tr>
+                <tr class='vdtr'>
+                    <td Colspan=4 class='vdtda' style='text-align:center'>
+                        <textarea type='message'  rows='5' cols='99%' name='comments' max='1000'>$Comments</textarea>
+                    </td>
+                </tr>
+                <tr class='vdtr'>
+                    <th colspan='4'th class='vdth'><p>Closure Information</p></th>
+                </tr>
+                <tr class='vdtr'>
+                    <td class='vdtdh'><p>Evidence Type:</p></td>
+                    <td class='vdtda' colspan='3'>
+                    <select name='EviType' value='".$EviType."'></option>
                         <option value=''></option>";
                         if(is_array($list5) || is_object($list5)) {
                         foreach($list5 as $row) {
                             echo "<option value='$row[EviTypeID]'";
-                                if($row[EviTypeID] == $EvidenceType) {
+                                if($row['EviTypeID'] == $EvidenceType) {
                                     echo " selected>$row[EviType]</option>";
                                     } else { echo ">$row[EviType]</option>";
                                 }
                         }
                         }
-    echo "          </td>
-                    <td><p>Evidence Link:<br>(SharePoint)</p></td>
-                    <td><input type='text' name='EvidenceLink' value='".$EvidenceLink."' max='255'/></td>
+    echo "          </tr>
+                <tr class='vdtr'>
+                    <td class='vdtdh'>
+                        <p>Evidence Repository:</p>
+                    </td>
+                    <td class='vdtda'>
+                    <select name='Repo' value='".$Repo."'></option>
+                        <option value=''></option>";
+                        if(is_array($list7) || is_object($list7)) {
+                        foreach($list7 as $row) {
+                            echo "<option value='$row[RepoID]'";
+                                if($row['RepoID'] == $Repo) {
+                                    echo " selected>$row[Repo]</option>";
+                                    } else { echo ">$row[Repo]</option>";
+                                }
+                        }
+                        }
+    echo "                </td>
+                    <td class='vdtdh'>
+                        <p>Repository Number</p>
+                    </td>
+                    <td class='vdtda'>
+                        <input type='text' name='EvidenceLink' max='255' value='$EvidenceLink' id='defdd'/>
+                    </td>
                 </tr>
-                 <tr>
-                    <th colspan='4' style='text-align:center'><p>Deficiency Comments</p></th>
+                <tr class='vdtr'>
+                    <td colspan='4' style='text-align:center'  class='vdtdh'>
+                        <p>Closure Comments</p>
+                    </td>
                 </tr>
-                <tr>
-                    <td Colspan=4><textarea type='message' rows='5' cols='99%' name='Comments' max='1000'>$Comments</textarea></td>
+                <tr class='vdtr'>
+                    <td Colspan=4 class='vdtda' style='text-align:center'>
+                        <textarea type='message'  rows='5' cols='99%' name='ClosureComments' max='1000'>$ClosureComments</textarea>
+                    </td>
                 </tr>
-            </table><br>
-            <input type='submit'>
-            <a href='DisplayDef.php'><button>Cancel</button></a>
+            </table>
+            <br />
+            <input type='submit' value='submit' class='btn btn-primary btn-lg' style='margin-left:40%' />
+            <input type='reset' value='reset' class='btn btn-primary btn-lg' /><br /><br />
             </form>
+            </div>
             ";
             //echo "Description: " .$Description;
                     }  
@@ -178,8 +276,6 @@
                     echo "<br>Unable to connect<br>";
                     exit();  
                 } 
+    MySqli_Close($link);             
     include('fileend.php');
-    MySqli_Close($link); 
 ?>
-    </BODY>
-</HTML>

@@ -1,43 +1,35 @@
 <?php
 include('session.php');
+$title = "SVBX - Add New Severity Type";
+include('filestart.php');
+if($Role == 'U' OR $Role == 'V' OR $Role == 'A') {
+        header('location: unauthorised.php');
+    }
 ?>
-
-<HTML>
-    <HEAD>
-        <TITLE>New Severity</TITLE>
-        <link rel="stylesheet" href="styles.css" type="text/css"/>
-    </HEAD>
-    <?php 
-            include('SQLFunctions.php');
-            
-            $link = f_sqlConnect();
-            $table = Severity;
-                //echo '<br>Source table: ' .$table;
-    ?>
-    <BODY>
-<?php include('filestart.php') ?>
-        <H1>Enter a new severity type into the database</H1>
+        <div class="jumbotron">
+        <div class="container">
+          <h1 class="display-3">Add New Severity type</h1>
+        </div>
+    </div>
+        <div class="container"> 
         <FORM action="RecSeverity.php" method="POST">
-            <table>
-                <tr>
-                    <th colspan='2'>New Severity</th>
-                </tr>
-                <tr>
-                    <td>Severity Name:</td>
-                    <td>
-                        <input type="text" name="SeverityName" maxlength="12" required/>
+            <table class='usertable'>
+                <tr class='usertr'>
+                    <th class='userth'>Evidence Type Name:</th>
+                    <td class='usertd'>
+                        <input type="text" name="EviType" maxlength="50" required/>
                     </td>
                 </tr>
-                <tr>
-                    <td>Description:</td>
-                    <td>
+                <tr class='usertr'>
+                    <th class='userth'>Description:</th>
+                    <td class='usertd'>
                         <textarea type="message"  rows="5" cols="99%" name="Description" max="255" required></textarea>
                     </td>
                 </tr>
-            </table><br>
-            <input type="submit" class="button">
-            <input type="reset" class="button">
+            </table>
+            <br />
+            <input type='submit' value='submit' class='btn btn-primary btn-lg' style='margin-left:40%' />
+            <input type='reset' value='reset' class='btn btn-primary btn-lg' />
         </FORM>
+        </div>
 <?php include('fileend.php') ?>
-    </BODY>
-</HTML>

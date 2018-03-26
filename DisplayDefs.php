@@ -1,83 +1,77 @@
-<HTML>
-    <HEAD>
-        <TITLE>SVBX - Display Deficiencies</TITLE>
-        <link rel="stylesheet" href="styles.css" type="text/css"/>
-        <meta charset="UTF-8">
-        <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
-    </HEAD>
-<BODY>
-<?php include('filestart.php') ?>
-    <h1>Project Deficiencies</h1>
-
-<?php
-    //include('SQLFunctions.php');
-    $link = f_sqlConnect();
-    $CDL = file_get_contents("CDList.sql");
-    //echo '<br>SQL String: ' .$CDL;
-    $admin = "SELECT Role FROM Users WHERE UserID = ".$adminID;
-        /*echo "<br>".$sql."<br>";*/
-        
-        /*execute the sql statement*/
-        if($result=mysqli_query($link,$admin)) {
-          /*from the sql results, assign the username that returned to the $username variable*/    
-          while($row = mysqli_fetch_assoc($result)) {
-            $Role = $row['Role'];
-          }
-        }
+<?php 
+include('session.php');
+include('SQLFunctions.php');
+$title = "View Deficiencies";
+$link = f_sqlConnect();
+$CDL = file_get_contents("CDList.sql");
+$Role = $_SESSION['Role'];
+include('filestart.php');
+?>
     
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+        <div class="container">
+          <h1 class="display-3">Deficiencies</h1>
+        </div>
+    </div>
+    <div class="container">
+<?php     
     if($result = mysqli_query($link,$CDL)) {
         echo "<p style='color:black'>Click Deficiency ID Number to see full details</p>
-            <table width='98%'>
-                <tr>
-                    <th>Def ID</th>
-                    <th>Location</th>
-                    <th>Severity</th>
-                    <th>Date Created</th>
-                    <th>Status</th>
-                    <th>System Affected</th>
-                    <th>Brief Description</th>";
-                    if(!isset($_SESSION['UserID'])) 
+            <table width='98%' class='deftable' border='1'>
+                <tr class='svbxtr'>
+                    <th class='svbxth'>Def ID</th>
+                    <th class='col_2  col_3  col_4 svbxth'>Location</th>
+                    <th class='col_3  col_4 svbxth'>Severity</th>
+                    <th class='col_1  col_2  col_3  col_4 svbxth'>Date Created</th>
+                    <th class='svbxth'>Status</th>
+                    <th class='col_2  col_3  col_4 svbxth'>System Affected</th>
+                    <th class='svbxth'>Brief Description</th>";
+                    if($Role == 'S' OR $Role == 'A' OR $Role == 'U') 
                     {
-                        echo "</tr>";
+                        echo "
+                            <th class='col_1  col_2  col_3  col_4 svbxth'>Last Updated</th>
+                            <th class='svbxth'>Edit</th>";
                     } else {
                         echo "
-                            <th>Last Updated</th>
-                            <th>Edit</th>";
+                            </tr>";
                             }
                             if($Role == 'S')
                             {
                             echo "
-                                <th>Delete</th>
+                                <th class='svbxth'>Delete</th>
                             </tr>"; 
                     }
             while($row = mysqli_fetch_array($result)) {
-                echo "  <tr>
-                        <td style='text-align:center'><a href='ViewDef.php?DefID={$row[0]}' class='class1'>{$row[0]}</a></td>
-                        <td>{$row[1]}</td>
-                        <td style='text-align:center'>{$row[2]}</td>
-                        <td style='text-align:center'>{$row[3]}</td>
-                        <td style='text-align:center'>{$row[4]}</td>
-                        <td>{$row[5]}</td>
-                        <td>"; echo nl2br($row[6]);
+                echo "  <tr class='svbxtr'>
+                        <td class='svbxtd' style='text-align:center'><a href='ViewDef.php?DefID={$row[0]}' class='class1'>{$row[0]}</a></td>
+                        <td class='col_2  col_3  col_4 svbxtd'>{$row[1]}</td>
+                        <td class='col_3  col_4 svbxtd' style='text-align:center'>{$row[2]}</td>
+                        <td class='col_1  col_2  col_3  col_4 svbxtd' style='text-align:center'>{$row[3]}</td>
+                        <td class='svbxtd' style='text-align:center'>{$row[4]}</td>
+                        <td class='col_2  col_3  col_4 svbxtd'>{$row[5]}</td>
+                        <td class='svbxtd'>"; echo nl2br($row[6]);
                         echo "</td>";
-                        if(!isset($_SESSION['UserID'])) 
+                        if($Role == 'S' OR $Role == 'A' OR $Role == 'U') 
                         {
-                            echo "</tr>";
-                        } else {
-                        echo "
-                            <td>{$row[7]}</td>
-                            <td style='text-align:center'><form action='UpdateDef.php' method='POST' onsubmit=''/>
+                            echo "
+                            <td class='col_1  col_2  col_3  col_4 svbxtd'>{$row[7]}</td>
+                            <td class='svbxtd' style='text-align:center'><form action='UpdateDef.php' method='POST' onsubmit=''/>
                             <input type='hidden' name='q' value='".$row[0]."'/><input type='submit' value='Update'></form></td>";
+                        } else {
+                        echo "</tr>";
                             }
                             if($Role == 'S')
                             {
                             echo "
-                            <td style='text-align:center'><form action='DeleteDef.php' method='POST' onsubmit='' onclick='return confirm(`ARE YOU SURE? Deficiencies should not be deleted, your deletion will be logged.`)'/>
+                            <td class='svbxtd' style='text-align:center'><form action='DeleteDef.php' method='POST' onsubmit='' onclick='return confirm(`ARE YOU SURE? Deficiencies should not be deleted, your deletion will be logged.`)'/>
                             <input type='hidden' name='q' value='".$row[0]."' /><input type='Submit' value='delete'></form></td>
                             </tr>";
                         }
             }
-                echo "</table><br>";
+                echo "
+                </table>
+                </div><br /><br />";
     }
 //mysqli_free_result($result);
 
@@ -89,5 +83,3 @@ mysqli_close($link);
     
 include 'fileend.php';
 ?>
-</Body>
-</HTML>

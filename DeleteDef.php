@@ -2,7 +2,7 @@
 include('session.php');
 include('SQLFunctions.php');
 
-$user = "SELECT Username FROM Users WHERE UserID = ".$AUserID;
+$user = "SELECT Username FROM users_enc WHERE UserID = ".$AUserID;
 if($result=mysqli_query($link,$user)) {
     /*from the sql results, assign the username that returned to the $username variable*/    
     while($row = mysqli_fetch_assoc($result)) {
