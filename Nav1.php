@@ -1,4 +1,4 @@
-<?php      
+<?php
 require_once('SQLFunctions.php');
 session_start();
 
@@ -13,7 +13,7 @@ else
     $Username = $_SESSION['Username'];
     $Role = $_SESSION['Role'];
     /*echo "<br />UserID=".$UserID;*/
-    
+
     try
     {
          /*Connect to CRUD Database*/
@@ -22,21 +22,21 @@ else
         /* Prep SQL statement to find the user name based on the UserID */
         $sql = "SELECT Username, firstname, lastname, Role FROM users_enc WHERE UserID = ".$UserID;
         /*echo "<br />".$sql."<br />";*/
-        
+
         /*execute the sql statement*/
-        if($result=mysqli_query($link,$sql)) 
+        if($result=mysqli_query($link,$sql))
         {
-          /*from the sql results, assign the username that returned to the $username variable*/    
+          /*from the sql results, assign the username that returned to the $username variable*/
           while($row = mysqli_fetch_assoc($result)) {
             //$Username = $row['Username'];
             $firstname = $row['firstname'];
             $lastname = $row['lastname'];
             //$Role = $row['Role'];
-            
+
             //echo "<br />username=".$username;
-          }        
+          }
         }
-        
+
         if($Role=='S') {
             $RoleT = 'Super Admin';
         }
@@ -88,7 +88,7 @@ else
             echo "
             <li class='nav-item'>
             <a class='nav-link' href='logout.php'>Log out</a>
-          </li>";  
+          </li>";
           }
           if($title == 'SVBX - Home') {
             echo "
@@ -165,14 +165,14 @@ else
           }
           ?>
         </ul>
-        <?php 
+        <?php
           /*
           if(!isset($_SESSION['UserID'])) {
             echo "
               </div>
               </nav>";
           } else {
-          
+
             echo "
         <form class='form-inline my-2 my-lg-0'>
           <input class='form-control mr-sm-2' type='text' placeholder='Search' aria-label='Search'>

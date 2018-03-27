@@ -1,7 +1,11 @@
-body
-{
+* {
+    --bs-jumbo-grey:#e9ecef;
+    --vta-dk-blue:#03528B;
+}
+
+body {
    background-color:#FFFFFF;
-   background-repeat:repeat-x;
+   /*background-repeat:repeat-x;*/
    background-position:center top;
    margin:0;
 }
@@ -12,13 +16,153 @@ h1 {
     font-size: 5.9vw;
 }
 
-.myTable {
-    float:left;
-    border:1px solid #dfdfdf;
-    border-collapse:collapse;   
-    width:100%;
-    font-size:12px;
+img {
+    max-width: 100%;
+    height: auto;
+    width: auto;
+    /*padding-top: 20px;*/
+} 
+
+/* Content CSS */
+.background {
+    position: fixed;
+    border-style: solid;
+    border-color: #47a62a;
+    margin-right: auto;
+    margin-left: auto;
+    height:95%;
+    width:97.5%;
+    margin: auto;
+    padding: 1% 1% 1% 1%; /*top right bottom left*/
+    background-repeat:no-repeat;
+    background-color: #172123;
+    max-width: 1345px;
+    background-position: 100% 100%;
+    vertical-align: text-top;
+    background-size: cover;
 }
+
+.sub-content {
+   position: relative;
+   color: #000000;
+   font-size: 150%;
+   margin-right: auto;
+   margin-left: 12%;
+   height:100%;
+   text-align: center;
+   overflow:auto;
+}
+
+.login {
+   color: #03528B;
+   text-decoration: none;
+   border: none;
+}
+
+.index {
+   position: relative;
+   color: #03528B;
+   font-size: 150%;
+   margin-right: auto;
+   margin-left: auto;
+   height:100%;
+   text-align: center;
+   overflow:auto;
+}
+
+.index a:link {
+   color: #03528B;
+   text-decoration: none;
+}
+
+.index a:hover {
+text-decoration: underline;
+}
+
+.index a:visited {
+   color: #03528B;
+   text-decoration: none;
+}
+
+.index-text {
+   color: #03528B;
+   font-family: Geneva, sans-serif;
+   text-align: center;
+
+}
+
+.logo {
+   margin-top: 5%;
+   margin-right: auto;
+   margin-left: auto;
+}
+
+.main-content {
+    margin-top:3.5rem;
+}
+
+.main-content.landing-page .jumbotron {
+    margin: 0;
+    border-radius: 0;
+}
+
+#background1 {
+    position: fixed;
+    border-style: solid;
+    border-color: #47a62a;
+    margin-right: 1%;
+    margin-left: auto;
+    height:95%;
+    width:97.5%;
+    margin: auto;
+    padding: 1% 1% 1% 1%; /*top right bottom left*/
+    background-repeat:no-repeat;
+    background-color: #172123;
+    max-width: 1345px;
+    background-position: 100% 100%;
+    vertical-align: text-top;
+    background-size: cover;
+}
+
+#sub-content {
+   position: relative;
+   color: #000000;
+   font-size: 150%;
+   margin-right: auto;
+   margin-left:15%;
+   height:100%;
+   text-align: center;
+   float: left;
+   overflow:auto;
+}
+
+#main-content {
+   position: relative;
+   border-style: solid;
+   border-color: #47a62a;
+   background-color:#ffffff;
+   color: #000000;
+   margin-right: 0.5%;
+   margin-left: auto;
+   height:84%;
+}  
+
+.center {
+   position: relative;
+   border-style: solid;
+   border-color: #1a3e95;
+   background-color:#ffffff;
+   height: auto;
+   text-align: center;
+   color: #000000;
+   font-size: 150%;
+   margin-left: auto;
+   margin-right: auto;
+}  
+/* End of Content CSS */
+
+/* Table CSS
+============================*/
 /* #Tablet (Portrait)
 ================================================== */
 /* Note: Design for a width of 768px */
@@ -37,12 +181,6 @@ h1 {
         opacity:0;
         visibility: collapse; 
     }
-    img {
-    max-width: 100%;
-    height: auto;
-    width: auto;
-    padding-top: 5px;
-    } 
 }
 /* #Mobile (Landscape)
 ================================================== */
@@ -61,12 +199,6 @@ h1 {
         height:0;
         opacity:0;
         visibility: collapse;
-    } 
-    img {
-    max-width: 100%;
-    height: auto;
-    width: auto;
-    padding-top: 5px;
     } 
 }
 /* #Mobile (Landscape)
@@ -87,12 +219,6 @@ h1 {
         opacity:0;
         visibility: collapse;
     } 
-    img {
-    max-width: 100%;
-    height: auto;
-    width: auto;
-    padding-top: 5px;
-    } 
 }
 /*  #Mobile (Portrait)
 ================================================== */
@@ -112,17 +238,8 @@ h1 {
         opacity:0;
         visibility: collapse;
     } 
-    img {
-    max-width: 100%;
-    height: auto;
-    width: auto;
-    padding-top: 5px;
-    } 
 }
 
-
-
-/* Table CSS */
 .vdtable {
     margin-left: auto;
     margin-right: auto;
@@ -140,7 +257,6 @@ h1 {
     text-align: center;
 }
 
-
 .vdtdh {
     text-align: left;
     vertical-align: middle;
@@ -148,7 +264,6 @@ h1 {
     padding: 8px;
     border: 0.5px solid black;
     border-right: none; 
-    
 }
 
 .vdtda {
@@ -157,12 +272,10 @@ h1 {
     padding: 8px;
     border: 0.5px solid black;
     border-left: none; 
-    
 }
 
 .vdtr {
     text-align: left;
-
 }
 
 .sumtable {
@@ -248,198 +361,8 @@ a:hover {
 }
 
 #defdd{
- width:150px;   
+    width:150px;   
 }
-
-/* Content CSS */
-.background {
-    position: fixed;
-    border-style: solid;
-    border-color: #47a62a;
-    margin-right: auto;
-    margin-left: auto;
-    height:95%;
-    width:97.5%;
-    margin: auto;
-    padding: 1% 1% 1% 1%; /*top right bottom left*/
-    background-repeat:no-repeat;
-    background-color: #172123;
-    max-width: 1345px;
-    background-position: 100% 100%;
-    vertical-align: text-top;
-    background-size: cover;
-}
-
-.sub-content {
-   position: relative;
-   color: #000000;
-   font-size: 150%;
-   margin-right: auto;
-   margin-left: 12%;
-   height:100%;
-   text-align: center;
-   overflow:auto;
-}
-
-.login {
-   color: #03528B;
-   text-decoration: none;
-   border: none;
-}
-
-.index {
-   position: relative;
-   color: #03528B;
-   font-size: 150%;
-   margin-right: auto;
-   margin-left: auto;
-   height:100%;
-   text-align: center;
-   overflow:auto;
-}
-
-.index a:link {
-   color: #03528B;
-   text-decoration: none;
-}
-
-.index a:hover {
-text-decoration: underline;
-}
-
-.index a:visited {
-   color: #03528B;
-   text-decoration: none;
-}
-
-.index-text {
-   color: #03528B;
-   font-family: Geneva, sans-serif;
-   text-align: center;
-
-}
-
-.logo {
-   margin-top: 5%;
-   margin-right: auto;
-   margin-left: auto;
-}
-
-.main-content {
-   position: relative;
-   border-style: solid;
-   border-color: #03528B;
-   background-color:#ffffff;
-   color: #000000;
-   margin-right: auto;
-   margin-left: auto;
-   height:90%;
-}
-
-#background1 {
-    position: fixed;
-    border-style: solid;
-    border-color: #47a62a;
-    margin-right: 1%;
-    margin-left: auto;
-    height:95%;
-    width:97.5%;
-    margin: auto;
-    padding: 1% 1% 1% 1%; /*top right bottom left*/
-    background-repeat:no-repeat;
-    background-color: #172123;
-    max-width: 1345px;
-    background-position: 100% 100%;
-    vertical-align: text-top;
-    background-size: cover;
-}
-
-#sub-content {
-   position: relative;
-   color: #000000;
-   font-size: 150%;
-   margin-right: auto;
-   margin-left:15%;
-   height:100%;
-   text-align: center;
-   float: left;
-   overflow:auto;
-}
-
-#main-content {
-   position: relative;
-   border-style: solid;
-   border-color: #47a62a;
-   background-color:#ffffff;
-   color: #000000;
-   margin-right: 0.5%;
-   margin-left: auto;
-   height:84%;
-}  
-
-.center {
-   position: relative;
-   border-style: solid;
-   border-color: #1a3e95;
-   background-color:#ffffff;
-   height: auto;
-   text-align: center;
-   color: #000000;
-   font-size: 150%;
-   margin-left: auto;
-   margin-right: auto;
-}  
-/* End of Content CSS */
-
-/* Buttons CSS
-.button {
-   border: 4px solid #1a3f95;
-   background: #47a62a;
-   background: -webkit-gradient(linear, left top, left bottom, from(#afd9a3), to(#47a62a));
-   background: -webkit-linear-gradient(top, #afd9a3, #47a62a);
-   background: -moz-linear-gradient(top, #afd9a3, #47a62a);
-   background: -ms-linear-gradient(top, #afd9a3, #47a62a);
-   background: -o-linear-gradient(top, #afd9a3, #47a62a);
-   background-image: -ms-linear-gradient(top, #afd9a3 0%, #47a62a 100%);
-   padding: 8px 16px;
-   -webkit-border-radius: 30px;
-   -moz-border-radius: 30px;
-   border-radius: 30px;
-   -webkit-box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(255,255,255,0.4) 0 0px 0;
-   -moz-box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(255,255,255,0.4) 0 0px 0;
-   box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(255,255,255,0.4) 0 0px 0;
-   text-shadow: #ffffff 0 1px 0;
-   color: #1a3f95;
-   font-size: 16px;
-   font-family: helvetica, serif;
-   text-decoration: none;
-   vertical-align: middle;
-   }
-.button:hover {
-   border: 4px solid #47a62a;
-   text-shadow: #1a3f95 0 1px 0;
-   background: #1a3d95;
-   background: -webkit-gradient(linear, left top, left bottom, from(#65a9d7), to(#1a3d95));
-   background: -webkit-linear-gradient(top, #65a9d7, #1a3d95);
-   background: -moz-linear-gradient(top, #65a9d7, #1a3d95);
-   background: -ms-linear-gradient(top, #65a9d7, #1a3d95);
-   background: -o-linear-gradient(top, #65a9d7, #1a3d95);
-   background-image: -ms-linear-gradient(top, #65a9d7 0%, #1a3d95 100%);
-   color: #fff;
-   }
-.button:active {
-   text-shadow: #1e4158 0 1px 0;
-   border: 4px solid #646464;
-   background: #969696;
-   background: -webkit-gradient(linear, left top, left bottom, from(#c8c8c8), to(#1a3d95));
-   background: -webkit-linear-gradient(top, #c8c8c8, #969696);
-   background: -moz-linear-gradient(top, #c8c8c8, #969696);
-   background: -ms-linear-gradient(top, #c8c8c8, #969696);
-   background: -o-linear-gradient(top, #c8c8c8, #969696);
-   background-image: -ms-linear-gradient(top, #c8c8c8 0%, #969696 100%);
-   color: #000000;
-   }
- End of Buttons CSS */
 
 /* Footer CSS */
 footer.container {
@@ -472,10 +395,3 @@ footer a:visited{
 #app {
 display: inline-block;
 }
-
-img {
-    max-width: 100%;
-    height: auto;
-    width: auto;
-    padding-top: 20px;
-} 

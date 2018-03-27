@@ -1,10 +1,8 @@
-    <br />
-    <br />
     <footer class="container"  style="text-align: center;">
       <span>This information belongs to the <a href='http://www.vta.org'>Valley Transportation Authority</a> and is not to be used without written authorisation from the VTA.<br />
         <a href='http://www.vta.org'>&copyValley Transportation Authority</a></span>
     </footer>
-    
+
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->

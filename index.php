@@ -1,23 +1,18 @@
-<?php 
+<?php
 include('filestart.php'); ?>
 
-    <main role="main">
+    <main role="main" class="main-content landing-page">
 
       <!-- Main jumbotron for a primary marketing message or call to action -->
       <div class="jumbotron">
         <div class="container">
-            <img src="vta_logo.png">
+          <img src="vta_logo.png">
           <h1>Silicon Valley Berryessa Extension</h1>
-          <p>This site if for use by personel working upon the SVBX project, if you are not working upon the SVBX project, but would like some information, please click on the 'Learn More' button below. </p>
+          <p>This site is for use by personnel working upon the SVBX project. If you are not working upon the SVBX project, but would like some information, please click on the 'Learn More' button below.</p>
           <p><a class="btn btn-primary btn-lg" href="http://www.vta.org/News-and-Media/Connect-with-VTA/Phase-I-of-BART-Silicon-Valley-Update#.WqbH0WrwZaQ" role="button">Learn more &raquo;</a></p>
         </div>
       </div>
 
-      <div class="container">
-        <!-- Example row of columns -->
-        <!-- /container -->
-
     </main>
 
     <?php include('fileend.php'); ?>
-
