@@ -11,7 +11,7 @@
 
       <div class="container login-container">
         <form action="loginSubmit.php" method="post">
-          <fieldset class="login">
+          <fieldset>
             <div class="row">
               <div class="col-md-4 offset-md-4">
                 <h2>Username</h2>
@@ -19,7 +19,7 @@
                 <h2>Password</h2>
                 <input type="password"  name="Password" value="" maxlength="20" class="login-field" />
               <input type="submit" name="submit" value="Login" class="btn btn-primary btn-lg login-btn"/>
-              <a href="ForgotPassword.php" class="forgot-password">Forgot Password</a>
+              <a href="ForgotPassword.php" class="forgot-password-btn">Forgot Password</a>
               </div>
             </div>
           </fieldset>

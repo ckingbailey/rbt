@@ -5,30 +5,21 @@
 
 body {
    background-color:#FFFFFF;
-   /*background-repeat:repeat-x;*/
-   background-position:center top;
    margin:0;
 }
 
-h1 {
-    color: #000000;
-    text-align: center;
-    font-size: 5.9vw;
+a:hover {
+    color: #03528B;
 }
 
 img {
     max-width: 100%;
     height: auto;
     width: auto;
-    /*padding-top: 20px;*/
 } 
 
 /* Content CSS */
 .page-header {
-    margin-top: 4rem;
-}
-
-.masthead {
     margin-top: 4rem;
 }
 
@@ -41,37 +32,8 @@ img {
     font-size: 2.5rem;
 }
 
-.logo-md {
-    width: 127px;
-}
-
-.background {
-    position: fixed;
-    border-style: solid;
-    border-color: #47a62a;
-    margin-right: auto;
-    margin-left: auto;
-    height:95%;
-    width:97.5%;
-    margin: auto;
-    padding: 1% 1% 1% 1%; /*top right bottom left*/
-    background-repeat:no-repeat;
-    background-color: #172123;
-    max-width: 1345px;
-    background-position: 100% 100%;
-    vertical-align: text-top;
-    background-size: cover;
-}
-
-.sub-content {
-   position: relative;
-   color: #000000;
-   font-size: 150%;
-   margin-right: auto;
-   margin-left: 12%;
-   height:100%;
-   text-align: center;
-   overflow:auto;
+.main-content {
+    margin-top:3.5rem;
 }
 
 .login-container {
@@ -87,119 +49,12 @@ img {
     margin: .25rem auto .5rem;
 }
 
-.forgot-password {
+.forgot-password-btn {
     text-decoration: underline;
 }
-
-.login {
-   color: #03528B;
-   text-decoration: none;
-   border: none;
-}
-
-.index {
-   position: relative;
-   color: #03528B;
-   font-size: 150%;
-   margin-right: auto;
-   margin-left: auto;
-   height:100%;
-   text-align: center;
-   overflow:auto;
-}
-
-.index a:link {
-   color: #03528B;
-   text-decoration: none;
-}
-
-.index a:hover {
-text-decoration: underline;
-}
-
-.index a:visited {
-   color: #03528B;
-   text-decoration: none;
-}
-
-.index-text {
-   color: #03528B;
-   font-family: Geneva, sans-serif;
-   text-align: center;
-
-}
-
-.logo {
-   margin-top: 5%;
-   margin-right: auto;
-   margin-left: auto;
-}
-
-.main-content {
-    margin-top:3.5rem;
-}
-
-.main-content.landing-page .jumbotron {
-    margin: 0;
-    border-radius: 0;
-}
-
-#background1 {
-    position: fixed;
-    border-style: solid;
-    border-color: #47a62a;
-    margin-right: 1%;
-    margin-left: auto;
-    height:95%;
-    width:97.5%;
-    margin: auto;
-    padding: 1% 1% 1% 1%; /*top right bottom left*/
-    background-repeat:no-repeat;
-    background-color: #172123;
-    max-width: 1345px;
-    background-position: 100% 100%;
-    vertical-align: text-top;
-    background-size: cover;
-}
-
-#sub-content {
-   position: relative;
-   color: #000000;
-   font-size: 150%;
-   margin-right: auto;
-   margin-left:15%;
-   height:100%;
-   text-align: center;
-   float: left;
-   overflow:auto;
-}
-
-#main-content {
-   position: relative;
-   border-style: solid;
-   border-color: #47a62a;
-   background-color:#ffffff;
-   color: #000000;
-   margin-right: 0.5%;
-   margin-left: auto;
-   height:84%;
-}  
-
-.center {
-   position: relative;
-   border-style: solid;
-   border-color: #1a3e95;
-   background-color:#ffffff;
-   height: auto;
-   text-align: center;
-   color: #000000;
-   font-size: 150%;
-   margin-left: auto;
-   margin-right: auto;
-}  
 /* End of Content CSS */
 
-/* Buttons CSS */
+/* Forms CSS */
 .btn-xs {
     border-radius: .15rem;
     padding: .125rem .3rem;
@@ -207,10 +62,10 @@ text-decoration: underline;
     line-height: 1.2;
 }
 
-/* Table CSS
-============================*/
-/* #Tablet (Portrait)
-================================================== */
+/* Table CSS */
+
+/* These classes will collapse cells at the given breakpoints */
+/* #Tablet (Portrait) */
 /* Note: Design for a width of 768px */
 @media all and (min-width: 768px) and (max-width: 959px) {
     td.col_1{
@@ -229,8 +84,7 @@ text-decoration: underline;
     }
 
 }
-/* #Mobile (Landscape)
-================================================== */
+/* #Mobile (Landscape) */
 /* Note: Design for a width of 600px */
 @media all and (min-width: 600px) and (max-width: 767px) {
     td.col_2{
@@ -249,8 +103,7 @@ text-decoration: underline;
     } 
 
 }
-/* #Mobile (Landscape)
-================================================== */
+/* #Mobile (Landscape) */
 /* Note: Design for a width of 480px */
 @media all and (min-width: 480px) and (max-width: 599px) {
     td.col_3{
@@ -269,8 +122,7 @@ text-decoration: underline;
     } 
 
 }
-/*  #Mobile (Portrait)
-================================================== */
+/*  #Mobile (Portrait) */
 /* Note: Design for a width of 320px */
 @media all and (max-width: 479px) {
     td.col_4{
@@ -349,7 +201,6 @@ text-decoration: underline;
 }
 
 .sumtr:nth-child(even){background-color: #f2f2f2}
-/* End of Table Menu CSS */
 
 .usertable {
     margin-left: 10%;
@@ -372,8 +223,6 @@ text-decoration: underline;
 }
 
 .usertr:nth-child(even){background-color: #f2f2f2}
-/* End of Table Menu CSS */
-
 
 .svbxtable {
     margin-left: auto;
@@ -399,23 +248,10 @@ text-decoration: underline;
 }
 
 .svbxtr:nth-child(even){background-color: #f2f2f2}
-/* End of Table Menu CSS */
-
-.class1 {
-    text-decoration: none;
-    color: #000000;
-}
-
-a:hover {
-    color: #03528B;
-}
-
-#defdd{
-    width:150px;
-}
+/* End of Table CSS */
 
 /* Footer CSS */
-footer.container {
+.footer {
     background: #03528B;
     color: #FFFFFF;
     text-align: center;
@@ -446,3 +282,33 @@ footer a:visited{
 display: inline-block;
 }
 
+/* below are DEPRECATED STYLES that are still in use */
+.index {
+   position: relative;
+   color: #03528B;
+   font-size: 150%;
+   margin-right: auto;
+   margin-left: auto;
+   height:100%;
+   text-align: center;
+   overflow:auto;
+}
+
+.index a:link {
+   color: #03528B;
+   text-decoration: none;
+}
+
+.index a:hover {
+text-decoration: underline;
+}
+
+.index a:visited {
+   color: #03528B;
+   text-decoration: none;
+}
+
+/* *** !!DON'T REUSE IDs!! *** */
+#defdd{
+    width:150px;
+}

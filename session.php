@@ -10,7 +10,7 @@ if(!isset($_SESSION['UserID']))
   /*we are going to start tracking a new session variable we will call timeout.
    by comparing the session timeout plus 600 seconds to the current time, 
    we can force users to the logout page when they attempt to access the page, after 10 mins of inaction*/
-  if ($_SESSION['timeout'] + 10 * 60 < time()) {
+  if ($_SESSION['timeout'] + 180 * 60 < time()) {
     /* session timed out */
     header("Location: logout.php");
   } else {
