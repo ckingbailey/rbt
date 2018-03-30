@@ -55,10 +55,13 @@ include('filestart.php');
             $SafetyCert);  
     while ($stmt->fetch()) {
     echo "
-        <div class='container'> 
+        <header class='container page-header'>
+            <h1 class='page-title'>Update Deficiency ".$q."</h1>
+        </header>
+        <main class='container main-content'> 
         <form action='UpdateDefCommit.php' method='POST' onsubmit='' />
         <input type='hidden' name='DefID' value='".$q."'>
-            <table class='vdtable'>
+            <table class='table svbx-table'>
                 <tr class='vdtr'>
                 <th colspan='4' height='50' class='vdth'><p>
                         Deficiency No. $q</p></th>

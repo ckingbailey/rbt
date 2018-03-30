@@ -41,7 +41,7 @@
         <?php include('filestart.php') ?>
         <H1>Search for deficiencies</H1>
         <form method="post" action="<?php $_SERVER['PHP_SELF']; ?>">
-            <table>
+            <table class='table svbx-table'>
                 <tr>
                     <th colspan='4'>
                         <p>Search Deficiencies</p>

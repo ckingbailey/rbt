@@ -2,7 +2,6 @@
 include('SQLFunctions.php');
 session_start();
 
-
     $title = "SVBX - Home";
     $link = f_sqlConnect();
     //$table = pages;
@@ -25,24 +24,22 @@ session_start();
     //echo '<br>SQL String: ' .$sql;
     include('filestart.php'); //Provides all HTML starting code
 ?> 
-    <main role="main">
-
-        <header class="container page-header">
-          <h1 class="page-title">Database Information</h1>
-        </header>
-      <div class="container">
+      <header class="container page-header">
+        <h1 class="page-title">Database Information</h1>
+      </header>
+      <main role="main" class="container main-content">
         <?php
         //Systems Status Table
           if($result = mysqli_query($link,$sql1)) {
             echo "
-              <table class='svbx-table'>
+              <table class='table svbx-table dash-table'>
                 <tr class='svbx-tr'>
                   <th colspan='2' class='svbx-th'>Systems</th>
                 </tr>
                 <tr class='svbx-tr'>";
                 while ($row = mysqli_fetch_array($result)) {
                 echo "
-                  <td colspan='2' class='svbxtd'  style='text-align:center'><a href='DisplaySystems.php' style='color:black'>{$row[0]} Systems</a></td>
+                  <td colspan='2' class='svbx-td def-tot'><a href='DisplaySystems.php' class='def-link'>{$row[0]} Systems</a></td>
                 </tr>";
                 }    
           }
@@ -55,8 +52,8 @@ session_start();
               while ($row = mysqli_fetch_array($result)) {
                 echo "
                   <tr class='svbx-tr'>
-                    <td class='svbxtd'>{$row[0]}</td>
-                    <td style='text-align:center' class='svbxtd'>{$row[1]}</td>
+                    <td class='svbx-td def-name'>{$row[0]}</td>
+                    <td class='svbx-td def-count'>{$row[1]}</td>
                   </tr>";
               }    
               echo " </table> ";
@@ -64,14 +61,14 @@ session_start();
           //Status Status Table
           if($result = mysqli_query($link,$sqlS)) {
             echo "
-              <table class='svbx-table'>
+              <table class='table svbx-table dash-table'>
                 <tr class='svbx-tr'>
                   <th colspan='2' class='svbx-th'>Status</th>
                 </tr>
               <tr class='svbx-tr'>";
               while ($row = mysqli_fetch_array($result)) {
                 echo "
-                  <td colspan='2' style='text-align:center' class='svbxtd><a href='DisplayStatus.php' style='color:black'>{$row[0]} Statuses</a></td>
+                  <td colspan='2' class='svbx-td def-tot'><a href='DisplayStatus.php' class='def-link'>{$row[0]} Statuses</a></td>
                 </tr>";
               }    
           }
@@ -84,8 +81,8 @@ session_start();
               while ($row = mysqli_fetch_array($result)) {
                 echo "
                   <tr class='svbx-tr'>
-                    <td class='svbxtd'>{$row[0]}</td>
-                    <td style='text-align:center' class='svbxtd'>{$row[1]}</td>
+                    <td class='svbx-td def-name'>{$row[0]}</td>
+                    <td class='svbx-td def-count'>{$row[1]}</td>
                   </tr>";
               }    
               echo " 
@@ -94,14 +91,14 @@ session_start();
           //Severity Status Table
           if($result = mysqli_query($link,$sqlSev)) {
             echo "
-              <table class='svbx-table'>
+              <table class='table svbx-table dash-table'>
                 <tr class='svbx-tr'>
                   <th colspan='2' class='svbx-th'>Severities</th>
                 </tr>
                 <tr class='svbx-tr'>";
               while ($row = mysqli_fetch_array($result)) {
                 echo "
-                  <td colspan='2' style='text-align:center' class='svbxtd'><a href='DisplaySeverity.php' style='color:black'>{$row[0]} Severities</a></td>
+                  <td colspan='2' class='svbx-td def-tot'><a href='DisplaySeverity.php' class='def-link'>{$row[0]} Severities</a></td>
                   </tr>";
               }    
           }
@@ -114,8 +111,8 @@ session_start();
               while ($row = mysqli_fetch_array($result)) {
                 echo "
                   <tr class='svbx-tr'>
-                    <td class='svbxtd'>{$row[0]}</td>
-                    <td class='svbxtd' style='text-align:center'>{$row[1]}</td>
+                    <td class='svbx-td def-name'>{$row[0]}</td>
+                    <td class='svbx-td def-count'>{$row[1]}</td>
                   </tr>";
               }    
               echo " </table> ";
@@ -124,14 +121,14 @@ session_start();
           //Location Status Table
           if($result = mysqli_query($link,$sqlLoc)) {
             echo "
-              <table class='svbx-table'>
+              <table class='table svbx-table dash-table'>
                 <tr class='svbx-tr'>
                   <th colspan='2' class='svbx-th'>Locations</th>
                 </tr>
                 <tr class='svbx-tr'>";
               while ($row = mysqli_fetch_array($result)) {
                 echo "
-                  <td colspan='2' style='text-align:center' class='svbxtd'><a href='DisplaySeverity.php' style='color:black'>{$row[0]} Locations</a></td>
+                  <td colspan='2' class='svbx-td def-tot'><a href='DisplaySeverity.php' class='def-link'>{$row[0]} Locations</a></td>
                   </tr>";
               }    
           }
@@ -144,16 +141,14 @@ session_start();
               while ($row = mysqli_fetch_array($result)) {
                 echo "
                   <tr class='svbx-tr'>
-                    <td class='svbxtd'>{$row[0]}</td>
-                    <td class='svbxtd' style='text-align:center'>{$row[1]}</td>
+                    <td class='svbx-td def-name'>{$row[0]}</td>
+                    <td class='svbx-td def-count'>{$row[1]}</td>
                   </tr>";
               }    
               echo " </table> ";
           }
               echo " </table> ";
         ?> 
-      </div><!-- /container -->
-
     </main>
     <!--DO NOT TYPE BELOW THIS LINE-->
     <?php include('fileend.php'); ?>

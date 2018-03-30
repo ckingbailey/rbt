@@ -29,7 +29,7 @@ include('filestart.php');
     if($result = mysqli_query($link,$sql)) {
         echo"   
                 <div class='container'>
-                <table class='usertable'>
+                <table class='table'>
                     <tr class='usertr'>
                         <th class='userth'>Severity ID</th>
                         <th class='userth'>Severity</th>
@@ -66,10 +66,9 @@ include('filestart.php');
                             if($Role == 'S') {
                                 echo "
                         <td class='usertd'><form action='DeleteSeverity.php' method='POST' onsubmit='' onsubmit='' onclick='return confirm(`do you want to delete severity {$row[1]}`)'/>
-                        <input type='hidden' name='q' value='".$row[0]."' /><input type='Submit' value='delete'></form></td>";
+                        <button type='Submit' name='q' value='".$row[0]."'><i class='typcn typcn-times'></i></button></form></td>";
                             }
-                        echo "
-                    </tr>";
+                        echo "</tr>";
                         }
             }    
             echo "</table><br></div>";

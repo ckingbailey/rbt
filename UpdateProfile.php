@@ -22,7 +22,7 @@
                     <div class='container'>
                         <FORM action='UpdateProfileCommit.php' method='POST' onsubmit='' />
                             <input type='hidden' name='UserID' value='".$q."'>
-                            <table class='usertable'>
+                            <table class='table'>
                                 <tr class='usertr'>
                                     <th class='userth'>First name:</td>
                                     <td class='usertd'>

@@ -12,7 +12,7 @@ if($Role == 'U' OR $Role == 'V' OR $Role == 'A') {
     </div>
         <div class="container"> 
         <FORM action="RecSeverity.php" method="POST">
-            <table class='usertable'>
+            <table class='table svbx-table'>
                 <tr class='usertr'>
                     <th class='userth'>Evidence Type Name:</th>
                     <td class='usertd'>

@@ -12,7 +12,7 @@ include('filestart.php');
     </div>
         <div class="container"> 
         <FORM action="RecLocation.php" method="POST">
-            <table class='usertable'>
+            <table class='table svbx-table'>
                 <tr class='usertr'>
                     <th class='userth'>Location Name:</th>
                     <td class='usertd'>

@@ -24,7 +24,7 @@
                         <div class='container'> 
                             <FORM action='UpdateSystemCommit.php' method='POST'>
                                 <input type='hidden' name='SystemID' value='".$q."'>
-                                <table class='usertable'>
+                                <table class='table'>
                                     <tr class='usertr'>
                                         <th class='userth'>System Name:</th>
                                         <td class='usertd'>

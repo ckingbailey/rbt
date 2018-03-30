@@ -11,7 +11,7 @@ include('filestart.php');
         </div>
         <div class="container"> 
         <form action="AddUserSubmit.php" method="post">
-            <table class='usertable'>
+            <table class='table svbx-table'>
               <tr class='usertr'>
                 <th class='userth'>
                   <label>First name</label>

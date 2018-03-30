@@ -39,26 +39,23 @@ $Def = file_get_contents("ViewDef.sql").$DefID;
                 $DueDate,
                 $SafetyCert);  
     while ($stmt->fetch()) { 
-    
+        if($Status == "Open") {
+            $color = "open-def";
+        } else {
+            $color = "closed-def"; 
+        }
     echo "
-            <table class='vdtable'>
-                <tr class='vdtr'>";
-                    if($Status == "Open") {
-                        $color = "Red";
-                    } elseif($Status == "Closed") {
-                        $color = "Green"; 
-                        } else {
-                            $color = "Black";
-                        }
-            echo "        <th class='vdth' colspan='4' height='50' style='background-color:$color'><p>
-                        Deficiency No. $DefID</p></th>
+        <header class='container page-header'>
+            <h1 class='page-title def-heading $color'>Deficiency No. $DefID</h1>
+        </header>
+        <main class='container main-content'>
+            <table class='table svbx-table'>
+                <tr class='vdtr'>
+                    <th colspan='4' class='vdth'>Required Information</th>
                 </tr>
                 <tr class='vdtr'>
-                    <th colspan='4' class='vdth'><p>Required Information</p></th>
-                </tr>
-                <tr class='vdtr'>
-                    <td class='vdtdh'><p>Safety Certifiable:</p></td>
-                    <td class='vdtda'><p>";
+                    <td class='vdtdh'>Safety Certifiable:</td>
+                    <td class='vdtda'>";
                         if($SafetyCert == '1') {
                             $SafetyCert = 'Yes';
                         } elseif($SafetyCert == '2') {
@@ -66,104 +63,104 @@ $Def = file_get_contents("ViewDef.sql").$DefID;
                         } else {
                             $SafetyCert = '';
                         }
-                    echo " $SafetyCert</p></td>
-                    <td class='vdtdh'><p>System Affected:</p></td>
-                    <td class='vdtd'><p>$SystemAffected</p></td>
+                    echo " $SafetyCert</td>
+                    <td class='vdtdh'>System Affected:</td>
+                    <td class='vdtd'>$SystemAffected</td>
                 </tr>
                 <tr class='vdtr'>
-                    <td class='vdtdh'><p>General Location:</p></td>
-                    <td class='vdtda'><p>$Location</p></td>
-                    <td class='vdtdh'><p>Specific Location:</p></td>
-                    <td class='vdtda'><p>$SpecLoc</p></td>
+                    <td class='vdtdh'>General Location:</td>
+                    <td class='vdtda'>$Location</td>
+                    <td class='vdtdh'>Specific Location:</td>
+                    <td class='vdtda'>$SpecLoc</td>
                 </tr>
                 <tr class='vdtr'>
-                    <td class='vdtdh'><p>Status:</p></td>
-                    <td class='vdtda'><p>$Status</p></td>
-                    <td class='vdtdh'><p>Severity:</p></td>
-                    <td class='vdtda'><p>$Severity</p></td>
+                    <td class='vdtdh'>Status:</td>
+                    <td class='vdtda'>$Status</td>
+                    <td class='vdtdh'>Severity:</td>
+                    <td class='vdtda'>$Severity</td>
                 </tr>
                 <tr class='vdtr'>
-                    <td class='vdtdh'><p>Due Date:</p></td>
-                    <td class='vdtda'><p>$DueDate</p></td>
-                    <td class='vdtdh'><p>Resolution required by:</p></td>
-                    <td class='vdtda'><p>$RequiredBy</p></td>
+                    <td class='vdtdh'>Due Date:</td>
+                    <td class='vdtda'>$DueDate</td>
+                    <td class='vdtdh'>Resolution required by:</td>
+                    <td class='vdtda'>$RequiredBy</td>
                 </tr>
                 <tr class='vdtr'>
-                    <td class='vdtdh'><p>Group to Resolve:</p></td>
-                    <td class='vdtda'><p>$GroupToResolve</p></td>
-                    <td class='vdtdh'><p>Identified By:</p></td>
-                    <td class='vdtda'><p>$IdentifiedBy</p></td>
+                    <td class='vdtdh'>Group to Resolve:</td>
+                    <td class='vdtda'>$GroupToResolve</td>
+                    <td class='vdtdh'>Identified By:</td>
+                    <td class='vdtda'>$IdentifiedBy</td>
                 </tr>
                 <tr class='vdtr'>
-                    <td colspan='4' style='text-align:center' class='vdtd'><p>Deficiency Description</p></td>
+                    <td colspan='4' style='text-align:center' class='vdtd'>Deficiency Description</td>
                 </tr>
                 <tr class='vdtr'>
-                    <td Colspan=4><p>"; echo nl2br($Description);
-                    echo "</p></td>
+                    <td Colspan=4>"; echo nl2br($Description);
+                    echo "</td>
                 </tr>
                 <t class='vdtr'>
-                    <th colspan='4' class='vdth'><p>Optional Information</p></th>
+                    <th colspan='4' class='vdth'>Optional Information</th>
                 </tr>
                 <tr class='vdtr'>
-                    <td class='vdtdh'><p>Spec or Code:</p></td>
-                    <td colspan='3' class='vdtd'><p>$Spec</p></td>
+                    <td class='vdtdh'>Spec or Code:</td>
+                    <td colspan='3' class='vdtd'>$Spec</td>
                 </tr>
                 <tr class='vdtr'>
-                    <td class='vdtdh'><p>Action Owner:</p></td>
-                    <td class='vdtda'><p>$ActionOwner</p></td>
-                    <td class='vdtdh'><p>Old Id:</p></td>
-                    <td class='vdtda'><p>$OldID</p></td>
+                    <td class='vdtdh'>Action Owner:</td>
+                    <td class='vdtda'>$ActionOwner</td>
+                    <td class='vdtdh'>Old Id:</td>
+                    <td class='vdtda'>$OldID</td>
                 </tr>
                 <tr class='vdtr'>
-                    <td colspan='4' style='text-align:center' class='vdtd'><p>Additional Information</p></td>
+                    <td colspan='4' style='text-align:center' class='vdtd'>Additional Information</td>
                 </tr>
                 <tr class='vdtr'>
-                    <td Colspan=4><p>"; echo nl2br($Comments);
-                    echo "</p></td>
+                    <td Colspan=4>"; echo nl2br($Comments);
+                    echo "</td>
                 </tr>
                 <tr class='vdtr'>
-                    <th colspan='4' class='vdth'><p>Closure Information</p></th>
+                    <th colspan='4' class='vdth'>Closure Information</th>
                 </tr>
                 <tr class='vdtr'>
-                    <td class='vdtdh'><p>Evidence Type:</p></td>
-                    <td class='vdtda' colspan='3'><p>$EvidenceType</p></td>
+                    <td class='vdtdh'>Evidence Type:</td>
+                    <td class='vdtda' colspan='3'>$EvidenceType</td>
                 </tr>
                 <tr class='vdtr'>
-                    <td class='vdtdh'><p>Evidence Repository:</p></td>
-                    <td class='vdtda'><p>";
+                    <td class='vdtdh'>Evidence Repository:</td>
+                    <td class='vdtda'>";
                     if($Repo == '1') {
                             $Repo = 'SharePoint';
                         } else {
                             $Repo = 'Aconex';
                         }
                     echo "    
-                        $Repo</p></td>
-                    <td class='vdtdh'><p>Repository No:</p></td>
-                    <td class='vdtda'><p>$EvidenceLink</p></td>
+                        $Repo</td>
+                    <td class='vdtdh'>Repository No:</td>
+                    <td class='vdtda'>$EvidenceLink</td>
                 </tr>
                  <tr class='vdtr'>
-                    <td colspan='4' style='text-align:center' class='vdtd'><p>Closure Comments</p></td>
+                    <td colspan='4' style='text-align:center' class='vdtd'>Closure Comments</td>
                 </tr>
                 <tr class='vdtr'>
-                    <td Colspan=4><p>"; echo nl2br($ClosureComments);
-                    echo "</p></td>
+                    <td Colspan=4>"; echo nl2br($ClosureComments);
+                    echo "</td>
                 </tr>
                 <tr class='vdtr'>
-                    <th colspan='4' style='text-align:center' class='vdth'><p>Modification Details</p></th>
+                    <th colspan='4' style='text-align:center' class='vdth'>Modification Details</th>
                 </tr>
                 <tr class='vdtr'>
-                    <td class='vdtdh'><p>Date Created:</p></td>
-                    <td class='vdtda'><p>$DateCreated</p></td>
-                    <td class='vdtdh'><p>Created by:</p></td>
-                    <td class='vdtda'><p>$Created_by</p></td>
+                    <td class='vdtdh'>Date Created:</td>
+                    <td class='vdtda'>$DateCreated</td>
+                    <td class='vdtdh'>Created by:</td>
+                    <td class='vdtda'>$Created_by</td>
                 </tr>
                 <tr class='vdtr'>
-                    <td class='vdtdh'><p>Last Updated:</p></td>
-                    <td class='vdtda'><p>$LastUpdated</p></td>
-                    <td class='vdtdh'><p>Updated by:</p></td>
-                    <td class='vdtda'><p>$Updated_by</p></td>
+                    <td class='vdtdh'>Last Updated:</td>
+                    <td class='vdtda'>$LastUpdated</td>
+                    <td class='vdtdh'>Updated by:</td>
+                    <td class='vdtda'>$Updated_by</td>
                 </tr>
-            </table><br>";
+            </table></main>";
             if($Role == 'S' OR $Role == 'A' OR $Role == 'U') 
             {
                 echo "

@@ -23,7 +23,7 @@
                     <div class='container'> 
                         <FORM action='UpdateSeverityCommit.php' method='POST'>
                             <input type='hidden' name='SeverityID' value='".$q."'>
-                            <table class='usertable'>
+                            <table class='table'>
                                 <tr class='usertr'>
                                     <th class='userth'>Severity Name:</th>
                                     <td class='usertd'>
