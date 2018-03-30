@@ -6,10 +6,9 @@ if($Role == 'U' OR $Role == 'V' OR $Role == 'A') {
         header('location: unauthorised.php');
     }
 ?>
-        <div class="jumbotron">
-        <div class="container">
-          <h1 class="display-3">Add New Severity type</h1>
-        </div>
+        <header class="container page-header">
+          <h1 class="page-title">Add New Severity type</h1>
+        </header>
     </div>
         <div class="container"> 
         <FORM action="RecSeverity.php" method="POST">

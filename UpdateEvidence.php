@@ -11,11 +11,9 @@
         header('location: unauthorised.php');
     }
 ?>
-    <div class="jumbotron">
-        <div class="container">
-            <h1 class="display-3">Update Evidence Type</h1>
+        <div class="container page-header">
+            <h1 class="page-title">Update Evidence Type</h1>
         </div>
-    </div>
         <?php       
             if($stmt = $link->prepare($Loc)) {
                 $stmt->execute();

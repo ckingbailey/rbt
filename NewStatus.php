@@ -6,11 +6,9 @@ include('filestart.php');
         header('location: unauthorised.php');
     }
     ?>
-        <div class="jumbotron">
-        <div class="container">
-          <h1 class="display-3">Add New Evidence type</h1>
-        </div>
-    </div>
+        <header class="page-header container">
+          <h1 class="page-title">Add New Evidence type</h1>
+        </header>
         <div class="container"> 
         <FORM action="RecStatus.php" method="POST">
             <table class='usertable'>

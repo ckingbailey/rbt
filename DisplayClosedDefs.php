@@ -8,30 +8,27 @@ $Role = $_SESSION['Role'];
 include('filestart.php');
 ?>
     
-    <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-        <div class="container">
-          <h1 class="display-3">Deficiencies</h1>
-        </div>
-    </div>
+    <header class="container page-header">
+          <h1 class="page-title">Deficiencies</h1>
+    </header>
     <div class="container">
 <?php     
     if($result = mysqli_query($link,$CDL)) {
         echo "<p style='color:black'>Click Deficiency ID Number to see full details</p>
             <table width='98%' class='deftable' border='1'>
-                <tr class='svbxtr'>
-                    <th class='svbxth'>Def ID</th>
-                    <th class='col_2  col_3  col_4 svbxth'>Location</th>
-                    <th class='col_3  col_4 svbxth'>Severity</th>
-                    <th class='col_1  col_2  col_3  col_4 svbxth'>Date Created</th>
-                    <th class='svbxth'>Status</th>
-                    <th class='col_2  col_3  col_4 svbxth'>System Affected</th>
-                    <th class='svbxth'>Brief Description</th>";
+                <tr class='svbx-tr'>
+                    <th class='svbx-th'>Def ID</th>
+                    <th class='col_2  col_3  col_4 svbx-th'>Location</th>
+                    <th class='col_3  col_4 svbx-th'>Severity</th>
+                    <th class='col_1  col_2  col_3  col_4 svbx-th'>Date Created</th>
+                    <th class='svbx-th'>Status</th>
+                    <th class='col_2  col_3  col_4 svbx-th'>System Affected</th>
+                    <th class='svbx-th'>Brief Description</th>";
                     if($Role == 'S' OR $Role == 'A' OR $Role == 'U') 
                     {
                         echo "
-                            <th class='col_1  col_2  col_3  col_4 svbxth'>Last Updated</th>
-                            <th class='svbxth'>Edit</th>";
+                            <th class='col_1  col_2  col_3  col_4 svbx-th'>Last Updated</th>
+                            <th class='svbx-th'>Edit</th>";
                     } else {
                         echo "
                             </tr>";
@@ -39,11 +36,11 @@ include('filestart.php');
                             if($Role == 'S')
                             {
                             echo "
-                                <th class='svbxth'>Delete</th>
+                                <th class='svbx-th'>Delete</th>
                             </tr>"; 
                     }
             while($row = mysqli_fetch_array($result)) {
-                echo "  <tr class='svbxtr'>
+                echo "  <tr class='svbx-tr'>
                         <td class='svbxtd' style='text-align:center'><a href='ViewDef.php?DefID={$row[0]}' class='class1'>{$row[0]}</a></td>
                         <td class='col_2  col_3  col_4 svbxtd'>{$row[1]}</td>
                         <td class='col_3  col_4 svbxtd' style='text-align:center'>{$row[2]}</td>

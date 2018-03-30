@@ -6,11 +6,9 @@ include('filestart.php');
         header('location: unauthorised.php');
     }
 ?>
-        <div class="jumbotron">
-        <div class="container">
-          <h1 class="display-3">Add New User</h1>
+        <header class="container page-header">
+          <h1 class="page-title">Add New User</h1>
         </div>
-    </div>
         <div class="container"> 
         <form action="AddUserSubmit.php" method="post">
             <table class='usertable'>

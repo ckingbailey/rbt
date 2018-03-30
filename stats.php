@@ -27,22 +27,19 @@ session_start();
 ?> 
     <main role="main">
 
-      <!-- Main jumbotron for a primary marketing message or call to action -->
-      <div class="jumbotron">
-        <div class="container">
-          <h1 class="display-3">Database Information</h1>
-        </div>
-      </div>
+        <header class="container page-header">
+          <h1 class="page-title">Database Information</h1>
+        </header>
       <div class="container">
         <?php
         //Systems Status Table
           if($result = mysqli_query($link,$sql1)) {
             echo "
-              <table class='svbxtable'>
-                <tr class='svbxtr'>
-                  <th colspan='2' class='svbxth'>Systems</th>
+              <table class='svbx-table'>
+                <tr class='svbx-tr'>
+                  <th colspan='2' class='svbx-th'>Systems</th>
                 </tr>
-                <tr class='svbxtr'>";
+                <tr class='svbx-tr'>";
                 while ($row = mysqli_fetch_array($result)) {
                 echo "
                   <td colspan='2' class='svbxtd'  style='text-align:center'><a href='DisplaySystems.php' style='color:black'>{$row[0]} Systems</a></td>
@@ -51,13 +48,13 @@ session_start();
           }
           if($result = mysqli_query($link,$System)) {
             echo "
-              <tr class='svbxtr'>
-                <th style='width:15%' class='svbxth'>System</th>
-                <th style='width:5%' class='svbxth'>Actions</th>
+              <tr class='svbx-tr'>
+                <th style='width:15%' class='svbx-th'>System</th>
+                <th style='width:5%' class='svbx-th'>Actions</th>
               </tr>"; 
               while ($row = mysqli_fetch_array($result)) {
                 echo "
-                  <tr class='svbxtr'>
+                  <tr class='svbx-tr'>
                     <td class='svbxtd'>{$row[0]}</td>
                     <td style='text-align:center' class='svbxtd'>{$row[1]}</td>
                   </tr>";
@@ -67,11 +64,11 @@ session_start();
           //Status Status Table
           if($result = mysqli_query($link,$sqlS)) {
             echo "
-              <table class='svbxtable'>
-                <tr class='svbxtr'>
-                  <th colspan='2' class='svbxth'>Status</th>
+              <table class='svbx-table'>
+                <tr class='svbx-tr'>
+                  <th colspan='2' class='svbx-th'>Status</th>
                 </tr>
-              <tr class='svbxtr'>";
+              <tr class='svbx-tr'>";
               while ($row = mysqli_fetch_array($result)) {
                 echo "
                   <td colspan='2' style='text-align:center' class='svbxtd><a href='DisplayStatus.php' style='color:black'>{$row[0]} Statuses</a></td>
@@ -80,13 +77,13 @@ session_start();
           }
           if($result = mysqli_query($link,$Status)) {
             echo "
-              <tr class='svbxtr'>
-                <th style='width:15%' class='svbxth'>Status</th>
-                <th style='width:5%' class='svbxth'>Items</th>
+              <tr class='svbx-tr'>
+                <th style='width:15%' class='svbx-th'>Status</th>
+                <th style='width:5%' class='svbx-th'>Items</th>
               </tr>";
               while ($row = mysqli_fetch_array($result)) {
                 echo "
-                  <tr class='svbxtr'>
+                  <tr class='svbx-tr'>
                     <td class='svbxtd'>{$row[0]}</td>
                     <td style='text-align:center' class='svbxtd'>{$row[1]}</td>
                   </tr>";
@@ -97,11 +94,11 @@ session_start();
           //Severity Status Table
           if($result = mysqli_query($link,$sqlSev)) {
             echo "
-              <table class='svbxtable'>
-                <tr class='svbxtr'>
-                  <th colspan='2' class='svbxth'>Severities</th>
+              <table class='svbx-table'>
+                <tr class='svbx-tr'>
+                  <th colspan='2' class='svbx-th'>Severities</th>
                 </tr>
-                <tr class='svbxtr'>";
+                <tr class='svbx-tr'>";
               while ($row = mysqli_fetch_array($result)) {
                 echo "
                   <td colspan='2' style='text-align:center' class='svbxtd'><a href='DisplaySeverity.php' style='color:black'>{$row[0]} Severities</a></td>
@@ -110,13 +107,13 @@ session_start();
           }
           if($result = mysqli_query($link,$Sev)) {
             echo "
-              <tr class='svbxtr'>
-                <th style='width:10%' class='svbxth'>Severity</th>
-                <th style='width:10%' class='svbxth'>Open Items</th>
+              <tr class='svbx-tr'>
+                <th style='width:10%' class='svbx-th'>Severity</th>
+                <th style='width:10%' class='svbx-th'>Open Items</th>
               </tr>"; 
               while ($row = mysqli_fetch_array($result)) {
                 echo "
-                  <tr class='svbxtr'>
+                  <tr class='svbx-tr'>
                     <td class='svbxtd'>{$row[0]}</td>
                     <td class='svbxtd' style='text-align:center'>{$row[1]}</td>
                   </tr>";
@@ -127,11 +124,11 @@ session_start();
           //Location Status Table
           if($result = mysqli_query($link,$sqlLoc)) {
             echo "
-              <table class='svbxtable'>
-                <tr class='svbxtr'>
-                  <th colspan='2' class='svbxth'>Locations</th>
+              <table class='svbx-table'>
+                <tr class='svbx-tr'>
+                  <th colspan='2' class='svbx-th'>Locations</th>
                 </tr>
-                <tr class='svbxtr'>";
+                <tr class='svbx-tr'>";
               while ($row = mysqli_fetch_array($result)) {
                 echo "
                   <td colspan='2' style='text-align:center' class='svbxtd'><a href='DisplaySeverity.php' style='color:black'>{$row[0]} Locations</a></td>
@@ -140,13 +137,13 @@ session_start();
           }
           if($result = mysqli_query($link,$location)) {
             echo "
-              <tr class='svbxtr'>
-                <th style='width:10%' class='svbxth'>Location</th>
-                <th style='width:10%' class='svbxth'>Open Items</th>
+              <tr class='svbx-tr'>
+                <th style='width:10%' class='svbx-th'>Location</th>
+                <th style='width:10%' class='svbx-th'>Open Items</th>
               </tr>"; 
               while ($row = mysqli_fetch_array($result)) {
                 echo "
-                  <tr class='svbxtr'>
+                  <tr class='svbx-tr'>
                     <td class='svbxtd'>{$row[0]}</td>
                     <td class='svbxtd' style='text-align:center'>{$row[1]}</td>
                   </tr>";

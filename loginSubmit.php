@@ -84,14 +84,10 @@ include('filestart.php');
 ?>
 <main role="main">
 
-      <!-- Main jumbotron for a primary marketing message or call to action -->
-      <div class="jumbotron">
-        <div class="container">
-            <img src="vta_logo.png">
-          <h1 class="display-3">Silicon Valley Berryessa Extension</h1>
-          
-        </div>
-      </div>
+      <header class="container page-header">
+        <img src="vta_logo.png">
+        <h1 class="page-title">Silicon Valley Berryessa Extension</h1>
+      </header>
 
         <div class="container">
             <h2 style="text-align:center"><?php echo $message; ?> </h2>

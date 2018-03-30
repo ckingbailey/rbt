@@ -122,10 +122,8 @@ elseif(!empty($_POST)) {
 
 include('filestart.php');
     echo "
-        <div class='jumbotron'>
-        <div class='container'>
-            <h1 class='display-3'>Error</h1>
-        </div>
+        <div class='container page-header'>
+            <h1 class='page-title'>Error</h1>
         </div>
         <div class='container'>
         <p style='text-align:center'>$message</p>

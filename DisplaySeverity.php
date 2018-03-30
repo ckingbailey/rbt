@@ -16,15 +16,15 @@ include('filestart.php');
     
     if($result = mysqli_query($link,$sql1)) {
         echo"   
-                <div class='jumbotron'>
-                <h1>Severity Types</h1><br />
+                <header class='container page-header'>
+                <h1 class='page-title'>Severity Types</h1><br />
                 <table class='sumtable'>
                     <tr class='sumtr'>
                         <td class='sumtd'>Severity Types in Database: </td>";
             while ($row = mysqli_fetch_array($result)) {
                     echo "<td class='sumtd'>{$row[0]}</td>";
             }    
-            echo "</table><br></div>";
+            echo "</table><br></header>";
 }
     if($result = mysqli_query($link,$sql)) {
         echo"   

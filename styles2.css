@@ -1,11 +1,23 @@
+@import './assets/typicons.font/src/font/typicons.css';
+
 * {
+    /* Bootsrap breakpoints */
+    --breakpoint-xs: 0;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
     --bs-jumbo-grey:#e9ecef;
     --vta-dk-blue:#03528B;
 }
 
+body,html {
+    height: 100%;
+}
+
 body {
-   background-color:#FFFFFF;
    margin:0;
+   background-color:#FFFFFF;
 }
 
 a:hover {
@@ -16,11 +28,32 @@ img {
     max-width: 100%;
     height: auto;
     width: auto;
-} 
+}
 
-/* Content CSS */
+/* Page Header */
+.jumbotron h1 {
+    text-align: center;
+    font-size: 5.9vw;
+}
+
 .page-header {
-    margin-top: 4rem;
+    margin-top: 3.5rem; margin-bottom: .35rem;
+    padding-top: .5rem; padding-bottom: .6rem;
+}
+
+.def-heading {
+    color:white;
+}
+
+.open-def {
+    background-color: red;
+}
+
+.closed-def {
+    background-color: green;
+}
+
+.masthead {
 }
 
 .masthead-logo {
@@ -30,10 +63,20 @@ img {
 
 .page-title {
     font-size: 2.5rem;
+    text-align: center;
+}
+
+/* Content CSS */
+.logo-md {
+    width: 127px;
 }
 
 .main-content {
     margin-top:3.5rem;
+}
+
+.grey-back {
+    background-color: var(--bs-jumbo-grey);
 }
 
 .login-container {
@@ -74,15 +117,7 @@ img {
         height:0;
         opacity:0;
         visibility: collapse;       
-    } 
-    th.col_1{
-        display:none;
-        width:0;
-        height:0;
-        opacity:0;
-        visibility: collapse; 
     }
-
 }
 /* #Mobile (Landscape) */
 /* Note: Design for a width of 600px */
@@ -101,7 +136,6 @@ img {
         opacity:0;
         visibility: collapse;
     } 
-
 }
 /* #Mobile (Landscape) */
 /* Note: Design for a width of 480px */
@@ -197,7 +231,6 @@ img {
 .sumtd {
     text-align: left;
     padding: 8px;
-    
 }
 
 .sumtr:nth-child(even){background-color: #f2f2f2}
@@ -219,46 +252,71 @@ img {
 .usertd {
     text-align: left;
     padding: 8px;
-    
 }
 
 .usertr:nth-child(even){background-color: #f2f2f2}
 
-.svbxtable {
-    margin-left: auto;
-    margin-right: auto;
+.svbx-table {
+    /*display:block;*/
+    overflow-x:scroll;
+    margin-left: auto; margin-right: auto;
     border: 1px solid black;
-    width:20%;
-    display:inline-block;
     vertical-align:top;
-    min-width: 300px; /* 100px x3 = 300 */
 }
 
-.svbxth {
+.svbx-th {
     background-color: #03528B;
     color: white;
     border: 1px solid white;
     text-align: center;
 }
 
-.svbxtd {
+.svbx-td {
     text-align: left;
     padding: 8px;
-    
 }
 
-.svbxtr:nth-child(even){background-color: #f2f2f2}
-/* End of Table CSS */
+@media screen and (min-width: 577px) {
+    .dash-table {
+        display: inline-block;
+        max-width: 48%;
+    }
+}
+
+.def-tot, .def-count {
+    text-align: center;
+}
+
+.svbx-tr:nth-child(even){background-color: #f2f2f2}
+/* End of Table Menu CSS */
 
 /* Footer CSS */
+/* resize footer for different screen sizes */
+@media screen and (max-width: 576px) {
+    .footer {
+        font-size: .7rem;
+    }
+}
+
+@media screen and (min-width: 577px) {
+    .footer {
+        font-size: normal;
+    }
+}
+
 .footer {
-    background: #03528B;
-    color: #FFFFFF;
+    background: var(--vta-dk-blue);
+    color: var(--bs-jumbo-grey);
     text-align: center;
-    position: fixed;
-    bottom: 0px;
+    /*position: absolute;*/
+    /*bottom: 0px;*/
     height:auto;
     max-width:100%;
+}
+
+.landing-page + .footer {
+    position: absolute;
+    bottom: 0px;
 }
 
 footer a:link{
@@ -267,8 +325,7 @@ footer a:link{
 }
 
 footer a:hover {
-text-decoration: underline;
-
+    text-decoration: underline;
 }
 
 footer a:visited{

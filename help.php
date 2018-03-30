@@ -10,13 +10,10 @@ session_start();
 
 <main role="main">
 
-        <!-- Main jumbotron for a primary marketing message or call to action -->
-        <div class="jumbotron">
-            <div class="container">
-                <h1 class="display-3">Help</h1>
-                <p>If you are having difficulties with the database please contact one of the people below who have administrator rights,<br>otherwise email <a href="mailto:robert.burns@vta.org?subject=SVBX Deficiency Database Issue"  style='color:black'>Robert Burns</a> for assistance.</p>
-            </div>
-        </div>
+        <header class="container page-header">
+            <h1 class="display-3">Help</h1>
+            <p>If you are having difficulties with the database please contact one of the people below who have administrator rights,<br>otherwise email <a href="mailto:robert.burns@vta.org?subject=SVBX Deficiency Database Issue"  style='color:black'>Robert Burns</a> for assistance.</p>
+        </header>
         <div class="container">        
 <?php
     $table = users_enc;
@@ -29,15 +26,15 @@ session_start();
    
     
     if($result = mysqli_query($link,$sql)) {
-        echo"   <table class='svbxtable' style='width:45%'>
-                    <tr class='svbxtr'>
-                        <th class='svbxth' style='width:10%'>First name</th>
-                        <th class='svbxth' style='width:10%'>Last name</th>
-                        <th class='svbxth' style='width:25%'>Email</th>
+        echo"   <table class='svbx-table' style='width:45%'>
+                    <tr class='svbx-tr'>
+                        <th class='svbx-th' style='width:10%'>First name</th>
+                        <th class='svbx-th' style='width:10%'>Last name</th>
+                        <th class='svbx-th' style='width:25%'>Email</th>
                     </tr>"; 
                     while ($row = mysqli_fetch_array($result)) {
                     echo "       
-                    <tr class='svbxtr'>
+                    <tr class='svbx-tr'>
                         <td class='svbxtd'>{$row[0]}</td>
                         <td class='svbxtd'>{$row[1]}</td>
                         <td class='svbxtd'><a href='mailto:{$row[2]}' style='color:black'>{$row[2]}</a></td>
