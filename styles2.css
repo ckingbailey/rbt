@@ -67,6 +67,12 @@ img {
 }
 
 /* Content CSS */
+/* temporary styles to work around footer:fixed */
+main, .main-content, .deftable {
+    margin-bottom: 3.5rem;
+}
+/* end temporary bug fix styles */
+
 .logo-md {
     width: 127px;
 }
@@ -305,6 +311,8 @@ img {
 }
 
 .footer {
+    position: fixed;
+    bottom: 0;
     background: var(--vta-dk-blue);
     color: var(--bs-jumbo-grey);
     text-align: center;
