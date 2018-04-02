@@ -56,15 +56,14 @@ include('filestart.php');
     while ($stmt->fetch()) {
     echo "
         <header class='container page-header'>
-            <h1 class='page-title'>Update Deficiency ".$q."</h1>
+            <h1 class='page-title'>Clone Deficiency ".$q."</h1>
         </header>
         <main class='container main-content'> 
-        <form action='UpdateDefCommit.php' method='POST' onsubmit='' />
-        <input type='hidden' name='DefID' value='".$q."'>
+        <form action='RecDef.php' method='POST' onsubmit='' />
             <table class='table svbx-table'>
                 <tr class='vdtr'>
                 <th colspan='4' height='50' class='vdth'><p>
-                        Deficiency No. $q</p></th>
+                        Clone Deficiency</p></th>
                 </tr>
                 <tr class='vdtr'>
                     <th colspan='4' class='vdth'><p>Required Information</p></th>
@@ -101,16 +100,12 @@ include('filestart.php');
                 </tr>
                 <tr class='vdtr'>
                     <td class='vdtdh'><p>General Location:</p></td>
-                    <td class='vdtda'><select name='LocationName' value='".$Location."' id='defdd'></option>
+                    <td class='vdtda'><select name='Location' value='' id='defdd'></option>
                         <option value=''></option>";
                         if(is_array($list1) || is_object($list1)) {
                         foreach($list1 as $row) {
-                            echo "<option value='$row[LocationID]'";
-                                if($row['LocationID'] == $Location) {
-                                    echo " selected>$row[LocationName]</option>";
-                                    } else { echo ">$row[LocationName]</option>";
+                            echo "<option value='$row[LocationID]'>$row[LocationName]</option>";
                                 }
-                        }
                         }
     echo "          </td>
                     <td class='vdtdh'><p>Specific Location:</p></td>
@@ -131,7 +126,7 @@ include('filestart.php');
                         }
     echo "          </td>
                     <td class='vdtdh'><p>Severity:</p></td>
-                    <td class='vdtda'><select name='SeverityName' value='".$Severity."' id='defdd'></option>
+                    <td class='vdtda'><select name='Severity' value='".$Severity."' id='defdd'></option>
                         <option value=''></option>";
                         if(is_array($list4) || is_object($list4)) {
                         foreach($list4 as $row) {
@@ -220,7 +215,7 @@ include('filestart.php');
                 <tr class='vdtr'>
                     <td class='vdtdh'><p>Evidence Type:</p></td>
                     <td class='vdtda' colspan='3'>
-                    <select name='EviType' value='".$EvidenceType."'></option>
+                    <select name='EvidenceType' value='".$EvidenceType."'></option>
                         <option value=''></option>";
                         if(is_array($list5) || is_object($list5)) {
                         foreach($list5 as $row) {
@@ -271,14 +266,14 @@ include('filestart.php');
             <input type='submit' value='submit' class='btn btn-primary btn-lg' style='margin-left:40%' />
             <input type='reset' value='reset' class='btn btn-primary btn-lg' /><br /><br />
             </form>
-            </div>
+            </div></main>
             ";
             //echo "Description: " .$Description;
-                    }  
-                } else {  
-                    echo "<br>Unable to connect<br>";
-                    exit();  
-                } 
+            }
+        } else {  
+            echo "<br>Unable to connect<br>";
+            exit();  
+        } 
     MySqli_Close($link);             
     include('fileend.php');
 ?>

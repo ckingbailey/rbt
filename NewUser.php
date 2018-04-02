@@ -32,7 +32,7 @@ include('filestart.php');
               </tr>
               <tr class='usertr'>
                 <th class='userth'>
-                  <label>Comapny name</label>
+                  <label>Company name</label>
                 </td>
                 <td class='usertd'>
                   <input type="text" name="Company" value="" maxlength="255" id='defdd' required/>

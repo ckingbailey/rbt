@@ -231,7 +231,6 @@ if($_POST['Search'] == NULL) {
             <input type='submit' value='Submit' class='btn btn-primary btn-lg' /><p> </p>
     </form>
     <form action="ViewSC.php">
-            <div style='width:5px; height:auto; display:inline-block'></div>
             <input type='submit' value='Reset' class='btn btn-primary btn-lg'  />
     </form>
     </div>

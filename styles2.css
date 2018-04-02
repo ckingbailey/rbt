@@ -8,17 +8,12 @@
     --breakpoint-lg: 992px;
     --breakpoint-xl: 1200px;
     --bs-jumbo-grey:#e9ecef;
-    --vta-dk-blue:#03528B;
-}
-
-body,html {
-    height: 100%;
+    --vta-blue:#03528B;
 }
 
 body {
    margin:0;
    background-color:#FFFFFF;
-
 }
 
 a:hover {
@@ -31,6 +26,27 @@ img {
     width: auto;
 }
 
+/* Navbar */
+.navbar-heading {
+    max-width: 13.5rem;
+    overflow-x: hidden;
+}
+
+.navbar-brand-link {
+    color: white;
+    text-decoration: none;
+}
+
+.navbar-brand-link:hover {
+    color: #fff9;
+    text-decoration: none;
+}
+
+.navbar-vta-blue {
+    background-color: var(--vta-blue);
+    color: white;
+}
+
 /* Page Header */
 .jumbotron h1 {
     text-align: center;
@@ -40,6 +56,11 @@ img {
 .page-header {
     margin-top: 3.5rem; margin-bottom: .35rem;
     padding-top: .5rem; padding-bottom: .6rem;
+}
+
+.page-header h1, .page-header h2, .page-header h3,
+.page-header h4, .page-header h5, .page-header h6 {
+    text-align: center;
 }
 
 .def-heading {
@@ -63,30 +84,43 @@ img {
     height: 3rem;
 }
 
-.page-title {
-    font-size: 2.5rem;
-    text-align: center;
-}
-
 /* Content CSS */
-/* temporary styles to work around footer:fixed */
-main, .main-content, .deftable {
-    margin-bottom: 3.5rem;
+.main-content {
+    margin-bottom: 4.5rem;
 }
-/* end temporary bug fix styles */
 
 .logo-md {
     width: 127px;
 }
 
-.grey-back {
+.grey-bg {
     background-color: var(--bs-jumbo-grey);
 }
 
-.grey-back {
-    background-color: var(--bs-jumbo-grey);
+.btn-container {
+    text-align: center;
 }
 
+.def-table-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.def-nav {
+    padding: 0;
+}
+
+.def-nav li {
+    display: inline;
+    list-style-type: none;
+}
+
+.def-nav li:not(:last-child) {
+    margin-right: 2rem;
+}
+
+/* Login Page */
 .login-container {
     text-align:center;
 }
@@ -103,7 +137,39 @@ main, .main-content, .deftable {
 .forgot-password-btn {
     text-decoration: underline;
 }
-/* End of Content CSS */
+
+/* User Page */
+.user-role-title {
+    font-style: italic;
+}
+
+.user-menu {
+    margin: 0;
+    margin-bottom: 1.15rem;
+}
+
+.user-menu-list {
+    margin: 0;
+    padding-bottom: 1.4rem;
+}
+
+.user-menu-item {
+    list-style-type: none;
+}
+
+.user-menu-item:not(:last-child) {
+    margin-bottom: .85rem;
+}
+
+.user-menu-item a {
+}
+
+.user-menu-item a:hover {
+}
+
+.admin-menu-item {}
+
+.superadmin-menu-item {}
 
 /* Forms CSS */
 .btn-xs {
@@ -277,18 +343,13 @@ main, .main-content, .deftable {
 .footer {
     position: fixed;
     bottom: 0;
-    background: var(--vta-dk-blue);
+    background: var(--vta-blue);
     color: var(--bs-jumbo-grey);
     text-align: center;
     /*position: absolute;*/
     /*bottom: 0px;*/
     height:auto;
     max-width:100%;
-}
-
-.landing-page + .footer {
-    position: absolute;
-    bottom: 0px;
 }
 
 footer a:link{
