@@ -1,11 +1,12 @@
 <?php include('filestart.php'); ?>
 
-    <header class="container page-header masthead">
-      <h1 class="page-title"><img class="masthead-logo" src="vta.jpg">Silicon Valley Berryessa Extension</h1>
-      <p>This site if for use by personel working upon the SVBX project, if you are not working upon the SVBX project, but would like some information, please click on the 'Learn More' button below.
-        <a href="http://www.vta.org/News-and-Media/Connect-with-VTA/Phase-I-of-BART-Silicon-Valley-Update#.WqbH0WrwZaQ" target="_blank" class="btn btn-primary btn-xs">Learn more &raquo;</a></p>
-    </header>
-    <main role="main" class="container main-content">
+    <main role="main">
+
+      <header class="container page-header masthead">
+        <h1 class="page-title"><img class="masthead-logo" src="vta.jpg">Silicon Valley Berryessa Extension</h1>
+        <p>This site if for use by personel working upon the SVBX project, if you are not working upon the SVBX project, but would like some information, please click on the 'Learn More' button below.
+          <a href="http://www.vta.org/News-and-Media/Connect-with-VTA/Phase-I-of-BART-Silicon-Valley-Update#.WqbH0WrwZaQ" target="_blank" class="btn btn-primary btn-xs">Learn more &raquo;</a></p>
+      </header>
 
       <div class="container login-container">
         <form action="loginSubmit.php" method="post">
