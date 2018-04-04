@@ -1,0 +1,26 @@
+{
+  "name": "svbx",
+  "version": "0.1.0",
+  "description": "report and display deficiency data",
+  "main": "index.php",
+  "dependencies": {
+    "d3": "^5.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rob1st/VTA.git"
+  },
+  "keywords": [
+    "svbx"
+  ],
+  "author": "rob1st",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/rob1st/VTA/issues"
+  },
+  "homepage": "https://github.com/rob1st/VTA#readme"
+}
