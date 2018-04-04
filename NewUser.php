@@ -9,7 +9,7 @@ include('filestart.php');
         <header class="container page-header">
           <h1 class="page-title">Add New User</h1>
         </div>
-        <div class="container"> 
+        <div class="container main-content"> 
         <form action="AddUserSubmit.php" method="post">
             <table class='table svbx-table'>
               <tr class='usertr'>
@@ -32,7 +32,7 @@ include('filestart.php');
               </tr>
               <tr class='usertr'>
                 <th class='userth'>
-                  <label>Comapny name</label>
+                  <label>Company name</label>
                 </td>
                 <td class='usertd'>
                   <input type="text" name="Company" value="" maxlength="255" id='defdd' required/>
@@ -66,8 +66,7 @@ include('filestart.php');
                 </td>
               </tr>
             </table>
-            <br />
-            <input type='submit' value='submit' class='btn btn-primary btn-lg' style='margin-left:40%' />
+            <input type='submit' value='submit' class='btn btn-primary btn-lg'/>
             <input type='reset' value='reset' class='btn btn-primary btn-lg' />
         </form>
         </div>

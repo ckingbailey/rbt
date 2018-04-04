@@ -50,7 +50,7 @@ if($_POST['Search'] == NULL) {
     $count = "SELECT COUNT(*) FROM SafetyCert A";
     
     if($ItemS <> NULL) {
-       $ItemSQL = " A.Item = '".$ItemS."'";
+       $ItemSQL = " WHERE A.Item = '".$ItemS."'";
        $AND = 1;
     } else {
         $ItemSQL = "";
@@ -133,7 +133,7 @@ if($_POST['Search'] == NULL) {
 
 
 ?>
-    <table border='1' style='width:96%;margin-left:auto;margin-right:auto;margin-top:100px'>
+    <table style='width:96%;margin-left:auto;margin-right:auto;margin-top:100px'>
         <tr>
             <th class='vdth' colspan='8'>Search</td>
         </tr>
@@ -231,7 +231,6 @@ if($_POST['Search'] == NULL) {
             <input type='submit' value='Submit' class='btn btn-primary btn-lg' /><p> </p>
     </form>
     <form action="ViewSC.php">
-            <div style='width:5px; height:auto; display:inline-block'></div>
             <input type='submit' value='Reset' class='btn btn-primary btn-lg'  />
     </form>
     </div>
@@ -252,7 +251,7 @@ if($_POST['Search'] == NULL) {
         ?>
 <?php
     if($result = mysqli_query($link,$sql)) {
-    echo "<table border='1' style='width:96%;margin-left:auto;margin-right:auto;margin-top:100px'>
+    echo "<table style='width:96%;margin-left:auto;margin-right:auto;margin-top:100px'>
                 <tr>
                     <th class='vdth' colspan='8' height='50'><p>Certification Stage</p></th>
                 </tr>

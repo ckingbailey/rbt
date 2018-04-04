@@ -19,7 +19,7 @@ $Role = $_SESSION['Role'];
         echo"   
                 <header class='container page-header'>
                     <h1 class='page-title'>Users</h1>
-                <table class='sumtable' style='margin-left:40%'>
+                <table class='sumtable'>
                     <tr class='sumtr'>
                         <td class='sumtd'>Users in Database: </td>";
             while ($row = mysqli_fetch_array($result)) {
@@ -29,7 +29,7 @@ $Role = $_SESSION['Role'];
 }
     if($result = mysqli_query($link,$sql)) {
         echo"   
-                <div class='container' style='max-width: 1600px;'>
+                <div class='container main-content' style='max-width: 1600px;'>
                 <table class='table'>
                     <tr class='usertr'>
                         <th class='userth'>First name</th>
@@ -102,7 +102,7 @@ $Role = $_SESSION['Role'];
                             echo "</tr>";
                     }
             }    
-            echo "</table><br></div>";
+            echo "</table></div>";
     }
     mysqli_free_result($result);
     

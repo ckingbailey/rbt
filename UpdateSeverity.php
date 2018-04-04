@@ -21,7 +21,7 @@
             while ($stmt->fetch()) {
                 echo "
                     <div class='container'> 
-                        <FORM action='UpdateSeverityCommit.php' method='POST'>
+                        <form action='UpdateSeverityCommit.php' method='POST'>
                             <input type='hidden' name='SeverityID' value='".$q."'>
                             <table class='table'>
                                 <tr class='usertr'>
@@ -37,10 +37,9 @@
                                     </td>
                                 </tr>
                             </table>
-                            <br />
-                            <input type='submit' value='submit' class='btn btn-primary btn-lg' style='margin-left:40%' />
+                            <input type='submit' value='submit' class='btn btn-primary btn-lg'/>
                             <input type='reset' value='reset' class='btn btn-primary btn-lg' />
-                        </FORM>
+                        </form>
                     </div>";
                 }
             } else {

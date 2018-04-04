@@ -28,7 +28,7 @@ include('filestart.php');
 }
     if($result = mysqli_query($link,$sql)) {
         echo"   
-                <div class='container'>
+                <div class='container main-content'>
                 <table class='table'>
                     <tr class='usertr'>
                         <th class='userth'>Location ID</th>
@@ -75,7 +75,7 @@ include('filestart.php');
                     echo "</tr>";
                     }
             }    
-            echo "</table><br></div>";
+            echo "</table></div>";
     }
     mysqli_free_result($result);
     

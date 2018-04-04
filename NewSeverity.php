@@ -10,7 +10,7 @@ if($Role == 'U' OR $Role == 'V' OR $Role == 'A') {
           <h1 class="page-title">Add New Severity type</h1>
         </header>
     </div>
-        <div class="container"> 
+        <div class="container main-content"> 
         <FORM action="RecSeverity.php" method="POST">
             <table class='table svbx-table'>
                 <tr class='usertr'>
@@ -27,7 +27,7 @@ if($Role == 'U' OR $Role == 'V' OR $Role == 'A') {
                 </tr>
             </table>
             <br />
-            <input type='submit' value='submit' class='btn btn-primary btn-lg' style='margin-left:40%' />
+            <input type='submit' value='submit' class='btn btn-primary btn-lg'/>
             <input type='reset' value='reset' class='btn btn-primary btn-lg' />
         </FORM>
         </div>

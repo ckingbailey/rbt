@@ -128,7 +128,7 @@ session_start();
                 <tr class='svbx-tr'>";
               while ($row = mysqli_fetch_array($result)) {
                 echo "
-                  <td colspan='2' class='svbx-td def-tot'><a href='DisplaySeverity.php' class='def-link'>{$row[0]} Locations</a></td>
+                  <td colspan='2' class='svbx-td def-tot'><a href='DisplayLocations.php' class='def-link'>{$row[0]} Locations</a></td>
                   </tr>";
               }    
           }

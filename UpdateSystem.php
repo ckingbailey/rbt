@@ -32,8 +32,7 @@
                                         </td>
                                     </tr>
                                 </table>
-                                <br />
-                                <input type='submit' value='submit' class='btn btn-primary btn-lg' style='margin-left:40%' />
+                                <input type='submit' value='submit' class='btn btn-primary btn-lg'/>
                                 <input type='reset' value='reset' class='btn btn-primary btn-lg' />
                             </FORM>
                         </div>";

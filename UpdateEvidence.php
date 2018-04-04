@@ -20,7 +20,7 @@
                 $stmt->bind_result($EviType);
                 while ($stmt->fetch()) {
                     echo "
-                        <div class='container'> 
+                        <div class='container main-content'> 
                             <FORM action='UpdateEvidenceCommit.php' method='POST'>
                                 <input type='hidden' name='EviTypeID' value='".$q."'>
                                 <table class='table'>
@@ -31,8 +31,7 @@
                                         </td>
                                     </tr>
                                 </table>
-                                <br />
-                                <input type='submit' value='submit' class='btn btn-primary btn-lg' style='margin-left:40%' />
+                                <input type='submit' value='submit' class='btn btn-primary btn-lg'/>
                                 <input type='reset' value='reset' class='btn btn-primary btn-lg' /><br />
                             </FORM>
                         </div>";

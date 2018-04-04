@@ -10,7 +10,7 @@ include('filestart.php');
           <h1 class="page-title">Add New Location</h1>
         </header>
     </div>
-        <div class="container"> 
+        <div class="container main-content"> 
         <FORM action="RecLocation.php" method="POST">
             <table class='table svbx-table'>
                 <tr class='usertr'>
@@ -21,7 +21,7 @@ include('filestart.php');
                 </tr>
             </table>
             <br />
-            <input type='submit' value='submit' class='btn btn-primary btn-lg' style='margin-left:40%' />
+            <input type='submit' value='submit' class='btn btn-primary btn-lg'/>
             <input type='reset' value='reset' class='btn btn-primary btn-lg' />
         </FORM>
         </div>

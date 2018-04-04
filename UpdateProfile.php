@@ -19,7 +19,7 @@
             $stmt->bind_result($Username, $Role, $firstname, $lastname, $Email, $Company, $SecQ, $SecA);
             while ($stmt->fetch()) {
                 echo "
-                    <div class='container'>
+                    <div class='container main-content'>
                         <FORM action='UpdateProfileCommit.php' method='POST' onsubmit='' />
                             <input type='hidden' name='UserID' value='".$q."'>
                             <table class='table'>
@@ -167,8 +167,8 @@
                                 } else {
                                 }
                                 echo "
-                                </table><br />
-                                <input type='submit' value='submit' class='btn btn-primary btn-lg' style='margin-left:40%' />
+                                </table>
+                                <input type='submit' value='submit' class='btn btn-primary btn-lg'/>
                                 <input type='reset' value='reset' class='btn btn-primary btn-lg' />
                             </FORM>";
                         }

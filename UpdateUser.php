@@ -22,10 +22,10 @@
             $stmt->bind_result($Username, $Role, $firstname, $lastname, $Email, $Company);
             while ($stmt->fetch()) {
                 echo "
-                    <div class='container'>";
+                    <div class='container main-content'>";
                         if(($ARole == 'S') OR ($ARole == 'A' AND $Role <> 'S')) {
-                            echo "
-                        <FORM action='UpdateUserCommit.php' method='POST' onsubmit='' />
+                echo "
+                        <form action='UpdateUserCommit.php' method='POST' onsubmit='' />
                             <input type='hidden' name='UserID' value='".$q."'>
                             <table class='table'>
                                 <tr class='usertr'>
@@ -151,10 +151,10 @@
                                 } else {
                                 }
                                 echo "
-                                </table><br />
-                                <input type='submit' value='submit' class='btn btn-primary btn-lg' style='margin-left:40%' />
+                                </table>
+                                <input type='submit' value='submit' class='btn btn-primary btn-lg'/>
                                 <input type='reset' value='reset' class='btn btn-primary btn-lg' />
-                            </FORM>";
+                            </form>";
                         } else {
                             echo "<p style='text-align:center'>You do not have the authority to amend this user";
                             //echo "<br />ARole: ".$ARole;

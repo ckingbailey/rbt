@@ -14,11 +14,11 @@ include('filestart.php');
           <h1 class="display-3">System Safety Certification</h1>
         </div>
     </div>
-    <div class="container">
+    <div class="container main-content">
 <?php     
     //if($result = mysqli_query($link,$CDL)) {
         echo "<p style='color:black'>Click System certificate Item Number to see full details</p>
-            <table width='100%' class='deftable' border='1'>
+            <table width='100%' class='deftable'>
                 <tr class='svbxtr'>
                     <th class='svbxth' rowspan='2' width='5%'>Item No.</th>
                     <th class='col_2  col_3  col_4 svbxth' rowspan='2' width='35%'>Requirement</th>
