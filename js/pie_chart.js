@@ -4,8 +4,6 @@
     - this will require refactoring fileend.php into a fcn
 */
 function drawOpenCloseChart(d3, open, closed) {
-    console.log(open, closed)
-    
     var openCloseData = [
         {label: 'open', count: open},
         {label: 'closed', count: closed}
@@ -49,8 +47,6 @@ function drawOpenCloseChart(d3, open, closed) {
 }
 
 function drawSeverityChart(d3, block, crit, maj, min) {
-    console.log(block, crit, maj, min)
-    
     var severityData = [
         {label: 'blocker', count: block},
         {label: 'critical', count: crit},
@@ -99,10 +95,8 @@ function drawSeverityChart(d3, block, crit, maj, min) {
 
 function drawLegend(container, data, colorScheme) {
     console.log(container)
-
     var legend = container.nextElementSibling
-    console.log(legend)
-    
+
     data.forEach((datum, i) => {
         const label = legend.appendChild(document.createElement('span'))
         const swatch = document.createElement('i')
@@ -115,5 +109,3 @@ function drawLegend(container, data, colorScheme) {
         label.insertAdjacentElement('afterbegin', swatch)
     })
 }
-
-console.log('pie_charts.js loaded')
