@@ -45,7 +45,7 @@ function drawOpenCloseChart(d3, open, closed) {
         .attr('d', arc)
         .attr('fill', d => color(d.data.label))
 
-    drawLegend(container, openCloseData, scheme)
+    drawLegend(container, openCloseData, Object.values(scheme))
 }
 
 function drawSeverityChart(d3, block, crit, maj, min) {
@@ -94,7 +94,7 @@ function drawSeverityChart(d3, block, crit, maj, min) {
         .attr('d', arc)
         .attr('fill', d => color(d.data.label))
         
-    drawLegend(container, severityData, scheme)
+    drawLegend(container, severityData, Object.values(scheme))
 }
 
 function drawLegend(container, data, colorScheme) {
