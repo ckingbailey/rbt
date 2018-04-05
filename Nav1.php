@@ -1,29 +1,24 @@
 <?php
 require_once('SQLFunctions.php');
 
-if(!isset($_SESSION['UserID']))
-{
+if(!isset($_SESSION['UserID'])) {
     $login = 'Login now';
     $logout = false;
-}
-else
-{
+} else {
     /*copy the session UserID to a local variable*/
     $UserID = $_SESSION['UserID'];
     $Username = $_SESSION['Username'];
     $Role = $_SESSION['Role'];
 
-try
-{
-     /*Connect to CRUD Database*/
+  try {
+    /*Connect to CRUD Database*/
     $link = f_sqlConnect();
 
     /* Prep SQL statement to find the user name based on the UserID */
     $sql = "SELECT Username, firstname, lastname, Role FROM users_enc WHERE UserID = ".$UserID;
 
     /*execute the sql statement*/
-    if($result=mysqli_query($link,$sql))
-    {
+    if($result=mysqli_query($link,$sql)) {
       /*from the sql results, assign the username that returned to the $username variable*/
       while($row = mysqli_fetch_assoc($result)) {
         $firstname = $row['firstname'];
@@ -33,36 +28,28 @@ try
 
     if($Role=='S') {
         $RoleT = 'Super Admin';
-    }
-    elseif($Role=='A') {
+    } elseif($Role=='A') {
         $RoleT = 'Administrator';
-    }
-    elseif($Role=='U') {
+    } elseif($Role=='U') {
         $RoleT = 'User';
-    }
-    elseif($Role=='V') {
+    } elseif($Role=='V') {
         $RoleT = 'Viewer';
-    }
-    else {
+    } else {
         $RoleT = '';
     }
 
     /* Return Status to User*/
-    if($Username == false)
-    {
-        $login = 'Access Error<br />' .$RoleT;
-    }
-    else
-    {
+    if($Username == false) {
+        $login = 'Access Error' .$RoleT;
+    } else {
         $login = $firstname.' '.$lastname;
         $logout = true;
     }
-}
-/*if something goes wrong, return the following error*/
-catch (Exception $e)
-{
-    $login = 'Unable to process request.';
-}
+  }
+  /*if something goes wrong, return the following error*/
+  catch (Exception $e) {
+      $login = 'Unable to process request.';
+  }
 }
 ?>
 <nav class="navbar navbar-expand-md navbar-dark navbar-vta-blue fixed-top">
@@ -83,47 +70,53 @@ catch (Exception $e)
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
       <?php
-      if($title == 'SVBX - Home') {
-        echo "
-      <li class='nav-item'>
-        <span class='nav-link disabled'>Home</span>
-      </li>";
-      } else {
-        echo "
-      <li class='nav-item'>
-        <a class='nav-link' href='stats.php'>Home</a>
-      </li>";
-      }
-      if($title == 'SVBX - Help') {
-        echo "
-      <li class='nav-item'>
-        <span class='nav-link disabled'>Help</span>
-      </li>";
-      } else {
-        echo "
-      <li class='nav-item'>
-        <a class='nav-link' href='help.php'>Help</a>
-      </li>";
-      }
-      if($Role == 'A' OR $Role == 'S' OR $Role == 'U' OR $Role == 'V') {
-        echo "
-      <li class='nav-item'>
-        <a class='nav-link' href='DisplayDefs.php'>Deficiencies</a>
-      </li>";
-      }
-      if($Role == 'A' OR $Role == 'S' OR $Role == 'U' OR $Role == 'V') {
-        echo "
-          <li class='nav-item'>
-            <a class='nav-link' href='ViewSC.php'>Safety Certs</a>
-          </li>";
-      }
-      if($logout) {
-        echo '
-          <li class="nav-item">
-            <a class="nav-link" href="logout.php">Logout</a>
-          </li>
-        ';
-      }
+        foreach([
+          'Home' => 'stats.php',
+          'Help' => 'help.php',
+          'Deficiencies' => 'DisplayDefs.php',
+          'Safety Certs' => 'ViewSC.php'
+        ] as $text => $href) {
+          $classList = 'nav-link';
+          $disableLink = ' disabled';
+          if (strpos($_SERVER['PHP_SELF'], $href)) $classList .= $disableLink;
+          echo "
+            <li class='nav-item'>
+              <a href='{$href}' class='{$classList}'>{$text}</a>
+            </li>
+          ";
+        }
+        
+        // if($title == 'SVBX - Home') $classList .= ' disabled';
+        // echo "
+        //   <li class='nav-item'>
+        //     <a class='{$classList}{disableLink($title)}' href='stats.php'>Home</a>
+        //   </li>";
+        // if($title == 'SVBX - Help') $classList .= ' disabled';
+        // echo "
+        //   <li class='nav-item'>
+        //     <a class='{$classList}{disableLink($title)}' href='help.php'>Help</a>
+        //   </li>";
+        // if($Role == 'A' OR $Role == 'S' OR $Role == 'U' OR $Role == 'V') {
+        //   if (strpos($title, 'Deficiencies')) $classList .= ' disabled';
+        //   echo "
+        //     <li class='nav-item'>
+        //       <a class='{$classList}{disableLink($title)}' href='DisplayDefs.php'>Deficiencies</a>
+        //     </li>";
+        // }
+        // if($Role == 'A' OR $Role == 'S' OR $Role == 'U' OR $Role == 'V') {
+        //   if (strpos($title, 'Safety Certifications')) $classList .= ' disabled';
+        //   echo "
+        //     <li class='nav-item'>
+        //       <a class='{$classList}{disableLink($title)}' href='ViewSC.php'>Safety Certs</a>
+        //     </li>";
+        // }
+        if($logout) {
+          echo '
+            <li class="nav-item">
+              <a class="nav-link" href="logout.php">Logout</a>
+            </li>
+          ';
+        }
       ?>
     </ul>
   </div>

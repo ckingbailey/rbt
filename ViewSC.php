@@ -1,7 +1,7 @@
 <?php
 include('session.php');
 $Role = $_SESSION['Role'];
-$title = "SVBX - Deficiency No".$DefID;
+$title = "SVBX - Safety Certifications".$DefID;
 //ini_set('display_errors', 1);
 //ini_set('display_startup_errors', 1);
 //error_reporting(E_ALL);
