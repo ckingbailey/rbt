@@ -94,7 +94,6 @@ function drawSeverityChart(d3, block, crit, maj, min) {
 }
 
 function drawLegend(container, data, colorScheme) {
-    console.log(container)
     var legend = container.nextElementSibling
 
     data.forEach((datum, i) => {

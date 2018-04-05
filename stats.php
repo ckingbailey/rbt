@@ -93,10 +93,9 @@ session_start();
                   <tr class='svbx-tr'>
                     <td class='svbx-td def-name'>{$row[0]}</td>
                     <td class='svbx-td def-count'>{$row[1]}</td>
-                  </tr>";
-              }    
-          }
-          if ($statusOpen && $statusClosed) {
+                  </tr>
+                ";
+              }
             echo "
               <tr>
                 <td colspan='2'>
@@ -106,10 +105,8 @@ session_start();
                   </div>
                 </td>
               </tr>
-              </table>
             ";
-          }
-          else echo "</table>";
+          } echo "</table>";
 
           //Severity Status Table
           if($result = mysqli_query($link,$sqlSev)) {
@@ -140,24 +137,20 @@ session_start();
                   <tr class='svbx-tr'>
                     <td class='svbx-td def-name'>{$row[0]}</td>
                     <td class='svbx-td def-count'>{$row[1]}</td>
-                  </tr>";
-              }
-              if ($blockSev OR $critSev OR $majSev OR $minSev) {
-                echo "
-                  <tr>
-                    <td colspan='2'>
-                      <div class='data-display'>
-                        <div id='severity-graph' class='chart-container'></div>
-                        <p id='severity-legend' class='legend'></p>
-                      </div>
-                    </td>
                   </tr>
-                  </table>
                 ";
               }
-              echo " </table> ";
-          }
-          else echo " </table> ";
+              echo "
+                <tr>
+                  <td colspan='2'>
+                    <div class='data-display'>
+                      <div id='severity-graph' class='chart-container'></div>
+                      <p id='severity-legend' class='legend'></p>
+                    </div>
+                  </td>
+                </tr>
+              ";
+          } echo " </table> ";
           //Location Status Table
           if($result = mysqli_query($link,$sqlLoc)) {
             echo "

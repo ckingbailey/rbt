@@ -313,6 +313,60 @@ a.nav-cur-page:hover, button.nav-cur-page:hover {
     background: var(--secondary);
 }
 
+.page-heading-panel {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.page-heading-panel>:nth-child(n) {
+    flex: 0 1 auto;
+    margin: 0;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.page-heading-panel>:not(:last-child) {
+    margin-right: .65rem;
+}
+
+.page-heading-panel>p {
+    hyphens: auto;
+}
+
+.def-nav {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-flow: row nowrap;
+    margin-bottom: .65rem;
+    padding: 0;
+}
+
+.def-nav-item {
+    flex: 1 1 auto;
+    list-style-type: none;
+}
+
+.def-nav-item:not(:last-child) {
+    margin-right: .75rem;
+}
+
+.def-nav-btn {
+    display: block;
+}
+
+.nav-cur-page {
+    background: var(--secondary);
+    box-shadow: 0 0 .3rem .15rem #007bff40;
+    color: var(--dark);
+}
+
+a.nav-cur-page:hover, button.nav-cur-page:hover {
+    background: var(--secondary);
+}
+
 /* Login Page */
 .login-container {
     text-align:center;
