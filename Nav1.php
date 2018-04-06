@@ -2,8 +2,7 @@
 require_once('SQLFunctions.php');
 
 if(!isset($_SESSION['UserID'])) {
-    $login = 'Login now';
-    $logout = false;
+    $navHeading = 'Login now';
 } else {
     /*copy the session UserID to a local variable*/
     $UserID = $_SESSION['UserID'];
@@ -42,8 +41,7 @@ if(!isset($_SESSION['UserID'])) {
     if($Username == false) {
         $login = 'Access Error' .$RoleT;
     } else {
-        $login = $firstname.' '.$lastname;
-        $logout = true;
+        $navHeading = $firstname.' '.$lastname;
     }
   }
   /*if something goes wrong, return the following error*/
@@ -60,7 +58,7 @@ if(!isset($_SESSION['UserID'])) {
       if (isset($_SESSION['UserID'])) {
         $navbarHref = 'userAccount.php';
       }
-      echo '<a href="userAccount.php" class="navbar-link navbar-brand-link">'.$login.'</a>';
+      echo "<a href='{$navbarHref}' class='navbar-link navbar-brand-link'>{$navHeading}</a>";
     ?>
   </span>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,7 +108,7 @@ if(!isset($_SESSION['UserID'])) {
         //       <a class='{$classList}{disableLink($title)}' href='ViewSC.php'>Safety Certs</a>
         //     </li>";
         // }
-        if($logout) {
+        if($navHeading != 'Login now') {
           echo '
             <li class="nav-item">
               <a class="nav-link" href="logout.php">Logout</a>

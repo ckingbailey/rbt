@@ -30,7 +30,7 @@ if(!empty($_POST)) {
             echo "<br>Error: " .$sql. "<br>" .mysqli_error($link);
         }
         mysqli_close($link);
-        header("Location: DisplayStatus.php?msg=1");
+        header("Location: DisplayStatuses.php?msg=1");
         //echo "<br>Username: ".$Username;
         //echo "<br>UserID: ".$user;        
 }

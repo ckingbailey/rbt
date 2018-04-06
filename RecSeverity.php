@@ -47,7 +47,7 @@
     }    
 	
     }else if(!empty ($rejectredirecturl)) {
-            header("location: DisplaySeverity.php");
+            header("location: DisplaySeverities.php");
             //echo "Success";
     }
 }

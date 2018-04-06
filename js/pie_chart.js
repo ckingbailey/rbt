@@ -17,7 +17,7 @@ function drawOpenCloseChart(d3, open, closed) {
     
     var scheme = {
         red: '#d73027',
-        green: '#66bd63'
+        green: '#58BF73'
     }
     var color = d3.scaleOrdinal(Object.values(scheme))
     
