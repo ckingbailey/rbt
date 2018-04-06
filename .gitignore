@@ -1,7 +1,11 @@
+# git stuff
 DS_Store
 
+# for devs eyes only
 config.*
-
-node_modules
-
+php.ini
+check.php
 error_log
+
+# don't push this to remote
+node_modules
