@@ -17,7 +17,7 @@ include('filestart.php');
             <main class='container main-content'>
 
                 <div class='card heading-card'>
-                    <div class='card-body grey-bg page-heading-panel'>
+                    <div class='card-body grey-bg item-margin-right page-heading-panel'>
                         <p>Click Deficiency ID Number to see full details</p>";
                         if ($Role == 'U' OR $Role == 'A' OR $Role == 'S') {
                             echo "<a href='NewDef.php' class='btn btn-primary'>Add New Deficiency</a>";
@@ -38,7 +38,7 @@ include('filestart.php');
                         $extraClass = ' nav-cur-page';
                     }
                     echo "
-                        <li class='def-nav-item'>
+                        <li class='item-margin-right flex'>
                             <a href='".$fileName."' class='btn btn-sm btn-outline def-nav-btn".$extraClass."'>".$linkText."</a>
                         </li>";
                 }

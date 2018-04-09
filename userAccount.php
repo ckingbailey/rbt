@@ -49,11 +49,11 @@
                         <li class="user-menu-item"><a href="NewStatus.php" class="card-link">Add Status Type</a></li>
                     </ul>
                 </div>
-                <div class="btn-container logout-btn-container"><a href="logout.php" class="btn btn-primary btn-lg">Logout</a></div>
+                <div class="center-content"><a href="logout.php" class="btn btn-primary btn-lg">Logout</a></div>
                 </main>
             ';
         } else echo '
-            <div class="btn-container logout-btn-container"><a href="logout.php" class="btn btn-primary btn-lg">Logout</a></div></main>
+            <div class="center-content"><a href="logout.php" class="btn btn-primary btn-lg">Logout</a></div></main>
         ';
     }
     else echo '</main>';

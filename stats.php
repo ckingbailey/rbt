@@ -34,7 +34,7 @@ session_start();
     // if any extra content is needed, add it to index after required items
     $cards = [
       ['Status', 'Statuses', 'Items', 
-        "<div class='data-display'><div id='open-closed-graph' class='chart-container'></div><p id='open-closed-legend' class='legend'></p></div>"],
+        "<div class='data-display'><div id='open-closed-graph' class='chart-container'></div><p id='open-closed-legend' class='flex-column'></p></div>"],
       ['Severity', 'Severities', 'Open Items', '<div class="data-display"><div id="severity-graph" class="chart-container"></div><p id="open-closed-legend" class="legend"></p></div>'],
       ['System', 'Systems', 'Actions'],
       ['Location', 'Locations', 'Open Items']
@@ -57,7 +57,7 @@ session_start();
           </header>
           <div class='card-body grey-bg'>
             <ul class='dash-list'>
-              <li class='dash-list-heading'>
+              <li class='bg-secondary text-white dash-list-heading'>
                 <span class='dash-list-left dash-list-name'>{$cardSpecs[0]}</span>
                 <span class='dash-list-right dash-list-count'>{$cardSpecs[2]}</span>
               </li>";
@@ -95,188 +95,188 @@ session_start();
     //echo '<br>SQL String: ' .$sql;
     include('filestart.php'); //Provides all HTML starting code
 ?> 
-      <header class="container page-header">
-        <h1 class="page-title">Database Information</h1>
-      </header>
-      <main role="main" class="container main-content dashboard">
-        <?php
-        foreach($cards as $card) {
-          $tableStr = 'SELECT COUNT(*) FROM '.$card[0];
-          $count = mysqli_fetch_array(mysqli_query($link, $tableStr))[0];
-          $cardData = mysqli_query($link, $queries[$card[0]]);
-          writeDashCard($count, $cardData, $card);
-        }
-        //Systems Status Card
-          // if($result = mysqli_query($link,$sqlSys)) {
-          //   $tot = 0;
-          //   echo "
-          //     <div class='card dash-card'>
-          //       <div class='card-body grey-bg'>
-          //         <header class='card-heading'>
-          //           <h3>Systems</h3>
-          //         </header>
-          //   ";
-          //   while ($row = mysqli_fetch_array($result)) $tot = $row[0];
-          //   if($result = mysqli_query($link,$System)) {
-          //     echo '
-          //       <ul class="dash-list">
-          //         <li class="dash-list-heading-container">
-          //           <span class="dash-list-heading">System</h4>
-          //           <span class="dash-list-heading">Actions</h4>
-          //         </li>
-          //     ';
-          //     while ($row = mysqli_fetch_array($result)) {
-          //       echo "
-          //         <li class='dash-list-item'>
-          //           <span>{$row[0]}</span>
-          //           <span>{$row[1]}</span>
-          //         </li>
-          //       ";
-          //     }
-          //     echo "
-          //       </ul>
-          //       <footer>
-          //         <span>Number of Systems {$tot}</span>
-          //       </footer></div></div>
-          //     ";
-          //   } else {
-          //     echo "
-          //       <footer>
-          //         <span>Number of Systems {$tot}</span>
-          //       </footer></div></div>
-          //     ";
-          //   }
-          // }
-
-          //Status Status Table
-          // if($result = mysqli_query($link,$sqlStat)) {
-          //   echo "
-          //     <table class='table svbx-table dash-table'>
-          //       <tr class='svbx-tr'>
-          //         <th colspan='2' class='svbx-th'>Status</th>
-          //       </tr>
-          //     <tr class='svbx-tr'>";
-          //     while ($row = mysqli_fetch_array($result)) {
-          //       echo "
-          //         <td colspan='2' class='svbx-td def-tot'><a href='DisplayStatuses.php' class='def-link'>{$row[0]} Statuses</a></td>
-          //       </tr>";
-          //     }
-          // }
-          // if($result = mysqli_query($link,$Status)) {
-          //   echo "
-          //     <tr class='svbx-tr'>
-          //       <th style='width:15%' class='svbx-th'>Status</th>
-          //       <th style='width:5%' class='svbx-th'>Items</th>
-          //     </tr>";
-          //     while ($row = mysqli_fetch_array($result)) {
-          //       if ($row[0] == 'Open') $statusOpen = $row[1];
-          //       if ($row[0] == 'Closed') $statusClosed = $row[1];
-          //       echo "
-          //         <tr class='svbx-tr'>
-          //           <td class='svbx-td def-name'>{$row[0]}</td>
-          //           <td class='svbx-td def-count'>{$row[1]}</td>
-          //         </tr>
-          //       ";
-          //     }
-          //   echo "
-          //     <tr>
-          //       <td colspan='2'>
-          //         <div class='data-display'>
-          //           <div id='open-closed-graph' class='chart-container'></div>
-          //           <p id='open-closed-legend' class='legend'></p>
-          //         </div>
-          //       </td>
-          //     </tr>
-          //   ";
-          // } echo "</table>";
-
-          //Severity Status Table
-          // if($result = mysqli_query($link,$sqlSev)) {
-          //   echo "
-          //     <table class='table svbx-table dash-table'>
-          //       <tr class='svbx-tr'>
-          //         <th colspan='2' class='svbx-th'>Severities</th>
-          //       </tr>
-          //       <tr class='svbx-tr'>";
-          //     while ($row = mysqli_fetch_array($result)) {
-          //       echo "
-          //         <td colspan='2' class='svbx-td def-tot'><a href='DisplaySeverities.php' class='def-link'>{$row[0]} Severities</a></td>
-          //         </tr>";
-          //     }    
-          // }
-          // if($result = mysqli_query($link,$Sev)) {
-          //   echo "
-          //     <tr class='svbx-tr'>
-          //       <th style='width:10%' class='svbx-th'>Severity</th>
-          //       <th style='width:10%' class='svbx-th'>Open Items</th>
-          //     </tr>"; 
-          //     while ($row = mysqli_fetch_array($result)) {
-          //       if ($row[0] == 'Blocker') $blockSev = $row[1];
-          //       elseif ($row[0] == 'Critical') $critSev = $row[1];
-          //       elseif ($row[0] == 'Major') $majSev = $row[1];
-          //       elseif ($row[0] == 'Minor') $minSev = $row[1];
-          //       echo "
-          //         <tr class='svbx-tr'>
-          //           <td class='svbx-td def-name'>{$row[0]}</td>
-          //           <td class='svbx-td def-count'>{$row[1]}</td>
-          //         </tr>
-          //       ";
-          //     }
-          //     echo "
-          //       <tr>
-          //         <td colspan='2'>
-          //           <div class='data-display'>
-          //             <div id='severity-graph' class='chart-container'></div>
-          //             <p id='severity-legend' class='legend'></p>
-          //           </div>
-          //         </td>
-          //       </tr>
-          //     ";
-          // } echo " </table> ";
-
-          //Location Status Table
-          // if($result = mysqli_query($link,$sqlLoc)) {
-          //   echo "
-          //     <table class='table svbx-table dash-table'>
-          //       <tr class='svbx-tr'>
-          //         <th colspan='2' class='svbx-th'>Locations</th>
-          //       </tr>
-          //       <tr class='svbx-tr'>";
-          //     while ($row = mysqli_fetch_array($result)) {
-          //       echo "
-          //         <td colspan='2' class='svbx-td def-tot'><a href='DisplayLocations.php' class='def-link'>{$row[0]} Locations</a></td>
-          //         </tr>";
-          //     }    
-          // }
-          // if($result = mysqli_query($link,$location)) {
-          //   echo "
-          //     <tr class='svbx-tr'>
-          //       <th style='width:10%' class='svbx-th'>Location</th>
-          //       <th style='width:10%' class='svbx-th'>Open Items</th>
-          //     </tr>"; 
-          //     while ($row = mysqli_fetch_array($result)) {
-          //       echo "
-          //         <tr class='svbx-tr'>
-          //           <td class='svbx-td def-name'>{$row[0]}</td>
-          //           <td class='svbx-td def-count'>{$row[1]}</td>
-          //         </tr>";
-          //     }    
-          //     echo " </table> ";
-          // }
-          //     echo " </table> ";
-        ?> 
-    </main>
+<header class="container page-header">
+  <h1 class="page-title">Database Information</h1>
+</header>
+<main role="main" class="container main-content dashboard">
   <?php
-    echo "
-    <!--THIS IS A TERRIBLE WAY TO DO THIS
-        THIS IS ONLY FOR TESTING PURPOSES-->
-    <script src='https://d3js.org/d3.v5.js'></script>
-    <script src='js/pie_chart.js'></script>
-    <script>
-      window.drawOpenCloseChart(window.d3, '".$statusOpen."', '".$statusClosed."')
-      window.drawSeverityChart(window.d3, '".$blockSev."', '".$critSev."', '".$majSev."', '".$minSev."')
-    </script>
-    <!--REMOVE ABOVE SCRIPT TAGS ONCE TESTING IS DONE-->
-    <!--DO NOT TYPE BELOW THIS LINE-->";
-    include('fileend.php');
-  ?>
+  foreach($cards as $card) {
+    $tableStr = 'SELECT COUNT(*) FROM '.$card[0];
+    $count = mysqli_fetch_array(mysqli_query($link, $tableStr))[0];
+    $cardData = mysqli_query($link, $queries[$card[0]]);
+    writeDashCard($count, $cardData, $card);
+  }
+  //Systems Status Card
+    // if($result = mysqli_query($link,$sqlSys)) {
+    //   $tot = 0;
+    //   echo "
+    //     <div class='card dash-card'>
+    //       <div class='card-body grey-bg'>
+    //         <header class='card-heading'>
+    //           <h3>Systems</h3>
+    //         </header>
+    //   ";
+    //   while ($row = mysqli_fetch_array($result)) $tot = $row[0];
+    //   if($result = mysqli_query($link,$System)) {
+    //     echo '
+    //       <ul class="dash-list">
+    //         <li class="dash-list-heading-container">
+    //           <span class="dash-list-heading">System</h4>
+    //           <span class="dash-list-heading">Actions</h4>
+    //         </li>
+    //     ';
+    //     while ($row = mysqli_fetch_array($result)) {
+    //       echo "
+    //         <li class='dash-list-item'>
+    //           <span>{$row[0]}</span>
+    //           <span>{$row[1]}</span>
+    //         </li>
+    //       ";
+    //     }
+    //     echo "
+    //       </ul>
+    //       <footer>
+    //         <span>Number of Systems {$tot}</span>
+    //       </footer></div></div>
+    //     ";
+    //   } else {
+    //     echo "
+    //       <footer>
+    //         <span>Number of Systems {$tot}</span>
+    //       </footer></div></div>
+    //     ";
+    //   }
+    // }
+
+    //Status Status Table
+    // if($result = mysqli_query($link,$sqlStat)) {
+    //   echo "
+    //     <table class='table svbx-table dash-table'>
+    //       <tr class='svbx-tr'>
+    //         <th colspan='2' class='svbx-th'>Status</th>
+    //       </tr>
+    //     <tr class='svbx-tr'>";
+    //     while ($row = mysqli_fetch_array($result)) {
+    //       echo "
+    //         <td colspan='2' class='svbx-td def-tot'><a href='DisplayStatuses.php' class='def-link'>{$row[0]} Statuses</a></td>
+    //       </tr>";
+    //     }
+    // }
+    // if($result = mysqli_query($link,$Status)) {
+    //   echo "
+    //     <tr class='svbx-tr'>
+    //       <th style='width:15%' class='svbx-th'>Status</th>
+    //       <th style='width:5%' class='svbx-th'>Items</th>
+    //     </tr>";
+    //     while ($row = mysqli_fetch_array($result)) {
+    //       if ($row[0] == 'Open') $statusOpen = $row[1];
+    //       if ($row[0] == 'Closed') $statusClosed = $row[1];
+    //       echo "
+    //         <tr class='svbx-tr'>
+    //           <td class='svbx-td def-name'>{$row[0]}</td>
+    //           <td class='svbx-td def-count'>{$row[1]}</td>
+    //         </tr>
+    //       ";
+    //     }
+    //   echo "
+    //     <tr>
+    //       <td colspan='2'>
+    //         <div class='data-display'>
+    //           <div id='open-closed-graph' class='chart-container'></div>
+    //           <p id='open-closed-legend' class='legend'></p>
+    //         </div>
+    //       </td>
+    //     </tr>
+    //   ";
+    // } echo "</table>";
+
+    //Severity Status Table
+    // if($result = mysqli_query($link,$sqlSev)) {
+    //   echo "
+    //     <table class='table svbx-table dash-table'>
+    //       <tr class='svbx-tr'>
+    //         <th colspan='2' class='svbx-th'>Severities</th>
+    //       </tr>
+    //       <tr class='svbx-tr'>";
+    //     while ($row = mysqli_fetch_array($result)) {
+    //       echo "
+    //         <td colspan='2' class='svbx-td def-tot'><a href='DisplaySeverities.php' class='def-link'>{$row[0]} Severities</a></td>
+    //         </tr>";
+    //     }    
+    // }
+    // if($result = mysqli_query($link,$Sev)) {
+    //   echo "
+    //     <tr class='svbx-tr'>
+    //       <th style='width:10%' class='svbx-th'>Severity</th>
+    //       <th style='width:10%' class='svbx-th'>Open Items</th>
+    //     </tr>"; 
+    //     while ($row = mysqli_fetch_array($result)) {
+    //       if ($row[0] == 'Blocker') $blockSev = $row[1];
+    //       elseif ($row[0] == 'Critical') $critSev = $row[1];
+    //       elseif ($row[0] == 'Major') $majSev = $row[1];
+    //       elseif ($row[0] == 'Minor') $minSev = $row[1];
+    //       echo "
+    //         <tr class='svbx-tr'>
+    //           <td class='svbx-td def-name'>{$row[0]}</td>
+    //           <td class='svbx-td def-count'>{$row[1]}</td>
+    //         </tr>
+    //       ";
+    //     }
+    //     echo "
+    //       <tr>
+    //         <td colspan='2'>
+    //           <div class='data-display'>
+    //             <div id='severity-graph' class='chart-container'></div>
+    //             <p id='severity-legend' class='legend'></p>
+    //           </div>
+    //         </td>
+    //       </tr>
+    //     ";
+    // } echo " </table> ";
+
+    //Location Status Table
+    // if($result = mysqli_query($link,$sqlLoc)) {
+    //   echo "
+    //     <table class='table svbx-table dash-table'>
+    //       <tr class='svbx-tr'>
+    //         <th colspan='2' class='svbx-th'>Locations</th>
+    //       </tr>
+    //       <tr class='svbx-tr'>";
+    //     while ($row = mysqli_fetch_array($result)) {
+    //       echo "
+    //         <td colspan='2' class='svbx-td def-tot'><a href='DisplayLocations.php' class='def-link'>{$row[0]} Locations</a></td>
+    //         </tr>";
+    //     }    
+    // }
+    // if($result = mysqli_query($link,$location)) {
+    //   echo "
+    //     <tr class='svbx-tr'>
+    //       <th style='width:10%' class='svbx-th'>Location</th>
+    //       <th style='width:10%' class='svbx-th'>Open Items</th>
+    //     </tr>"; 
+    //     while ($row = mysqli_fetch_array($result)) {
+    //       echo "
+    //         <tr class='svbx-tr'>
+    //           <td class='svbx-td def-name'>{$row[0]}</td>
+    //           <td class='svbx-td def-count'>{$row[1]}</td>
+    //         </tr>";
+    //     }    
+    //     echo " </table> ";
+    // }
+    //     echo " </table> ";
+  ?> 
+</main>
+<?php
+  echo "
+  <!--THIS IS A TERRIBLE WAY TO DO THIS
+      THIS IS ONLY FOR TESTING PURPOSES-->
+  <script src='https://d3js.org/d3.v5.js'></script>
+  <script src='js/pie_chart.js'></script>
+  <script>
+    window.drawOpenCloseChart(window.d3, '".$statusOpen."', '".$statusClosed."')
+    window.drawSeverityChart(window.d3, '".$blockSev."', '".$critSev."', '".$majSev."', '".$minSev."')
+  </script>
+  <!--REMOVE ABOVE SCRIPT TAGS ONCE TESTING IS DONE-->
+  <!--DO NOT TYPE BELOW THIS LINE-->";
+  include('fileend.php');
+?>

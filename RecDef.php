@@ -2,10 +2,8 @@
     include('SQLFunctions.php');
     session_start();
     $table = CDL;
-    
 
     echo '<br>display full contents of the _POST: <br>';
-    var_dump($_POST);
     
     $link = f_sqlConnect();
     $check = "SELECT * FROM $table WHERE Description AND Location = '".$_POST['Description']."' & '".$_POST['Location']."'";
