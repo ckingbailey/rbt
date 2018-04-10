@@ -3,11 +3,21 @@ require_once('SQLFunctions.php');
 
 if(!isset($_SESSION['UserID'])) {
     $navHeading = 'Login now';
+    $navItems = [
+      'Home' => 'stats.php',
+      'Help' => 'help.php'
+    ];
 } else {
     /*copy the session UserID to a local variable*/
     $UserID = $_SESSION['UserID'];
     $Username = $_SESSION['Username'];
     $Role = $_SESSION['Role'];
+    $navItems = [
+      'Home' => 'stats.php',
+      'Help' => 'help.php',
+      'Deficiencies' => 'DisplayDefs.php',
+      'Safety Certs' => 'ViewSC.php'
+    ];
 
   try {
     /*Connect to CRUD Database*/
@@ -68,12 +78,8 @@ if(!isset($_SESSION['UserID'])) {
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
       <?php
-        foreach([
-          'Home' => 'stats.php',
-          'Help' => 'help.php',
-          'Deficiencies' => 'DisplayDefs.php',
-          'Safety Certs' => 'ViewSC.php'
-        ] as $text => $href) {
+        // conditionally render nav items
+        foreach($navItems as $text => $href) {
           $classList = 'nav-link';
           $disableLink = ' disabled';
           if (strpos($_SERVER['PHP_SELF'], $href)) $classList .= $disableLink;
@@ -83,31 +89,7 @@ if(!isset($_SESSION['UserID'])) {
             </li>
           ";
         }
-        
-        // if($title == 'SVBX - Home') $classList .= ' disabled';
-        // echo "
-        //   <li class='nav-item'>
-        //     <a class='{$classList}{disableLink($title)}' href='stats.php'>Home</a>
-        //   </li>";
-        // if($title == 'SVBX - Help') $classList .= ' disabled';
-        // echo "
-        //   <li class='nav-item'>
-        //     <a class='{$classList}{disableLink($title)}' href='help.php'>Help</a>
-        //   </li>";
-        // if($Role == 'A' OR $Role == 'S' OR $Role == 'U' OR $Role == 'V') {
-        //   if (strpos($title, 'Deficiencies')) $classList .= ' disabled';
-        //   echo "
-        //     <li class='nav-item'>
-        //       <a class='{$classList}{disableLink($title)}' href='DisplayDefs.php'>Deficiencies</a>
-        //     </li>";
-        // }
-        // if($Role == 'A' OR $Role == 'S' OR $Role == 'U' OR $Role == 'V') {
-        //   if (strpos($title, 'Safety Certifications')) $classList .= ' disabled';
-        //   echo "
-        //     <li class='nav-item'>
-        //       <a class='{$classList}{disableLink($title)}' href='ViewSC.php'>Safety Certs</a>
-        //     </li>";
-        // }
+
         if($navHeading != 'Login now') {
           echo '
             <li class="nav-item">
