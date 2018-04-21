@@ -10,24 +10,19 @@ $link = f_sqlConnect();
 $userID = $_SESSION['UserID'];
 $username = $_SESSION['Username'];
 // why do this check if $_SESSION already has $Username(?)
-$userQry = 'SELECT firstname, lastname FROM users_enc WHERE UserID = '.$UserID;
+$userQry = 'SELECT firstname, lastname, viewIDR FROM users_enc WHERE UserID = '.$UserID;
 $contractQry = 'SELECT ContractID, Contract FROM Contract';
 if($result=mysqli_query($link,$userQry)) {
   /*from the sql results, assign the username that returned to the $username variable*/    
   while($row = mysqli_fetch_assoc($result)) {
     $userFullName = "{$row['firstname']} {$row['lastname']}";
+    $authorizeUser = intval($row['viewIDR']);
   }
 }
 
 $sqlLoc = "SELECT L.LocationName, C.Location FROM CDL C inner join Location L on L.LocationID=C.Location group by Location order by L.LocationName";
 
-$authorizedUsers = [
-    'svandevanter',
-    'avallejo',
-    'superadmin'
-];
-
-if (!in_array($username, $authorizedUsers)) {
+if ($authorizeUser !== 1) {
     include 'unauthorised.php';
 } else {
 echo "
