@@ -4,17 +4,23 @@
 </head>
 <body>
 <?php
-
-$string = 'fileend';
-
+session_start();
 $dir = new DirectoryIterator('/home/ubuntu/workspace/');
-
-echo "<ol>";
+?>
+<?php
+echo "<pre>";
+var_dump($_SESSION);
+echo "</pre>";
+?>
+<ol>
+<?php
 foreach ($dir as $file) {
     $content = file_get_contents($file->getPathname());
     if (strpos($content, $string) !== false) {
         echo "<li>{$file}</li>";
     }
 }
-echo "</ol>";
-?></body></html>
+?>
+</ol>
+</body>
+</html>

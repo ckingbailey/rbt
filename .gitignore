@@ -6,6 +6,7 @@ config.*
 php.ini
 check.php
 error_log
+old_*
 
 # don't push this to remote
 node_modules

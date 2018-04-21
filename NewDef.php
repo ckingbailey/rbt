@@ -4,9 +4,9 @@ include('SQLFunctions.php');
 $link = f_sqlConnect();
 $Role = $_SESSION['Role'];
 $title = "SVBX - New Deficiency";
-    if($Role == 'V') {
-        header('location: unauthorised.php');
-    }
+if($Role == 'V') {
+    header('location: unauthorised.php');
+}
 include('filestart.php')
 ?>
 <header class="container page-header">
@@ -14,18 +14,18 @@ include('filestart.php')
 </header>
 <main role="main" class="container main-content">
     <form action="RecDef.php" method="POST">
-        <fieldset class="form-section">
+        <fieldset class="item-margin-bottom">
             <legend class="bg-secondary text-white form-section-heading">Required Information</legend>
-            <div class="form-subsection form-group">
-                <div class="half-container flex-row space-between item-margin-bottom">
+            <div class="form-subsection item-border-bottom item-margin-bottom form-group">
+                <div class="half-container">
                     <label class="input-label item-margin-right">Affect Safety Cert</label>
-                    <select name'SafetyCert' class="form-control def-input" required>
+                    <select name='SafetyCert' class="form-control def-input" required>
                         <option value='' disabled selected>Y/N</option>
                         <option value='Y'>Yes</option>
                         <option value='N'>No</option>
                     </select>
                 </div>
-                <div class="half-container flex-row space-between item-margin-bottom">
+                <div class="half-container">
                     <label class="input-label item-margin-right">System Affected</label>
                     <?php
                         $sqlY = "SELECT SystemID, System FROM System ORDER BY System";
@@ -39,8 +39,8 @@ include('filestart.php')
                     ?>
                 </div>
             </div>
-            <div class="form-subsection form-group">
-                <div class="half-container flex-row space-between item-margin-bottom">
+            <div class="form-subsection item-border-bottom item-margin-bottom form-group">
+                <div class="half-container">
                     <label class="input-label item-margin-right">General Location</label>
                     <?php
                         $sqlL = "SELECT LocationID, LocationName FROM Location ORDER BY LocationName";
@@ -53,13 +53,13 @@ include('filestart.php')
                         echo "</select>";
                     ?>
                 </div>
-                <div class="half-container flex-row space-between item-margin-bottom">
+                <div class="half-container">
                     <label class="input-label item-margin-right">Specific Location</label>
                     <input type="text" name="SpecLoc" maxlength="55" class="form-control def-input" required/>
                 </div>
             </div>
-            <div class="form-subsection form-group">
-                <div class="half-container flex-row space-between item-margin-bottom">
+            <div class="form-subsection item-border-bottom item-margin-bottom form-group">
+                <div class="half-container">
                     <label class="input-label item-margin-right">Status</label>
                     <?php
                         $sqlT = "SELECT StatusID, Status FROM Status WHERE StatusID <> '3' ORDER BY StatusID";
@@ -72,7 +72,7 @@ include('filestart.php')
                         echo "</select>";
                     ?>
                 </div>
-                <div class="half-container flex-row space-between item-margin-bottom">
+                <div class="half-container">
                     <label class="input-label item-margin-right">Severity</label>
                     <?php
                         $sqlS = "SELECT SeverityID, SeverityName FROM Severity ORDER BY SeverityName";
@@ -86,12 +86,12 @@ include('filestart.php')
                     ?>
                 </div>
             </div>
-            <div class="form-subsection form-group">
-                <div class="half-container flex-row space-between item-margin-bottom">
+            <div class="form-subsection item-border-bottom item-margin-bottom form-group">
+                <div class="half-container">
                     <label class="input-label item-margin-right">To be resolved by</label>
                     <input type='date' name='DueDate' class="form-control def-input" required/>
                 </div>
-                <div class="half-container flex-row space-between item-margin-bottom">
+                <div class="half-container">
                     <label class="input-label item-margin-right">Required for</label>
                     <?php
                         $sqlRB = "SELECT ReqByID, RequiredBy FROM RequiredBy ORDER BY ReqByID";
@@ -105,8 +105,8 @@ include('filestart.php')
                     ?>
                 </div>
             </div>
-            <div class="form-subsection form-group">
-                <div class="half-container flex-row space-between item-margin-bottom">
+            <div class="form-subsection item-border-bottom item-margin-bottom form-group">
+                <div class="half-container">
                     <label class="input-label item-margin-right">Group to resolve</label>
                     <?php
                         $sqlY = "SELECT SystemID, System FROM System ORDER BY System";
@@ -119,47 +119,47 @@ include('filestart.php')
                         echo "</select>";
                     ?>
                 </div>
-                <div class="half-container flex-row space-between item-margin-bottom">
+                <div class="half-container">
                     <label class="input-label item-margin-right">Identified by</label>
                     <input type="text" name="IdentifiedBy" maxlength="24" class="form-control def-input" required/>
                 </div>
             </div>
-            <div class="constrainer form-subsection center-element">
+            <div class="constrainer form-subsection item-border-bottom item-margin-bottom center-element">
                 <div class="flex-column no-wrap">
                     <label class="input-label label-breakline">Deficiency Description</label>
                     <textarea name="description" rows="5" maxlength="1000" class="form-control textarea-full-width" required></textarea>
                 </div>
             </div>
         </fieldset>
-        <fieldset class="form-section">
+        <fieldset class="item-margin-bottom">
             <legend class="bg-secondary text-white form-section-heading">Optional Information</legend>
-            <div class="form-subsection form-group">
-                <div class="half-container flex-row space-between item-margin-bottom">
+            <div class="form-subsection item-border-bottom item-margin-bottom form-group">
+                <div class="half-container">
                     <label class="input-label item-margin-right">Spec or Code</label>
                     <input type="text" name="Spec" maxlength="55"  id="" class="form-control def-input"/>
                 </div>
             </div>
-            <div class="form-subsection form-group">
-                <div class="half-container flex-row space-between item-margin-bottom">
+            <div class="form-subsection item-border-bottom item-margin-bottom form-group">
+                <div class="half-container">
                     <label class="input-label item-margin-right">Action Owner</label>
                     <input type="text" name="ActionOwner" maxlength="24"  id="" class="form-control def-input"/>
                 </div>
-                <div class="half-container flex-row space-between item-margin-bottom">
+                <div class="half-container">
                     <label class="input-label item-margin-right">Old Id</label>
                     <input type="text" name="OldID" maxlength="24" id="" class="form-control def-input"/>
                 </div>
             </div>
-            <div class="constrainer form-subsection center-element">
+            <div class="constrainer form-subsection item-border-bottom item-margin-bottom item-margin-bottom center-element">
                 <div class="flex-column no-wrap">
                     <label class="input-label label-breakline">More Information</label>
                     <textarea name="comments" rows="5" maxlength="1000" class="form-control textarea-full-width"></textarea>
                 </div>
             </div>
         </fieldset>
-        <fieldset class="form-section">
+        <fieldset class="item-margin-bottom">
             <legend class="bg-secondary text-white form-section-heading">Closure Information</legend>
-            <div class="form-subsection form-group">
-                <div class="half-container flex-row space-between item-margin-bottom">
+            <div class="form-subsection item-border-bottom item-margin-bottom form-group">
+                <div class="half-container">
                     <label class="input-label item-margin-right">Evidence Type</label>
                     <?php
                         $sqlE = "SELECT EviTypeID, EviType FROM EvidenceType ORDER BY EviType";
@@ -173,22 +173,22 @@ include('filestart.php')
                     ?>
                 </div>
             </div>
-            <div class="form-subsection form-group">
-                <div class="half-container flex-row space-between item-margin-bottom">
+            <div class="form-subsection item-border-bottom item-margin-bottom form-group">
+                <div class="half-container">
                     <label class="input-label item-margin-right">Evidence Repository</label>
-                    <select name'Repo' id='' class="form-control def-input">
+                    <select name='Repo' id='' class="form-control def-input">
                         <option value='' disabled selected>Choose Repo</option>
                         <option value=''></option>
                         <option value='A'>Aconex</option>
                         <option value='S'>SharePoint</option>
                     </select>
                 </div>
-                <div class="half-container flex-row space-between item-margin-bottom">
+                <div class="half-container">
                     <label class="input-label item-margin-right">Repository Number</label>
                     <input type="text" name="EvidenceLink" maxlength="255"  id='' class="form-control def-input"/>
                 </div>
             </div>
-            <div class="constrainer form-subsection center-element">
+            <div class="constrainer form-subsection item-border-bottom item-margin-bottom center-element">
                 <div class="flex-column no-wrap">
                     <label class="input-label label-breakline">Closure Comments</label>
                     <textarea name="ClosureComments" rows="5" maxlength="1000" class="form-control textarea-full-width"></textarea>

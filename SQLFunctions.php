@@ -2,7 +2,7 @@
     include('config.php');
     $rejectredirecturl = 'Fail.html';
     $successredirecturl = 'stats.php';
-    $duplicate = 'duplicate.php';
+    $duplicate = 'duplicate.php'; // this file doesn't exist
     
     function f_sqlConnect() {
         $link = new mysqli(DB_Host, DB_USER, DB_PWD, DB_Name);
@@ -78,7 +78,7 @@ function f_getIP() {
 
 function f_tableExists(mysqli $link,$tablename,$database = false) {
     if(!$database) {
-        $res = mysqli-query($link, "SELECT_DATABASE()");
+        $res = mysqli-query($link, "SELECT_DATABASE()"); // the '-' here is a typo. don't correct it until you are ready to debug the consequences
         $database = mysqli_result($res, 0);
     }
     $res = mysqli_query($link, "SELECT * 

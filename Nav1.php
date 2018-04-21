@@ -24,7 +24,7 @@ if(!isset($_SESSION['UserID'])) {
     $link = f_sqlConnect();
 
     /* Prep SQL statement to find the user name based on the UserID */
-    $sql = "SELECT Username, firstname, lastname, Role FROM users_enc WHERE UserID = ".$UserID;
+    $sql = "SELECT Username, firstname, lastname, Role, viewIDR FROM users_enc WHERE UserID = ".$UserID;
 
     /*execute the sql statement*/
     if($result=mysqli_query($link,$sql)) {
@@ -32,6 +32,9 @@ if(!isset($_SESSION['UserID'])) {
       while($row = mysqli_fetch_assoc($result)) {
         $firstname = $row['firstname'];
         $lastname = $row['lastname'];
+        if ($row['viewIDR']) {
+          $navItems['Daily Report'] = 'idr.php';
+        }
       }
     }
 
