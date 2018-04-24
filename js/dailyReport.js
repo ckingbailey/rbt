@@ -178,16 +178,19 @@
         const descLabel = document.getElementById('labelDescEquipLabor_' + num);
         const numInput = document.getElementById('equipOrLaborNum_' + num);
         const descInput = document.getElementById('equipOrLaborDesc_' + num);
+        const textarea = document.getElementById('notes_' + num);
         if (event.target.value == 'labor') {
             numLabel.innerText = '# of Personnel';
             descLabel.innerText = 'Description of Labor';
             numInput.setAttribute('name', 'laborNum_' + num);
             descInput.setAttribute('name', 'laborDesc_' + num);
+            textarea.setAttribute('name', 'laborNotes_' + num);
         } else {
             numLabel.innerText = 'Equipment No.';
             descLabel.innerText = 'Description of Equipment';
             numInput.setAttribute('name', 'equipNum_' + num);
             descInput.setAttribute('name', 'equipDesc_' + num);
+            textarea.setAttribute('name', 'equipNotes_' + num);
         }
     }
     
@@ -295,7 +298,8 @@
                             children: [
                                 {
                                     tagName: 'textarea',
-                                    name: 'remarks',
+                                    id: 'notes',
+                                    name: 'laborNotes',
                                     rows: '5',
                                     cols: '30',
                                     maxlength: '125',
@@ -408,6 +412,7 @@
         
         // add some additional classes to particular formCtrl parents
         newGroup.children[0].children[2].classList.add('flex-grow');
+        newGroup.children[0].children[3].style.position = 'relative';
         newGroup.children[1].children[0].children[0].classList.add('flex-grow');
         
         parentEl.appendChild(newGroup);
@@ -484,22 +489,26 @@
                                 if (attr === 'children') {
                                     for (let child of sib[attr]) {
                                         curChild = curSib.appendChild(document.createElement(child.tagName));
-                                        for (let [childAttr, childAttrVal] in child) {
+                                        for (let childAttr in child) {
                                             if (childAttr === 'tagName') continue;
+                                            else if (childAttr === 'name' || childAttr === 'id') curChild.setAttribute(childAttr, `${child[childAttr]}_${num}`);
                                             else if (childAttr === 'classList') {
-                                                for (let className of childAttr) {
-                                                    curChild.classList.add(className);
-                                                }
+                                                if (typeof child[childAttr] !== 'string') {
+                                                    for (let className of childAttr) {
+                                                        curChild.classList.add(childAttr[className]);
+                                                    }
+                                                } else curChild.classList.add(child[childAttr]);
                                             } else if (childAttr === 'handler') {
                                                 for (let handler of childAttr) {
                                                     curChild.addEventListener(handler.event, ev => {
                                                         return handler.fn(ev, num);
                                                     })
                                                 }
-                                            } else curChild.setAttribute(childAttr, childAttrVal)
+                                            } else curChild.setAttribute(childAttr, child[childAttr])
                                         }
                                     }
                                 }
+                                else if (attr === 'name' || attr === 'id') curSib.setAttribute(attr, `${sib[attr]}_${num}`);
                                 else {
                                     curSib.setAttribute(attr, sib[attr]);
                                 }

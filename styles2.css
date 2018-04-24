@@ -131,12 +131,24 @@ ul li {
     flex-shrink: 1;
 }
 
+.margin-none {
+    margin: 0;
+}
+
 .pad {
     padding: .625rem 1rem .875rem;
 }
 
+.pad-less {
+    padding: .375rem .75rem .5rem;
+}
+
 .border-radius {
     border-radius: .25rem;
+}
+
+.thin-grey-border {
+    border: 1px solid var(--quarter-trans-grey);
 }
 
 .item-margin-right:not(:last-child) {
@@ -152,6 +164,10 @@ ul li {
 }
 
 .grey-bg {
+    background-color: var(--bs-jumbo-grey);
+}
+
+.striped:nth-child(2n+1) {
     background-color: var(--bs-jumbo-grey);
 }
 

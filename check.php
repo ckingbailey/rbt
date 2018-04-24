@@ -8,9 +8,14 @@ session_start();
 $dir = new DirectoryIterator('/home/ubuntu/workspace/');
 ?>
 <?php
+$arr = [
+    corn => 0
+];
+$val = isset($arr['val']);
 echo "<pre>";
 var_dump($_SESSION);
 echo "</pre>";
+echo "<pre style='font-size: 2rem; color: orangeRed;'>$val</pre>"
 ?>
 <ol>
 <?php

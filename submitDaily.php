@@ -72,33 +72,46 @@
             $equipData = [];
             $actData = [];
             foreach ($post as $key => $val) {
+                // parse flattened POST data to nested arrays
+                // first, check for labor and equip keys
                 if (strpos($key, 'labor') !== false || strpos($key, 'equip') !== false) {
                     $num = intval(substr($key, strpos($key, '_') + 1));
                     // there shouldn't be any equipOrLabor keys submitted, but if one is found, rm it
                     if (strpos($key, 'equipOrLabor') !== false) unset($post[$key]);
                     elseif (strpos($key, 'labor') !== false) {
-                        // assign 'labor' vals to 'labor' keys @ num
+                        // assign 'labor' vals to 'labor' keys @ array[num]
+                        // clean '_$num' out of any numbered $key
                         $laborKey = substr($key, 0, strpos($key, '_'));
                         $laborData[$num][$laborKey] = $val;
-                        $laborData[$num]['idrID'] = $newIdrID;
+                        // if idrID is not set, set it
+                        if (!isset($laborData[$num]['idrID'])) {
+                            $laborData[$num]['idrID'] = $newIdrID;
+                        }
+                        // unset $key from $post once it's parsed to array
+                        unset($post, $key);
                     } else {
-                        // assign 'equip' vals to 'equip' keys @ num
+                        // assign 'equip' vals to 'equip' keys @ array[num]
+                        // clean '_$num' out of any numbered $key
                         $equipKey = substr($key, 0, strpos($key, '_'));
                         $equipData[$num][$equipKey] = $val;
                         $equipData[$num]['idrID'] = $newIdrID;
+                        // unset $key from $post once it's parsed to array
+                        // unset $key from $post once it's parsed to array
+                        unset($post, $key);
                     }
-                    // and unset $key from $post
-                     unset($post, $key);
-                } elseif (strpos($key, 'act') !== false) {
-                // assign 'act' vals to 'act' keys @ actNum
+                }
+                // next, check for act keys
+                elseif (strpos($key, 'act') !== false) {
+                    // assign 'act' vals to 'act' keys @ array[actNum]
                     // num following 1st '_' in $key is resource number (labor or equip)
-                    $rsrcNum = intval(substr($key, strpos($key, '_') + 1));
+                    $rsrcNum = intval(substr($key, strpos($key, '_') + 1, strpos($key, '_', strpos($key, '_') + 1) - (strpos($key, '_') + 1)));
                     // num following 2nd '_' in $key is activity number for that resource
                     $actNum = intval(substr($key, strpos($key, '_', strpos($key, '_') + 1) + 1));
                     $actKey = substr($key, 0, strpos($key, '_'));
                     $actData[$rsrcNum][$actNum][$actKey] = $val;
                     $actData[$rsrcNum][$actNum]['idrID'] = $newIdrID;
-                    // I'll have to append laborID or equipID after INSERT and retrieval of insert_key
+                    unset($post, $val);
+                    // link laborID or equipID to activityID after INSERT and retrieval of insert_key
                 } else {
                     continue;
                 }
