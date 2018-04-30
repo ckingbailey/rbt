@@ -10,7 +10,7 @@ if ($idrID = intval($_POST['idrID'])) {
         if ($userID = intval($_POST['userID'])) {
             if ($comment = $_POST['comment']) {
                 $commentQry = "INSERT idrComments (userID, comment, idrID, commentDate)
-                    VALUES ('{$userID}', '{$_POST['comment']}', {$idrID}, '{$timestamp}')";
+                    VALUES ('{$_POST['userID']}', '{$_POST['comment']}', {$idrID}, '{$timestamp}')";
                 $result = $link->query($commentQry);
                 if (!result) {
                     http_response_code(500);
@@ -36,7 +36,7 @@ if ($idrID = intval($_POST['idrID'])) {
         }
     } elseif ($comment = $_POST['comment']) {
         $commentQry = "INSERT idrComments (userID, comment, idrID, commentDate)
-            VALUES ('{$userID}', '{$_POST['comment']}', {$idrID}, '{$timestamp}')";
+            VALUES ('{$_POST['userID']}', '{$_POST['comment']}', {$idrID}, '{$timestamp}')";
         $result = $link->query($commentQry);
         if (!result) {
             http_response_code(500);

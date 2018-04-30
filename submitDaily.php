@@ -11,6 +11,11 @@
     $actTable = 'activity';
     $link = f_sqlConnect();
     $timestamp = date('Y-m-d H:i:s');
+    $editableUntil = new DateTime($timestamp);
+    // an IDR is editable until 1 AM on the day after its creation
+    $editableUntil->
+        setDate($editableUntil->format('Y'), $editableUntil-> format('m'), $editableUntil->format('j') + 1)->
+        setTime('00', '59', '59');
     
     $userID = $_SESSION['UserID'];
     $userQry = 'SELECT Username FROM users_enc WHERE UserID = '.$userID;
@@ -23,7 +28,7 @@
     }
 
     // check for existing submission
-    $check = "SELECT idrID, idrDate, locationID FROM $idrTable WHERE (idrDate='{$_POST['idrDate']}') AND (userID={$_POST['userID']}) AND (locationID={$_POST['locationID']}";
+    $check = "SELECT idrID, idrDate, LocationID FROM $idrTable WHERE (idrDate='{$_POST['idrDate']}') AND (UserID={$_POST['UserID']}) AND (LocationID={$_POST['LocationID']}";
     $result = $link->query($check);
     
     if ($result) {
@@ -48,6 +53,9 @@
             // destroy in $post any key found in result
             unset($post[$key]);
         }
+        
+        // append timestamp and editableUntil to $idrData;
+        $idrData['editableUntil'] = $editableUntil->format($editableUntil::W3C);
     
         $keys = implode(", ", array_keys($idrData));
         $vals = implode("', '", array_values($idrData));
@@ -62,7 +70,7 @@
             $query = "INSERT INTO $idrTable ($keys) VALUES ('$vals')";
         }
     
-        // this is the block that does actually executes the INSERT query
+        // this is the block that actually executes the INSERT query
         if ($result = $link->query($query)) {
             http_response_code(201);
             $code = http_response_code();
@@ -71,6 +79,21 @@
             $laborData = [];
             $equipData = [];
             $actData = [];
+            // test for comment and insert if present
+            if ($comment = $post['comment']) {
+                $commentQry = "INSERT idrComments (userID, comment, idrID)
+                    VALUES ('{$_POST['UserID']}', '{$_POST['comment']}', '{$newIdrID}')";
+                if ($result = $link->query($commentQry)) {
+                    http_response_code(201);
+                    $code = http_response_code();
+                }
+                else {
+                    http_response_code(500);
+                    $code = http_response_code();
+                    echo "There was a problem adding your comment";
+                    return;
+                }
+            }
             foreach ($post as $key => $val) {
                 // parse flattened POST data to nested arrays
                 // first, check for labor and equip keys
@@ -79,6 +102,10 @@
                     // there shouldn't be any equipOrLabor keys submitted, but if one is found, rm it
                     if (strpos($key, 'equipOrLabor') !== false) unset($post[$key]);
                     elseif (strpos($key, 'labor') !== false) {
+                        // if key includes 'Location', grab the 'Location...' part of the string
+                        if (strpos($key, 'Location') !== false) {
+                            $key = substr($key, strpos($key, 'Location'));
+                        }
                         // assign 'labor' vals to 'labor' keys @ array[num]
                         // clean '_$num' out of any numbered $key
                         $laborKey = substr($key, 0, strpos($key, '_'));
@@ -90,6 +117,10 @@
                         // unset $key from $post once it's parsed to array
                         unset($post, $key);
                     } else {
+                        // if key includes 'Location', grab the 'Location...' part of the string
+                        if (strpos($key, 'Location') !== false) {
+                            $key = substr($key, strpos($key, 'Location'));
+                        }
                         // assign 'equip' vals to 'equip' keys @ array[num]
                         // clean '_$num' out of any numbered $key
                         $equipKey = substr($key, 0, strpos($key, '_'));
@@ -101,7 +132,7 @@
                     }
                 }
                 // next, check for act keys
-                elseif (strpos($key, 'act') !== false) {
+                elseif (strpos($key, 'act') !== false || strpos($key, 'numResources') !== false) {
                     // assign 'act' vals to 'act' keys @ array[actNum]
                     // num following 1st '_' in $key is resource number (labor or equip)
                     $rsrcNum = intval(substr($key, strpos($key, '_') + 1, strpos($key, '_', strpos($key, '_') + 1) - (strpos($key, '_') + 1)));
@@ -129,9 +160,9 @@
                     if ($result = $link->query($query)) {
                         http_response_code(201);
                         $code = http_response_code();
-                    // store db ID of new record
+                        // store db ID of new record
                         $newLaborID = $link->insert_id;
-                    // build queries from activities that fall within same index as labor
+                        // build queries from activities that fall within same index as labor
                         if (count($actData[$index])) {
                             foreach ($actData[$index] as $key => $val) {
                                 $actKeys = implode(", ", array_keys($val));
@@ -142,10 +173,22 @@
                                     $linkQry = "INSERT INTO $laborActLink (laborID, activityID) VALUES ('$newLaborID', '$link->insert_id')";
                                     if ($result = $link->query($linkQry)) {
                                     } else ;//printQryErr($linkQry, $link->error);
-                                } else ;//printQryErr($actQry, $link->error);
+                                } else {
+                                    http_response_code(500);
+                                    error_log(__FILE__.': '.__LINE.': '.http_response_code().': '.$link->error, 0);
+                                    error_log(__FILE__.': '.__LINE.': '.http_response_code().': '.$link->error."\n", 3, '../error_log.log');
+                                    echo __FILE__.': '.__LINE__.': '.$link->error;
+                                    return;
+                                }
                             }
                         } else continue;
-                    } else ;//printQryErr($query, $link->error);
+                    } else {
+                        http_response_code(500);
+                        error_log(__FILE__.': '.__LINE.': '.http_response_code().': '.$link->error, 0);
+                        error_log(__FILE__.': '.__LINE.': '.http_response_code().': '.$link->error."\n", 3, '../error_log.log');
+                        echo __FILE__.': '.__LINE__.': '.$link->error;
+                        return;
+                    }
                 }
             }
             if (count($equipData)) {
@@ -173,22 +216,33 @@
                                     $linkQry = "INSERT INTO $equipActLink (equipID, activityID) VALUES ('$newEquipID', '$link->insert_id')";
                                     if ($result = $link->query($linkQry)) {
                                     } else ;//printQryErr($linkQry, $link->error);
-                                } else ;//printQryErr($actQry, $link->error);
+                                } else {
+                                    http_response_code(500);
+                                    error_log(__FILE__.': '.__LINE.': '.http_response_code().': '.$link->error, 0);
+                                    error_log(__FILE__.': '.__LINE.': '.http_response_code().': '.$link->error."\n", 3, '../error_log.log');
+                                    echo __FILE__.': '.__LINE__.': '.$link->error;
+                                    return;
+                                }
                             }
                         } else continue;
-                    } else ;//printQryErr($query, $link->error);
+                    } else {
+                        http_response_code(500);
+                        error_log(__FILE__.': '.__LINE.': '.http_response_code().': '.$link->error, 0);
+                        error_log(__FILE__.': '.__LINE.': '.http_response_code().': '.$link->error."\n", 3, '../error_log.log');
+                        echo __FILE__.': '.__LINE__.': '.$link->error;
+                        return;
+                    }
                 }
             }
             http_response_code(201);
+            header("Location: /idr.php?idrID={$newIdrID}");
             $code = http_response_code();
-            echo "new record created: Inspector's Daily Report #{$newIdrID}\n{$timestamp}";
+            echo "new record created: Inspector's Daily Report #{$newIdrID}\nhttps://{$_SERVER['HTTP_HOST']}/idr.php?idrID={$newIdrID}\n{$timestamp}";
         } else {
             http_response_code(500);
             $code = http_response_code();
         }
     }
-    $typeOfUserID = gettype($_POST['userID']);
-    $typeOfIdrDate = gettype($_POST['idrDate']);
 ?>
 <?php
 // this is all stuff for testing
