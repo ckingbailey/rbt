@@ -18,14 +18,7 @@
         setTime('00', '59', '59');
     
     $userID = $_SESSION['UserID'];
-    $userQry = 'SELECT Username FROM users_enc WHERE UserID = '.$userID;
 
-    // why do we need this if Username is already stored in $_SESSION(?)
-    if ($result = $link->query($userQry)) {
-        while ($row = mysqli_fetch_assoc($result)) {
-            $username = $row['Username'];
-        }
-    }
 
     // check for existing submission
     $check = "SELECT idrID, idrDate, LocationID FROM $idrTable WHERE (idrDate='{$_POST['idrDate']}') AND (UserID={$_POST['UserID']}) AND (LocationID={$_POST['LocationID']}";
@@ -56,6 +49,7 @@
         
         // append timestamp and editableUntil to $idrData;
         $idrData['editableUntil'] = $editableUntil->format($editableUntil::W3C);
+        if (!isset($idrData['UserID'])) $idrData['UserID'] = $userID;
     
         $keys = implode(", ", array_keys($idrData));
         $vals = implode("', '", array_values($idrData));

@@ -107,6 +107,7 @@ if ($userAuth < 1) {
                                         <h6 class='flex-row space-between'>
                                             <span>Inspector Name</span>
                                             <span>{$row['firstname']} {$row['lastname']}</span>
+                                            <input type='hidden' name='UserID' value='{$userID}' />
                                         </h6>
                                     </div>
                                     <div class='card-body'>
