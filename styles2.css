@@ -131,6 +131,14 @@ ul li {
     justify-content: space-between;
 }
 
+.justify-center {
+    justify-content: center;
+}
+
+.justify-end {
+    justify-content: flex-end;
+}
+
 .align-center {
     align-items: center;
 }
@@ -141,6 +149,10 @@ ul li {
 
 .align-stretch {
     align-items: stretch;
+}
+
+.align-end {
+    align-items: flex-end;
 }
 
 .flex {
@@ -220,6 +232,7 @@ ul li {
 }
 
 .navbar-vta-blue {
+    background-color: #03528B;
     background-color: var(--vta-dark-blue);
     color: white;
 }
