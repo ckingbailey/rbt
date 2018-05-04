@@ -16,6 +16,8 @@
     --vta-bright-blue-tone-2: #8bd2f0;
     --vta-blue: #0072c6;
     --vta-dark-blue: #03528B;
+    --quarter-trans-vta-dark-blue: #03528B40;
+    --tenth-trans-vta-dark-blue: #03528B20;
 }
 
 body {
@@ -101,6 +103,10 @@ ul li {
     }
 }*/
 
+.fit-content {
+    width: fit-content;
+}
+
 .center-element {
     margin-left: auto; margin-right: auto;
 }
@@ -175,28 +181,80 @@ ul li {
     padding: .625rem 1rem .875rem;
 }
 
+.pad-more {
+    padding: 1.25rem 1.25rem 1.5rem;
+}
+
 .pad-less {
     padding: .375rem .75rem .5rem;
+}
+
+.box-shadow {
+    box-shadow: 1px 1px 8px 2px var(--tenth-trans-vta-dark-blue);
+}
+
+.border-dark-blue {
+    border-color: var(--vta-dark-blue);
 }
 
 .border-radius {
     border-radius: .25rem;
 }
 
+.no-border-radius {
+    border-radius: 0;
+}
+
 .thin-grey-border {
     border: 1px solid var(--quarter-trans-grey);
+}
+
+.thick-grey-line {
+    border-top: 2px solid var(--quarter-trans-grey);
 }
 
 .item-margin-right:not(:last-child) {
     margin-right: .75rem;
 }
 
+.item-margin-right:last-child {
+    margin-bottom: 0;
+}
+
+.item-margin-right-less:not(:last-child) {
+    margin-right: .375rem;
+}
+
+.item-margin-right-less:last-child {
+    margin-bottom: 0;
+}
+
 .item-margin-bottom:not(:last-child) {
     margin-bottom: .875rem;
 }
 
+.item-margin-bottom:last-child {
+    margin-bottom: 0;
+}
+
+.item-margin-bottom-less:not(:last-child) {
+    margin-bottom: .375rem;
+}
+
+.item-margin-bottom-less:last-child {
+    margin-bottom: 0;
+}
+
 .item-border-bottom:not(:last-child) {
     border-bottom: 1px solid var(--quarter-trans-grey);
+}
+
+.border-trans {
+    border-color: transparent;
+}
+
+.no-border {
+    border: none;
 }
 
 .grey-bg {
@@ -213,6 +271,10 @@ ul li {
 
 .blue-striped:nth-child(2n+1) {
     background-color: var(--vta-bright-blue-tone-1);
+}
+
+.text-dark-blue {
+    color: var(--vta-dark-blue);
 }
 
 /* Navbar */
@@ -235,6 +297,20 @@ ul li {
     background-color: #03528B;
     background-color: var(--vta-dark-blue);
     color: white;
+}
+
+.nav-tabs a:hover {
+    text-decoration: none;
+}
+
+.nav-tabs a:not(.active) {
+    color: var(--secondary);
+}
+
+.nav-tabs .active.border-dark-blue {
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+    color: var(--vta-dark-blue);
 }
 
 /* Page Header */

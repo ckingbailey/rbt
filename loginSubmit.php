@@ -29,7 +29,7 @@
     /* Check password for alpha numeric characters */
     elseif (ctype_alnum($_POST['Password']) != true)
     {
-            $message = "Password must be alpha numeric";
+        $message = "Password must be alpha numeric";
     }
     else
     {
@@ -45,11 +45,11 @@
         
         $query = "SELECT UserID, Password, Role, secQ FROM users_enc WHERE Username = '".$Username."'";
         if($result=mysqli_query($link,$query)) {
-        while($row = mysqli_fetch_assoc($result)) {
-            $set_password = $row['Password'];
-            $set_UserID = $row['UserID'];
-            $set_Role = $row['Role'];
-            $set_SecQ = $row['secQ'];
+            while($row = mysqli_fetch_assoc($result)) {
+                $set_password = $row['Password'];
+                $set_UserID = $row['UserID'];
+                $set_Role = $row['Role'];
+                $set_SecQ = $row['secQ'];
             }
         } else {
             $message = "User does not exist";
@@ -65,6 +65,7 @@
             $_SESSION['UserID'] = $set_UserID;
             $_SESSION['Username'] = $Username;
             $_SESSION['Role'] = $set_Role;
+            $_SESSION['viewIDR'] = $viewIDR;
             $_SESSION['timeout'] = time();
             $query = "UPDATE users_enc SET LastLogin = NOW() WHERE Username = '".$Username."'";
             mysqli_query($link, $query) or
