@@ -32,22 +32,21 @@
         }
     } else {
         // if no dupe, handle POST data
+        
         // first, qry IDR column names, store them as keys of an array
         $query = 'SHOW COLUMNS FROM '.$idrTable;
         $result = $link->query($query);
-        
         while($row = $result->fetch_assoc()){
             $key = $row['Field'];
+            // if POST data key name matches column name from IDR table, save value to idrData array
             if ($post[$key]) {
                 $idrData[$key] = $post[$key];
             }
-            // destroy in idrData any key=>val pair not in result
-            else unset($idrData[$key]);
             // destroy in $post any key found in result
             unset($post[$key]);
         }
         
-        // append timestamp and editableUntil to $idrData;
+        // append editableUntil to $idrData;
         $idrData['editableUntil'] = $editableUntil->format($editableUntil::W3C);
         if (!isset($idrData['UserID'])) $idrData['UserID'] = $userID;
     

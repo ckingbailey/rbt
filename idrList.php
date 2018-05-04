@@ -24,7 +24,7 @@ if ($result = $link->query($qry)) {
     $idrAuth = 0;
 }
     
-$qry = "SELECT idrID, i.UserID, idrDate, Username FROM IDR i JOIN users_enc u on i.UserID=u.UserID";
+$qry = "SELECT idrID, i.UserID, idrForDate, Username FROM IDR i JOIN users_enc u on i.UserID=u.UserID";
 $orderBy = " ORDER BY idrID";
 
 $errorMsg = [
@@ -39,7 +39,7 @@ if ($myIDRs = $link->query("$qry WHERE i.UserID='$userID'$orderBy")) {
 }
 
 if ($link->error) {
-    $myIDRs = $errorMsg['myIDRs'];
+    $myIDRs = $link->error.' '.$errorMsg['myIDRs'];
     // if error, do not grant view permission to User or Viewer level
     $idrAuth = $idrAuth <= 1 ? 0 : $idrAuth;
 }
@@ -90,7 +90,7 @@ if ($idrAuth) {
                                                         <a href='%s'>%s <span class='text-secondary font-italic'>&bull; %s</span></a>
                                                     </li>",
                                                     "/idr.php?idrID={$row['idrID']}",
-                                                    $row['idrDate'],
+                                                    $row['idrForDate'],
                                                     $row['Username']
                                                 );
                                             }
@@ -100,11 +100,20 @@ if ($idrAuth) {
                                             $active = '';
                                         } else echo "<h4>That's strange. No reports were found. I suspect something's up.</h4>";
                                         $result->close();
-                                    } elseif ($link->error) echo "<h4>{$errorMsg['idrList']}</h4>";
+                                    } elseif ($link->error) {
+                                        echo "
+                                            <h4 id='error-msg-idrList' class='error-msg text-red'>{$errorMsg['idrList']}</h4>
+                                            <h5 id='error-msg-{$link->errno}' class='error-msg text-secondary'>{$link->error}</h5>";
+                                        return;
+                                    }
                                 }
                                 // if user has an IDRs of their own render them under My IDRs tab
                                 if ($myIDRs) {
-                                    if ($myIDRs === $errorMsg['myIDRs']) echo "<h4 class='text-secondary'>{$errorMsg['myIDRs']}</h4>";
+                                    if ($myIDRs === $errorMsg['myIDRs']) {
+                                        echo "
+                                            <h4 id='error-msg-myIDRs' class='text-red'>{$errorMsg['myIDRs']}</h4>";
+                                        return;
+                                    }
                                     elseif ($myIDRs->num_rows) {
                                         echo "
                                             <div role='tabpanel' id='myReports' class='tab-pane pt-1 pl-2 pr-2 fit-content center-element{$active}'>
@@ -115,7 +124,7 @@ if ($idrAuth) {
                                                             <a href='%s'>%s</a>
                                                         </li>",
                                                         "/idr.php?idrID={$row['idrID']}",
-                                                        $row['idrDate']
+                                                        $row['idrForDate']
                                                     );
                                                 }
                                         echo "

@@ -10,6 +10,7 @@
     --bs-jumbo-grey: #e9ecef;
     --quarter-trans-grey: #0000003f;
     --tenth-trans-grey: #00000018;
+    --red: #bf211e;
     --yellow: #feb24c;
     --vta-bright-blue: #3eb4e6;
     --vta-bright-blue-tone-1: #64c3eb;
@@ -273,8 +274,24 @@ ul li {
     background-color: var(--vta-bright-blue-tone-1);
 }
 
+.text-blue {
+    color: var(--vta-blue);
+}
+
+.text-bright-blue {
+    color: var(--vta-bright-blue);
+}
+
 .text-dark-blue {
     color: var(--vta-dark-blue);
+}
+
+.text-yellow {
+    color: var(--yellow);
+}
+
+.text-red {
+    color: var(--red);
 }
 
 /* Navbar */
