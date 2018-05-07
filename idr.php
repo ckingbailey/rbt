@@ -1,6 +1,6 @@
 <?php
+include 'session.php';
 include('SQLFunctions.php');
-session_start();
 include('filestart.php');
 $title = "SVBX - Inspector's Daily Report";
 $d = new DateTime();
@@ -94,11 +94,12 @@ if ($userAuth < 1) {
             if ($numRows) {
                 while ($row = $result->fetch_assoc()) {
                     $expiry = new DateTime($row['editableUntil']);
+                    $approved = $row['approvedBy'];
                     
                     if ($row['UserID'] === $userID || $userAuth > 1) {
                         // review view + comments
                         // + Approve btn if $userAuth > 1
-                        echo "
+                        echo ("
                         <h3 class='center-content font-italic'>Review</h3>
                         <div class='row item-margin-bottom'>
                             <div class='col-md-6'>
@@ -136,7 +137,7 @@ if ($userAuth < 1) {
                                 <div class='card h-100'>
                                     <div class='card-header grey-bg'><h6>Track safety</h6></div>
                                     <div class='card-body'>
-                                        <ul>";
+                                        <ul>");
                                         $safety = [
                                             EIC => $row['EIC'],
                                             Watchman => $row['watchman'],
@@ -159,12 +160,12 @@ if ($userAuth < 1) {
                                                 </li>";
                                             }
                                         }
-                        echo "
+                        echo ("
                                         </ul>
                                     </div>
                                 </div>
                             </div>
-                        </div>";
+                        </div>");
                         // iterate over results and display as nested <ul>s
                         if ($result = $link->query($laborQry)) {
                             $linkingT = 'laborAct_link';
@@ -283,7 +284,7 @@ if ($userAuth < 1) {
                             }
                         } else echo "<pre style='font-size: 2rem; color: orangeRed;'>{$link->error}</pre>";
                         // comment & Approve elements
-                        echo "
+                        echo ("
                         <hr />
                         <form class='item-margin-bottom'>
                             <input type='hidden' name='idrID' value='$idrID' />
@@ -293,24 +294,24 @@ if ($userAuth < 1) {
                                     <label>Comment</label>
                                     <textarea id='commentBox' name='comment' class='form-control' rows='5'></textarea>
                                 </div>
-                            </div>";
-                        if (!$row['approvedBy'] && $userAuth > 1) {
+                            </div>");
+                        if (!$approved && $userAuth > 1) {
                             echo "
                             <div class='row item-margin-bottom'>
                                 <div class='col center-content'>
-                                    <button type='button' class='btn btn-lg btn-primary' onclick='return submitAndApprove(event)'>Approve</button>
+                                    <button type='button' class='btn btn-lg btn-primary' onclick='return submitAndApprove(event);'>Approve</button>
                                 </div>
                             </div>
                             <div class='row item-margin-bottom'>
                                 <div class='col center-content'>
-                                    <button type='button' class='btn btn-light text-secondary' onclick='return submitNoApprove(event)'><u>Request revisions</u></button>
+                                    <button type='button' class='btn btn-light text-secondary' onclick='return submitNoApprove(event);'><u>Request revisions</u></button>
                                 </div>
                             </div>";
                         } else {
                             echo "
                             <div class='row item-margin-bottom'>
                                 <div class='col center-content'>
-                                    <button type='button' class='btn btn-lg btn-primary' onclick='return submitNoApprove(event)'>Add comment</button>
+                                    <button type='button' class='btn btn-lg btn-primary' onclick='return submitNoApprove(event);'>Add comment</button>
                                 </div>
                             </div>";
                         }
@@ -335,7 +336,7 @@ if ($userAuth < 1) {
                                 </div>";
                             }
                         } else echo "<pre class='text-danger'>{$result->error}</pre>";
-                        echo "
+                        echo ("
                         <script>
                             function submitAndApprove(ev) {
                                 submitReview(ev, 'true');
@@ -357,16 +358,17 @@ if ($userAuth < 1) {
                                     }
                                 ).then(res => {
                                     if (res.ok) return res.text();
-                                    else return window.alert(res.text());
+                                    else {
+                                        res.text().then(text => window.alert(text));
+                                    }
                                 })
                                 .then(text => {
                                     window.alert(text);
-                                    if (!text.toLowerCase().includes('problem')) {
-                                        return window.location.reload();
-                                    }
+                                    window.location.reload();
+                                    return;
                                 })
                             }
-                        </script>";
+                        </script>");
                     // } elseif (!$row['approvedBy'] && $userID === $row['UserID']) {
                     //     echo "<h2 class='text-secondary'>Editable Until view</h2>";
                     //     // IDR editable until midnight after $timestamp

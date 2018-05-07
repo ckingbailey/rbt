@@ -8,7 +8,7 @@ $link = f_sqlConnect();
 if ($idrID = intval($_POST['idrID'])) {
     if ($_POST['approve'] === 'true') {
         if ($userID = intval($_POST['userID'])) {
-            if ($comment = $_POST['comment']) {
+            if ($comment = $link->escape_string($_POST['comment'])) {
                 $commentQry = "INSERT idrComments (userID, comment, idrID, commentDate)
                     VALUES ('{$_POST['userID']}', '{$_POST['comment']}', {$idrID}, '{$timestamp}')";
                 $result = $link->query($commentQry);
@@ -24,11 +24,10 @@ if ($idrID = intval($_POST['idrID'])) {
             if (!$result) {
                 http_response_code(500);
                 $code = http_response_code();
-                echo "There was a problem handling your form submission";
+                echo "There was a problem handling your form submission\n{$link->error}";
                 return;
             } else {
-                $typeofUserID = gettype($userID);
-                http_response_code(201);
+                http_response_code(200);
                 $code = http_response_code();
                 echo "Daily report approved\nreport #{$idrID}\n{$timestamp}";
                 return;
@@ -41,7 +40,7 @@ if ($idrID = intval($_POST['idrID'])) {
         if (!result) {
             http_response_code(500);
             $code = http_response_code();
-            echo "There was a problem adding your comment";
+            echo "There was a problem adding your comment\n{$link->error}";
             return;
         } else {
             http_response_code(201);

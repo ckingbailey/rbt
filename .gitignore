@@ -11,3 +11,5 @@ bootstrap.*
 
 # don't push this to remote
 node_modules
+composer.phar
+/vendor/

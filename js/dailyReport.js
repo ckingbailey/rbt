@@ -1,9 +1,5 @@
 (function() {
     // TODO: make a fn to prevent more than 2-3 lines being added if lines are left empty
-    // const formState = {
-    //     keys: [],
-    //     actLists: []
-    // };
     
     const form = document.forms['dailyReportForm'];
     const submitEvent = new window.Event('submit');
@@ -15,23 +11,9 @@
     
     // The Submit handler
     function handleSubmit() {
-        const endpoint = 'submitDaily.php';
+        const endpoint = 'submitIDR.php';
         const data = new FormData(form);
-        // append actList details to appropriate actList
-        // let i = 0;
-        // for (let list of formState.actLists) {
-        //     let j = 0;
-        //     for (let id in list) {
-        //         const listItem = list[id];
-        //         // flatten act list data
-        //         data.append('actDesc_' + i + '_' + j, listItem.textVal);
-        //         // append actHrs data from JS objects
-        //         data.append('actHrs_' + i + '_' + j, listItem.hrsVal);
-        //         j++;
-        //     }
-        //     i++;
-        // }
-
+        
         window.fetch(endpoint, {
             method: 'POST',
             body: data
@@ -342,6 +324,7 @@
                 {
                     tagName: 'input',
                     label: {
+
                         innerText: 'Description of labor',
                         id: 'labelDescEquipLabor'
                     },
@@ -470,6 +453,7 @@
                             classList: ['typcn', 'typcn-chevron-right-outline']
                         }
                     ]
+
                 }
             ]
         }
@@ -512,6 +496,7 @@
         for (let ctrl of elements) {
             // for each one append a div.item-margin-right
             const curParent = row.appendChild(document.createElement('div'));
+
             // then loop over ctrl keys
             curCtrl = curParent.appendChild(document.createElement(ctrl.tagName));
             for (let prop in ctrl) {

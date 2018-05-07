@@ -1,6 +1,6 @@
 <?php
-    include('SQLFunctions.php');
-    session_start();
+    include 'SQLFunctions.php';
+    include 'mailer.php';
     
     $post = $_POST;
     $idrTable = 'IDR';
@@ -40,7 +40,7 @@
             $key = $row['Field'];
             // if POST data key name matches column name from IDR table, save value to idrData array
             if ($post[$key]) {
-                $idrData[$key] = $post[$key];
+                $idrData[$key] = $link->escape_string($post[$key]);
             }
             // destroy in $post any key found in result
             unset($post[$key]);
@@ -73,9 +73,9 @@
             $equipData = [];
             $actData = [];
             // test for comment and insert if present
-            if ($comment = $post['comment']) {
+            if ($comment = $link->escape_string($post['comment'])) {
                 $commentQry = "INSERT idrComments (userID, comment, idrID)
-                    VALUES ('{$_POST['UserID']}', '{$_POST['comment']}', '{$newIdrID}')";
+                    VALUES ('{$_POST['UserID']}', '{$comment}', '{$newIdrID}')";
                 if ($result = $link->query($commentQry)) {
                     http_response_code(201);
                     $code = http_response_code();
@@ -84,7 +84,7 @@
                     http_response_code(500);
                     $code = http_response_code();
                     echo "There was a problem adding your comment";
-                    return;
+                    exit();
                 }
             }
             foreach ($post as $key => $val) {
@@ -102,7 +102,7 @@
                         // assign 'labor' vals to 'labor' keys @ array[num]
                         // clean '_$num' out of any numbered $key
                         $laborKey = substr($key, 0, strpos($key, '_'));
-                        $laborData[$num][$laborKey] = $val;
+                        $laborData[$num][$laborKey] = $link->escape_string($val);
                         // if idrID is not set, set it
                         if (!isset($laborData[$num]['idrID'])) {
                             $laborData[$num]['idrID'] = $newIdrID;
@@ -117,7 +117,7 @@
                         // assign 'equip' vals to 'equip' keys @ array[num]
                         // clean '_$num' out of any numbered $key
                         $equipKey = substr($key, 0, strpos($key, '_'));
-                        $equipData[$num][$equipKey] = $val;
+                        $equipData[$num][$equipKey] = $link->escape_string($val);
                         $equipData[$num]['idrID'] = $newIdrID;
                         // unset $key from $post once it's parsed to array
                         // unset $key from $post once it's parsed to array
@@ -230,64 +230,16 @@
             http_response_code(201);
             header("Location: /idr.php?idrID={$newIdrID}");
             $code = http_response_code();
-            echo "new record created: Inspector's Daily Report #{$newIdrID}\nhttps://{$_SERVER['HTTP_HOST']}/idr.php?idrID={$newIdrID}\n{$timestamp}";
+            $reviewLink = "https://{$_SERVER['HTTP_HOST']}/idr.php?idrID={$newIdrID}";
+            $distList = "colin.king-bailey@vta.org";
+            // Robert.Burns@vta.org, 
+            echo "new record created: Inspector's Daily Report #{$newIdrID}\nhttps://{$reviewLink}\n{$timestamp}";
+            mailer($distList,
+                'test: new Inspector Daily Report',
+                "{$reviewLink}\n{$timestamp}");
         } else {
             http_response_code(500);
             $code = http_response_code();
         }
     }
-?>
-<?php
-// this is all stuff for testing
-// pls destroy before deploy
-function echoAs2OLs($arr1, $arr2) {
-    echo "
-        <div style='display: flex; flex-flow: row nowrap;'>
-        <ol start='0'>";
-            foreach ($arr1 as $key) {
-                echo "<li>$key</li>";
-            }
-    echo "
-        </ol>
-        <ol start='0'>";
-            foreach ($arr2 as $val) {
-                echo "<li>$val</li>";
-            }
-    echo "
-        </ol>
-        </div>
-    ";
-}
-
-function picker($str, $arr) {
-    foreach ($arr as $key => $el) {
-        if (strpos($str, $key) !== false) {
-            return $el;
-        }
-    }
-}
-
-function printQueryStr($q) {
-    $colors = [
-        'labor' => 'magenta',
-        'equip' => 'green',
-        'act' => 'goldenrod',
-        '_link' => 'cyan'
-    ];
-    $color = picker($q, $colors);
-    echo "<p style='margin: .125rem 0; font-size: .9rem; color: $color'>$q</p>";
-}
-
-function printQrySuccess($q, $res) {
-    echo "<p style='margin: .125rem 0; font-weight: 700; color: royalBlue'>Success! new record, $res, created for query: $q</p>";
-}
-
-function printQryErr($q, $e) {
-    echo "
-    <div style='font-family: monospace'>
-        <h1 style='margin: .25rem 0; color: red'>Houston, we have a problem:</h1>
-        <h3 style='margin: .25rem 0;'>$q</h3>
-        <h3 style='margin: .25rem 0;'>$e</h3>
-    </div>";
-}
 ?>
