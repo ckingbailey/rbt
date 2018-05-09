@@ -17,7 +17,8 @@
         setDate($editableUntil->format('Y'), $editableUntil-> format('m'), $editableUntil->format('j') + 1)->
         setTime('00', '59', '59');
     
-    $userID = $_SESSION['UserID'];
+    $userID = $_SESSION['UserID'] || $_POST['UserID'];
+    $username = $_SESSION['Username'] || $_POST['Username'];
 
 
     // check for existing submission
@@ -231,12 +232,11 @@
             header("Location: /idr.php?idrID={$newIdrID}");
             $code = http_response_code();
             $reviewLink = "https://{$_SERVER['HTTP_HOST']}/idr.php?idrID={$newIdrID}";
-            $distList = "colin.king-bailey@vta.org";
-            // Robert.Burns@vta.org, 
-            echo "new record created: Inspector's Daily Report #{$newIdrID}\nhttps://{$reviewLink}\n{$timestamp}";
+            $distList = "colin.king-bailey@vta.org, Robert.Burns@vta.org";
+            echo "new record created: Inspector's Daily Report #{$newIdrID}\nhttps://{$reviewLink}\n{$username} {$timestamp}";
             mailer($distList,
-                'test: new Inspector Daily Report',
-                "{$reviewLink}\n{$timestamp}");
+                'new Inspector Daily Report',
+                "{$reviewLink}\n{$username} {$timestamp}");
         } else {
             http_response_code(500);
             $code = http_response_code();

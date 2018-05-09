@@ -294,6 +294,14 @@ ul li {
     color: var(--red);
 }
 
+.text-purple {
+    color: var(--purple);
+}
+
+.text-indigo {
+    color: var(--indigo);
+}
+
 /* Navbar */
 .navbar-heading {
     max-width: 13.5rem;
@@ -703,20 +711,6 @@ select:invalid {
 }
 
 /* sum table is not a proper table, and should be changed */
-.sumtable {
-    margin-left: auto;
-    margin-right: auto;
-    border: 1px solid black;
-    width:20%;
-}
-
-.sumtd {
-    text-align: left;
-    padding: 8px;
-}
-
-.sumtr:nth-child(even){background-color: #f2f2f2}
-/* above sum tables styles must be changed */
 .svbx-table, .svbx-table>thead, .svbx-table>tbody,
 .svbx-table tr, .svbx-table th, .svbx-table td {
     table-layout: fixed;
@@ -773,6 +767,10 @@ select:invalid {
 
 .svbx-th.del-th {
     width: 73px;
+}
+
+.descrip-th {
+    /*width: 250px;*/
 }
 /* End of Table Menu CSS */
 

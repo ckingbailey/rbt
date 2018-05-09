@@ -162,10 +162,9 @@ $Def = file_get_contents("ViewDef.sql").$DefID;
                         </tr>
                     </table>
                 ";
-            if($Role == 'S' OR $Role == 'A' OR $Role == 'U') 
-            {
+            if($Role == 'S' OR $Role == 'A' OR $Role == 'U') {
                 echo "
-                    <div  style='display: flex; align-items: center; justify-content: center; hspace:20; margin-bottom:3rem'>
+                    <div style='display: flex; align-items: center; justify-content: center; hspace:20; margin-bottom:3rem'>
                         <form action='UpdateDef.php' method='POST' onsubmit='' style='text-align:center' />
                             <input type='hidden' name='q' value='".$DefID."'/>
                             <input type='submit' name='submit' value='Update' class='btn btn-primary btn-lg'/>
@@ -175,8 +174,8 @@ $Def = file_get_contents("ViewDef.sql").$DefID;
                             <input type='hidden' name='q' value='".$DefID."'/>
                             <input type='submit' value='Clone' class='btn btn-primary btn-lg'  />
                         </form>
-                    </div></main>
-                ";
+                    </div>
+                </main>";
             } else {
                 echo "</main>";
             }

@@ -1,6 +1,7 @@
 <?php
 include('session.php');
 $title = "SVBX - Update Deficiency";
+$role = $_SESSION['Role'];
 include('filestart.php'); 
 
     $link = f_sqlConnect();
@@ -269,9 +270,15 @@ include('filestart.php');
             </table>
             <input type='submit' value='submit' class='btn btn-primary btn-lg'/>
             <input type='reset' value='reset' class='btn btn-primary btn-lg' /><br /><br />
-            </form>
-            </div>
-            ";
+        </form>";
+        if ($role === 'S') {
+            echo "
+                <form action='DeleteDef.php' method='POST' onsubmit='' onclick='return confirm(`ARE YOU SURE? Deficiencies should not be deleted, your deletion will be logged.`)'/>
+                    <button type='submit' name='q' value='$q' class='btn btn-primary btn-lg'>delete</button>
+                </form>";
+        }
+
+    echo "</main>";
             //echo "Description: " .$Description;
                     }  
                 } else {  

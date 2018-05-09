@@ -6,6 +6,7 @@ SELECT
     T.Status,
     Y.System,
     D.Description,
+    D.SpecLoc,
     D.LastUpdated
 FROM
     CDL D
