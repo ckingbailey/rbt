@@ -4,6 +4,7 @@ DS_Store
 # for devs eyes only
 config.*
 php.ini
+phpinfo.php
 check.php
 error_log
 old_*
@@ -13,3 +14,4 @@ bootstrap.*
 node_modules
 composer.phar
 /vendor/
+img_uploads
