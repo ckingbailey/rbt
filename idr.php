@@ -52,11 +52,6 @@ OR (((IDR i
 );
 */
 
-// determine view
-if ($idrID = $_GET['idrID']) {
-    $view = $_GET['view'];
-}
-
 $locQry = "SELECT LocationID, LocationName FROM Location ORDER BY LocationID";
 
 if ($userAuth < 1) {

@@ -74,7 +74,6 @@
         <header class='container page-header'>
             <h1 class='page-title'>$userFullName</h1>
             <h3 class='text-secondary user-role-title'>{$roleT[$role]}</h3>
-            <h4 class='text-purple'>{$_SESSION['Username']}</h4>
         </header>
         <main class='container main-content'>
             <div class='card item-margin-bottom no-border-radius box-shadow'>

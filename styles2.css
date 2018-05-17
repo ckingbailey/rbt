@@ -1,6 +1,6 @@
 @import './assets/typicons-font/src/font/typicons.css';
 
-* {
+:root {
     /* Bootsrap breakpoints */
     --breakpoint-xs: 0;
     --breakpoint-sm: 576px;
@@ -260,6 +260,14 @@ ul li {
 
 .grey-bg {
     background-color: var(--bs-jumbo-grey);
+}
+
+.bg-red {
+    background-color: var(--red);
+}
+
+.bg-yellow {
+    background-color: var(--yellow);
 }
 
 .striped:nth-child(2n+1) {
@@ -641,6 +649,10 @@ select:invalid {
     color: var(--secondary);
 }
 
+.btn-danger {
+  background-color: var(--red);
+  border-color: var(--red);
+}
 
 .btn-container {
     text-align: center;
@@ -669,6 +681,14 @@ select:invalid {
 
 .btn.btn-a:hover {
     color: var(--vta-dark-blue);
+}
+
+a[data-toggle="collapse"]>.typcn-arrow-sorted-down:before {
+    transition: transform linear .1s;
+}
+
+a[data-toggle="collapse"].collapsed>.typcn-arrow-sorted-down:before {
+    transform: rotate(-.25turn);
 }
 
 /* Table CSS */
