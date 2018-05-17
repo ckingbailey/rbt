@@ -1,12 +1,13 @@
 <?php 
 include('session.php');
+session_start();
 include('SQLFunctions.php');
 $title = "View Deficiencies";
 $link = f_sqlConnect();
 $role = $_SESSION['Role'];
 include('filestart.php');
 
-$roleLvlMap = [ null, V, U, A, S ];
+$roleLvlMap = [ 0, 'V', 'U', 'A', 'S' ];
 $roleLvl = array_search($role, $roleLvlMap);
 
 if ($result = $link->query('SELECT bdPermit from users_enc where userID='.$_SESSION['UserID'])) {
@@ -32,7 +33,8 @@ function concatSqlStr($arr, $table, $initStr = '') {
 }
 
 function printInfoBox($lvl, $href) {
-    $boxStart ="<div class='card item-margin-bottom'>
+    $boxStart ="
+        <div class='card item-margin-bottom'>
             <div class='card-body flex-row justify-content-between align-items-center grey-bg'>
                 <p class='mb-1'>Click Deficiency ID number to see full details</p>";
     $boxEnd ="</div></div>";
@@ -195,7 +197,7 @@ function printProjectDefsTable($cnxn, $qry, $lvl) {
                             <th class='svbx-th system-th collapse-sm collapse-xs'>System Affected</th>
                             <th class='svbx-th descrip-th'>Brief Description</th>
                             <th class='svbx-th collapse-md collapse-sm collapse-xs'>Spec Loc</th>";
-                    if($lvl >= 1) {
+                    if ($_SESSION['Role'] == 'S' OR $_SESSION['Role'] == 'A' OR $_SESSION['Role'] == 'U') {
                         $table .= "
                             <th class='svbx-th updated-th collapse-md collapse-sm collapse-xs'>Last Updated</th>
                             <th class='svbx-th edit-th collapse-sm collapse-xs'>Edit</th>";
@@ -212,7 +214,7 @@ function printProjectDefsTable($cnxn, $qry, $lvl) {
                             <td class='svbx-td system-td collapse-sm collapse-xs'>{$row[5]}</td>
                             <td class='svbx-td descrip-td'>".nl2br($row[6])."</td>
                             <td class='svbx-td collapse-md collapse-sm collapse-xs'>{$row[7]}</td>";
-                    if ($lvl >= 1) {
+                    if ($_SESSION['Role'] == 'S' OR $_SESSION['Role'] == 'A' OR $_SESSION['Role'] == 'U') {
                        $table .= "
                             <td class='svbx-td updated-td collapse-md  collapse-sm collapse-xs'>{$row[8]}</td>
                             <td class='svbx-td edit-td collapse-sm collapse-xs'>
