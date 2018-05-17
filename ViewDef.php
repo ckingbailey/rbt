@@ -130,9 +130,9 @@ $Def = file_get_contents("ViewDef.sql").$DefID;
                             <td class='vdtda'>";
                             if($Repo == '1') {
                                 $Repo = 'SharePoint';
-                            } else {
-                                    $Repo = 'Aconex';
-                                }
+                            } elseif ($Repo == 2) {
+                                $Repo = 'Aconex';
+                            } else $Repo = '';
                             echo "    
                                 $Repo</td>
                             <td class='vdtdh'>Repository No:</td>

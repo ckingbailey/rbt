@@ -178,9 +178,8 @@ include('filestart.php')
                     <label class="input-label item-margin-right">Evidence Repository</label>
                     <select name='Repo' id='' class="form-control def-input">
                         <option value='' disabled selected>Choose Repo</option>
-                        <option value=''></option>
-                        <option value='A'>Aconex</option>
-                        <option value='S'>SharePoint</option>
+                        <option value='2'>Aconex</option>
+                        <option value='1'>SharePoint</option>
                     </select>
                 </div>
                 <div class="half-container">
