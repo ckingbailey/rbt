@@ -29,12 +29,6 @@ if(!empty($_POST)) {
     $UserID = $_SESSION['UserID'];
     $Username = $_SESSION['Username'];
     
-    // if photo in POST it will be committed to a separate table
-    if (isset($_FILES['CDL_pics'])) {
-        $CDL_pics = $_FILES['CDL_pics'];
-    }
-    
-    
     $sql = "UPDATE CDL
             SET  
                  OldID = '$OldID'
@@ -61,6 +55,18 @@ if(!empty($_POST)) {
                 ,LastUpdated = NOW()
             WHERE DefID = $DefID;";
 
+    // if photo in POST it will be committed to a separate table
+    if ($_FILES['CDL_pics']['size']
+        && $_FILES['CDL_pics']['name']
+        && $_FILES['CDL_pics']['tmp_name']
+        && $_FILES['CDL_pics']['type']) {
+        $CDL_pics = $_FILES['CDL_pics'];
+    } else $CDL_pics = null;
+    
+    echo "<pre style='background: grey'>".empty($_FILES['CDL_pics'])."</pre>";
+    echo "<pre style='background: pink'>".var_dump($CDL_pics)."</pre>";
+    var_dump($_FILES['CDL_pics']);
+    
     if($link->query($sql)) {
         $msg = "?defID=$DefID";
         // if INSERT succesful, prepare, upload, and INSERT photo

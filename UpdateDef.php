@@ -219,7 +219,7 @@ $formCtrls = [
     'Spec' => [
         "label" => "<label for='Spec'>Spec or Code</label>",
         "tagName" => "input",
-        "element" => "<input type='text' name='Spec' id='Spec' class='form-control'>",
+        "element" => "<input type='text' name='Spec' id='Spec' value='%s' class='form-control'>",
         "type" => 'text',
         "name" => 'Spec',
         "id" => 'Spec',
@@ -228,7 +228,7 @@ $formCtrls = [
     'ActionOwner' => [
         "label" => "<label for='ActionOwner'>Action Owner</label>",
         "tagName" => "input",
-        "element" => "<input type='text' name='ActionOwner' id='ActionOwner' class='form-control'>",
+        "element" => "<input type='text' name='ActionOwner' id='ActionOwner' value='%s' class='form-control'>",
         "type" => 'text',
         "name" => 'ActionOwner',
         "id" => 'ActionOwner',
@@ -237,7 +237,7 @@ $formCtrls = [
     'OldID' => [
         "label" => "<label for='OldID'>Old Id</label>",
         "tagName" => "input",
-        "element" => "<input type='text' name='OldID' id='OldID' class='form-control'>",
+        "element" => "<input type='text' name='OldID' id='OldID' value='%s' class='form-control'>",
         "type" => 'text',
         "name" => 'OldID',
         "id" => 'OldID',
