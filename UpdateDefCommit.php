@@ -63,10 +63,6 @@ if(!empty($_POST)) {
         $CDL_pics = $_FILES['CDL_pics'];
     } else $CDL_pics = null;
     
-    echo "<pre style='background: grey'>".empty($_FILES['CDL_pics'])."</pre>";
-    echo "<pre style='background: pink'>".var_dump($CDL_pics)."</pre>";
-    var_dump($_FILES['CDL_pics']);
-    
     if($link->query($sql)) {
         $msg = "?defID=$DefID";
         // if INSERT succesful, prepare, upload, and INSERT photo

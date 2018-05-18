@@ -33,11 +33,11 @@ function saveImgToServer($file, $assocID = null) {
         // validate image
         if ($filename = basename($file['name'])) {
             // if current uploaded img has same name as the last one, reject it
-            if ($_SESSION['lastUploadedImg'] && $_SESSION['lastUploadedImg'] === $filename) {
-                echo "Uploaded image $filename has same name as previously uploaded image {$_SESSION['lastUploadedImg']}.\n"
-                    ."Please choose a new image before attempting to upload again.";
-                exit;
-            }
+                // if ($_SESSION['lastUploadedImg'] && $_SESSION['lastUploadedImg'] === $filename) {
+                //     echo "Uploaded image $filename has same name as previously uploaded image {$_SESSION['lastUploadedImg']}.\n"
+                //         ."Please choose a new image before attempting to upload again.";
+                //     exit;
+                // }
             $tmpName = $file['tmp_name'];
             // name new file for username, any associated ID, and timestamp
             $targetFilename = substr($_SESSION['Username'], 0, 6).$assocID.'_'.time();
