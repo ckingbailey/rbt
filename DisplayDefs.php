@@ -7,8 +7,13 @@ $link = f_sqlConnect();
 $role = $_SESSION['Role'];
 include('filestart.php');
 
-$roleLvlMap = [ 0, 'V', 'U', 'A', 'S' ];
-$roleLvl = array_search($role, $roleLvlMap);
+$roleLvlMap = [
+    'V' => 1,
+    'U' => 2,
+    'A' => 3,
+    'S' => 4
+];
+$roleLvl = $roleLvlMap[$role];
 
 if ($result = $link->query('SELECT bdPermit from users_enc where userID='.$_SESSION['UserID'])) {
     if ($row = $result->fetch_row()) {
@@ -40,7 +45,7 @@ function printInfoBox($lvl, $href) {
     $boxEnd ="</div></div>";
     $btn ="<a href='%s.php' class='btn btn-primary'>Add New Deficiency</a>";
     
-    $box = $lvl >= 1 ? $boxStart.$btn.$boxEnd : $boxStart.$boxEnd;
+    $box = $lvl > 1 ? $boxStart.$btn.$boxEnd : $boxStart.$boxEnd;
             
     return sprintf($box, $href);
 }
@@ -185,6 +190,7 @@ function printProjectSearchBar($cnxn, $post, $formAction) {
 function printProjectDefsTable($cnxn, $qry, $lvl) {
     if ($result = $cnxn->query($qry)) {
         if ($result->num_rows) {
+            $lvl = is_bool(lvl) ? boolToStr($lvl) : $lvl;
             $table = "
                 <table class='table table-striped table-responsive svbx-table'>
                     <thead>
@@ -197,7 +203,7 @@ function printProjectDefsTable($cnxn, $qry, $lvl) {
                             <th class='svbx-th system-th collapse-sm collapse-xs'>System Affected</th>
                             <th class='svbx-th descrip-th'>Brief Description</th>
                             <th class='svbx-th collapse-md collapse-sm collapse-xs'>Spec Loc</th>";
-                    if ($_SESSION['Role'] == 'S' OR $_SESSION['Role'] == 'A' OR $_SESSION['Role'] == 'U') {
+                    if ($lvl > 1) {
                         $table .= "
                             <th class='svbx-th updated-th collapse-md collapse-sm collapse-xs'>Last Updated</th>
                             <th class='svbx-th edit-th collapse-sm collapse-xs'>Edit</th>";
@@ -214,7 +220,7 @@ function printProjectDefsTable($cnxn, $qry, $lvl) {
                             <td class='svbx-td system-td collapse-sm collapse-xs'>{$row[5]}</td>
                             <td class='svbx-td descrip-td'>".nl2br($row[6])."</td>
                             <td class='svbx-td collapse-md collapse-sm collapse-xs'>{$row[7]}</td>";
-                    if ($_SESSION['Role'] == 'S' OR $_SESSION['Role'] == 'A' OR $_SESSION['Role'] == 'U') {
+                    if ($lvl > 1) {
                        $table .= "
                             <td class='svbx-td updated-td collapse-md  collapse-sm collapse-xs'>{$row[8]}</td>
                             <td class='svbx-td edit-td collapse-sm collapse-xs'>
