@@ -18,7 +18,7 @@ if(!empty($_POST)) {
     $EvidenceLink = $link->real_escape_string($_POST['EvidenceLink']);
     $ActionOwner = $link->real_escape_string($_POST['ActionOwner']);
     $OldID = $link->real_escape_string($_POST['OldID']);
-    $Comments = $link->real_escape_string($_POST['Comments']);
+    $comments = $link->real_escape_string($_POST['comments']);
     $Spec = $link->real_escape_string($_POST['Spec']);
     $ClosureComments = $link->real_escape_string($_POST['ClosureComments']);
     $RequiredBy = $_POST['RequiredBy'];
@@ -44,7 +44,7 @@ if(!empty($_POST)) {
                 ,ActionOwner = '$ActionOwner'
                 ,EvidenceType = '$EvidenceType'
                 ,EvidenceLink = '$EvidenceLink'
-                ,Comments = '$Comments'
+                ,comments = '$comments'
                 ,SafetyCert = '$SafetyCert'
                 ,Requiredby = '$RequiredBy'
                 ,Repo = '$Repo'
