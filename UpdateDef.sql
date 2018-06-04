@@ -18,11 +18,12 @@ SELECT
     Updated_by,
     Comments,
     RequiredBy,
+    contractID,
     Repo,
-    Pics,
     ClosureComments,
     DueDate,
-    SafetyCert
+    SafetyCert,
+    defType
 FROM
     CDL
 Where DefID=

@@ -1,16 +1,38 @@
 <?php
 include('session.php');
-$DefID = $_GET['DefID'];
+include('html_functions/bootstrapGrid.php');
+include('html_functions/htmlFuncs.php');
+include('sql_functions/stmtBindResultArray.php');
+include('error_handling/sqlErrors.php');
+$defID = $_GET['defID'];
+$bartDefID = $_GET['bartDefID'];
 $Role = $_SESSION['Role'];
-$title = "SVBX - Deficiency No".$DefID;
+$title = "SVBX - Deficiency No".$defID;
 //ini_set('display_errors', 1);
 //ini_set('display_startup_errors', 1);
 //error_reporting(E_ALL);
 include('filestart.php'); 
 $link = f_sqlConnect();
-$Def = file_get_contents("ViewDef.sql").$DefID;
 
-    if($stmt = $link->prepare($Def)) {  
+// $spanStr = "<span>%s</span>";
+$labelStr = "<p>%s</p>";
+$checkbox = [
+    'element' => "<input type='checkbox' value='1' class='x-checkbox' disabled %s>",
+    'value' => ''
+];
+$fakeInputStr = "<p class='mb-0 full-width pad-less thin-grey-border border-radius fake-input'>%s</p>";
+$emptyFakeInputStr = "<p class='full-width pad-less thin-grey-border border-radius grey-bg fake-input'>%s</p>";
+
+function returnFakeInputStr($val) {
+    $str = "<span class='d-block full-width pad-less thin-grey-border border-radius'>%s</span>";
+    $altStr = "<span class='d-block full-width pad-less thin-grey-border border-radius grey-bg fake-input'>%s</span>";
+    return returnHtmlForVal($val, $str, $altStr);
+}
+
+if ($defID) {
+    $sql = file_get_contents("ViewDef.sql").$defID;
+    
+    if($stmt = $link->prepare($sql)) {
         $stmt->execute();  
         $stmt->bind_result(
                 $OldID, 
@@ -33,12 +55,98 @@ $Def = file_get_contents("ViewDef.sql").$DefID;
                 $Created_by, 
                 $Comments,
                 $RequiredBy,
+                $contract,
                 $Repo,
-                $filename,
                 $ClosureComments,
                 $DueDate,
-                $SafetyCert);  
+                $SafetyCert,
+                $defType);  
         while ($stmt->fetch()) {
+            $requiredRows = [
+                [
+                    sprintf($labelStr, 'Safety Certifiable'),
+                    sprintf($fakeInputStr, $SafetyCert),
+                    sprintf($labelStr, 'System Affected'),
+                    sprintf($fakeInputStr, $SystemAffected)
+                ],
+                [
+                    sprintf($labelStr, 'General Location'),
+                    sprintf($fakeInputStr, $Location),
+                    sprintf($labelStr, 'Specific Location'),
+                    sprintf($fakeInputStr, stripcslashes($SpecLoc))
+                ],
+                [
+                    sprintf($labelStr, 'Status'),
+                    sprintf($fakeInputStr, $Status),
+                    sprintf($labelStr, 'Severity'),
+                    sprintf($fakeInputStr, $Severity)
+                ],
+                [
+                    sprintf($labelStr, 'Due Date'),
+                    sprintf($fakeInputStr, $DueDate),
+                    sprintf($labelStr, 'Group to resolve'),
+                    sprintf($fakeInputStr, $GroupToResolve)
+                ],
+                [
+                    sprintf($labelStr, 'Resolution required by'),
+                    sprintf($fakeInputStr, $RequiredBy),
+                    sprintf($labelStr, 'Contract'),
+                    sprintf($fakeInputStr, $contract)
+                ],
+                [
+                    sprintf($labelStr, 'Identified By'),
+                    sprintf($fakeInputStr, stripcslashes($IdentifiedBy)),
+                    sprintf($labelStr, 'Deficiency type'),
+                    sprintf($fakeInputStr, $defType)
+                ],
+                [
+                    sprintf($labelStr, 'Deficiency description').sprintf($fakeInputStr, stripcslashes($Description))
+                ]
+            ];
+            
+            $optionalRows = [
+                [
+                    sprintf($labelStr, 'Spec or Code'),
+                    returnFakeInputStr(stripcslashes($Spec)),
+                    sprintf($labelStr, 'Action Owner'),
+                    returnFakeInputStr(stripcslashes($ActionOwner)),
+                    sprintf($labelStr, 'Old Id'),
+                    returnFakeInputStr(stripcslashes($OldID))
+                ],
+                [
+                    sprintf($labelStr, 'More information').returnFakeInputStr(stripcslashes($Comments))
+                ]
+            ];
+            
+            $closureRows = [
+                [
+                    sprintf($labelStr, 'Evidence Type'),
+                    returnFakeInputStr($EvidenceType),
+                    sprintf($labelStr, 'Evidence Repository'),
+                    returnFakeInputStr($Repo),
+                    sprintf($labelStr, 'Repository No.'),
+                    returnFakeInputStr(stripcslashes($EvidenceLink))
+                ],
+                [
+                    sprintf($labelStr, 'Closure comments').returnFakeInputStr(stripcslashes($ClosureComments))
+                ]
+            ];
+            
+            $modHistory = [
+                [
+                    sprintf($labelStr, 'Date Created'),
+                    sprintf($labelStr, $DateCreated),
+                    sprintf($labelStr, 'Created by'),
+                    sprintf($labelStr, $Created_by)
+                ],
+                [
+                    sprintf($labelStr, 'Last Updated'),
+                    sprintf($labelStr, $LastUpdated),
+                    sprintf($labelStr, 'Updated by'),
+                    sprintf($labelStr, $Updated_by)
+                ]
+            ];
+    
             if($Status == "Open") {
                 $color = "bg-red text-white";
             } else {
@@ -46,127 +154,40 @@ $Def = file_get_contents("ViewDef.sql").$DefID;
             }
             echo "
                 <header class='container page-header'>
-                    <h1 class='page-title $color pad'>Deficiency No. $DefID</h1>
+                    <h1 class='page-title $color pad'>Deficiency No. $defID</h1>
                 </header>
                 <main class='container main-content'>
-                    <table class='table svbx-table'>
-                        <tr class='vdtr'>
-                            <th colspan='4' class='vdth'>Required Information</th>
-                        </tr>
-                        <tr class='vdtr'>
-                            <td class='vdtdh'>Safety Certifiable:</td>
-                            <td class='vdtda'>";
-                                if($SafetyCert == '1') {
-                                    $SafetyCert = 'Yes';
-                                } elseif($SafetyCert == '2') {
-                                    $SafetyCert = 'No';
-                                } else {
-                                    $SafetyCert = '';
-                                }
-                            echo " $SafetyCert</td>
-                            <td class='vdtdh'>System Affected:</td>
-                            <td class='vdtda'>$SystemAffected</td>
-                        </tr>
-                        <tr class='vdtr'>
-                            <td class='vdtdh'>General Location:</td>
-                            <td class='vdtda'>$Location</td>
-                            <td class='vdtdh'>Specific Location:</td>
-                            <td class='vdtda'>$SpecLoc</td>
-                        </tr>
-                        <tr class='vdtr'>
-                            <td class='vdtdh'>Status:</td>
-                            <td class='vdtda'>$Status</td>
-                            <td class='vdtdh'>Severity:</td>
-                            <td class='vdtda'>$Severity</td>
-                        </tr>
-                        <tr class='vdtr'>
-                            <td class='vdtdh'>Due Date:</td>
-                            <td class='vdtda'>$DueDate</td>
-                            <td class='vdtdh'>Resolution required by:</td>
-                            <td class='vdtda'>$RequiredBy</td>
-                        </tr>
-                        <tr class='vdtr'>
-                            <td class='vdtdh'>Group to Resolve:</td>
-                            <td class='vdtda'>$GroupToResolve</td>
-                            <td class='vdtdh'>Identified By:</td>
-                            <td class='vdtda'>$IdentifiedBy</td>
-                        </tr>
-                        <tr class='vdtr'>
-                            <td colspan='4' style='text-align:center' class='vdtda'>Deficiency Description</td>
-                        </tr>
-                        <tr class='vdtr'>
-                            <td Colspan=4 class='vdtda'>"; echo nl2br($Description);
-                            echo "</td>
-                        </tr>
-                        <tr class='vdtr'>
-                            <th colspan='4' class='vdth'>Optional Information</th>
-                        </tr>
-                        <tr class='vdtr'>
-                            <td class='vdtdh'>Spec or Code:</td>
-                            <td colspan='3' class='vdtda'>$Spec</td>
-                        </tr>
-                        <tr class='vdtr'>
-                            <td class='vdtdh'>Action Owner:</td>
-                            <td class='vdtda'>$ActionOwner</td>
-                            <td class='vdtdh'>Old Id:</td>
-                            <td class='vdtda'>$OldID</td>
-                        </tr>
-                        <tr class='vdtr'>
-                            <td colspan='4' style='text-align:center' class='vdtda'>Additional Information</td>
-                        </tr>
-                        <tr class='vdtr'>
-                            <td Colspan=4 class='vdtda'>"; echo nl2br($Comments);
-                            echo "</td>
-                        </tr>
-                        <tr class='vdtr'>
-                            <th colspan='4' class='vdth'>Closure Information</th>
-                        </tr>
-                        <tr class='vdtr'>
-                            <td class='vdtdh'>Evidence Type:</td>
-                            <td class='vdtda' colspan='3'>$EvidenceType</td>
-                        </tr>
-                        <tr class='vdtr'>
-                            <td class='vdtdh'>Evidence Repository:</td>
-                            <td class='vdtda'>";
-                            if($Repo == '1') {
-                                $Repo = 'SharePoint';
-                            } elseif ($Repo == 2) {
-                                $Repo = 'Aconex';
-                            } else $Repo = '';
-                            echo "    
-                                $Repo</td>
-                            <td class='vdtdh'>Repository No:</td>
-                            <td class='vdtda'>$EvidenceLink</td>
-                        </tr>
-                         <tr class='vdtr'>
-                            <td colspan='4' style='text-align:center' class='vdtda'>Closure Comments</td>
-                        </tr>
-                        <tr class='vdtr'>
-                            <td Colspan=4 class='vdtda'>"; echo nl2br($ClosureComments);
-                            echo "</td>
-                        </tr>
-                        <tr class='vdtr'>
-                            <th colspan='4' style='text-align:center' class='vdth'>Modification Details</th>
-                        </tr>
-                        <tr class='vdtr'>
-                            <td class='vdtdh'>Date Created:</td>
-                            <td class='vdtda'>$DateCreated</td>
-                            <td class='vdtdh'>Created by:</td>
-                            <td class='vdtda'>$Created_by</td>
-                        </tr>
-                        <tr class='vdtr'>
-                            <td class='vdtdh'>Last Updated:</td>
-                            <td class='vdtda'>$LastUpdated</td>
-                            <td class='vdtdh'>Updated by:</td>
-                            <td class='vdtda'>$Updated_by</td>
-                        </tr>
-                    </table>";
+                    <div class='row'>
+                        <div class='col-12'>
+                            <h5 class='grey-bg pad'>Required Information</h5>
+                        </div>
+                    </div>";
+                    foreach ($requiredRows as $gridRow) {
+                        $options = count($gridRow) === 1 ? ['colWd' => 6] : [];
+                        print returnRow($gridRow, $options);
+                    }
+                    print "<h5 class='grey-bg pad'>Optional Information</h5>";
+                    foreach ($optionalRows as $gridRow) {
+                        $options = count($gridRow) === 1 ? ['colWd' => 6] : [];
+                        print returnRow($gridRow, $options);
+                    }
+                    print "<h5 class='grey-bg pad'>Closure Information</h5>";
+                    foreach ($closureRows as $gridRow) {
+                        $options = count($gridRow) === 1 ? ['colWd' => 6] : [];
+                        print returnRow($gridRow, $options);
+                    }
+                    print "<h5 class='grey-bg pad'>Modification Details</h5>";
+                    foreach ($modHistory as $gridRow) {
+                        $options = count($gridRow) === 1 ? ['colWd' => 6] : [];
+                        print returnRow($gridRow, $options);
+                    }
+                            
         }
         $stmt->close();
         
         // show photos linked to this Def
         if ($stmt = $link->prepare("SELECT pathToFile FROM CDL_pics WHERE defID=?")) {
-            $stmt->bind_param('i', $DefID);
+            $stmt->bind_param('i', $defID);
             $stmt->execute();
             $stmt->store_result();
             $stmt->bind_result($pathToFile);
@@ -179,7 +200,7 @@ $Def = file_get_contents("ViewDef.sql").$DefID;
                 $i = 0;
                 $j = 1;
                 while ($stmt->fetch()) {
-                    $img = sprintf("<img src='%s' alt='photo related to deficiency number %s'>", $pathToFile, $DefID);
+                    $img = sprintf("<img src='%s' alt='photo related to deficiency number %s'>", $pathToFile, $defID);
                     $col = sprintf("<div class='col-md-4 text-center item-margin-bottom'>%s</div>", $img);
                     $marker = $j < $count ? '%s' : '';
                     
@@ -206,35 +227,143 @@ $Def = file_get_contents("ViewDef.sql").$DefID;
                 echo $photoSection;
             }
             $stmt->close();
+        } else {
+            printSqlErrorAndExit($link, $sql);
         }
-        
         // if Role has permission level show Update and Clone buttons
         if($Role == 'S' OR $Role == 'A' OR $Role == 'U') {
             echo "
                 <div style='display: flex; align-items: center; justify-content: center; hspace:20; margin-bottom:3rem'>
-                    <form action='UpdateDef.php' method='POST' onsubmit='' style='text-align:center' />
-                        <input type='hidden' name='q' value='".$DefID."'/>
-                        <input type='submit' name='submit' value='Update' class='btn btn-primary btn-lg'/>
-                    </form>
+                    <a href='UpdateDef.php?defID=$defID' class='btn btn-primary btn-lg'>Update</a>
                     <form action='CloneDef.php' method='POST' onsubmit='' style='text-align:center'>
                         <div style='width:5px; height:auto; display:inline-block'></div>
-                        <input type='hidden' name='q' value='".$DefID."'/>
+                        <input type='hidden' name='defID' value='$defID'/>
                         <input type='submit' value='Clone' class='btn btn-primary btn-lg'  />
                     </form>
                 </div>";
         }
         echo "</main>";
     } else {  
-        echo "
-        <div='container'>
-        <br />
-        <br />
-        <br />
-        <br>Unable to connect<br>
-        </div>";
-        echo $Def.'<br /><br />';
-      exit();  
+        printSqlErrorAndExit($link, $sql);
     } 
-    include('fileend.php');
-    MySqli_Close($link); 
+} elseif ($bartDefID) {
+    if ($result = $link->query('SELECT bdPermit from users_enc where userID='.$_SESSION['UserID'])) {
+        if ($row = $result->fetch_row()) {
+            $bdPermit = $row[0];
+        }
+        $result->close();
+    }
+    if ($bdPermit) {
+        // render View for bartDef
+        $result = [];
+        // build SELECT query string from sql file
+        $fieldList = preg_replace('/\s+/', '', file_get_contents('bartdl.sql'))
+            .',form_modified';
+        // replace ambiguous or JOINED keys
+        $fieldList = str_replace('updated_by', 'BARTDL.updated_by AS updated_by', $fieldList);
+        $fieldList = str_replace('status_vta', 's.status AS status_vta', $fieldList);
+        $fieldList = str_replace('status_bart', 's2.status AS status_bart', $fieldList);
+        $fieldList = str_replace('agree_vta', 'ag.agreeDisagreeName AS agree_vta', $fieldList);
+        $fieldList = str_replace('creator', 'c.partyName AS creator', $fieldList);
+        $fieldList = str_replace('next_step', 'n.nextStepName AS next_step', $fieldList);
+        $sql = 'SELECT '
+            .$fieldList
+            ." FROM BARTDL"
+            ." JOIN Status s ON BARTDL.status_vta=s.statusID"
+            ." JOIN Status s2 ON BARTDL.status_bart=s2.statusID"
+            ." JOIN agreeDisagree ag ON BARTDL.agree_vta=ag.agreeDisagreeID"
+            ." JOIN bdParties c ON BARTDL.creator=c.partyID"
+            ." JOIN bdNextStep n ON BARTDL.next_step=n.bdNextStepID"
+            ." WHERE BARTDL.id=?";
+        
+        if ($stmt = $link->prepare($sql)) {
+            if (!$stmt->bind_param('i', $bartDefID)) printSqlErrorAndExit($stmt, $sql);
+            
+            if (!$stmt->execute()) printSqlErrorAndExit($stmt, $sql);
+            
+            $result = stmtBindResultArray($stmt)[0];
+    
+            $topFields = [
+                [
+                    returnRow([ sprintf($labelStr, 'ID'), sprintf($fakeInputStr, $result['id']) ]).
+                    returnRow([ sprintf($labelStr, 'Creator'), sprintf($fakeInputStr, $result['creator']) ]).
+                    // returnRow([ sprintf($labelStr, 'Joint status'), sprintf($fakeInputStr, $result['status_vta']) ]).
+                    returnRow([ sprintf($labelStr, 'Next step'), sprintf($fakeInputStr, $result['next_step']) ]).
+                    returnRow([ sprintf($labelStr, 'BIC'), sprintf($fakeInputStr, $result['bic']) ]),
+                    sprintf($labelStr, 'Descriptive').sprintf($fakeInputStr, stripcslashes($result['descriptive_title_vta']))
+                ]
+            ];
+        
+            $vtaFields = [
+                'Root_Prob_VTA' => [ sprintf($labelStr, 'Root problem').sprintf($labelStr, sprintf($fakeInputStr, stripcslashes($result['root_prob_vta']))) ],
+                'Resolution_VTA' => [ sprintf($labelStr, 'Resolution').sprintf($labelStr, sprintf($fakeInputStr, stripcslashes($result['resolution_vta']))) ],
+                [
+                    returnRow([ sprintf($labelStr, 'Status'), sprintf($fakeInputStr, $result['status_vta']) ]).
+                    returnRow([ sprintf($labelStr, 'Priority'), sprintf($fakeInputStr, $result['priority_vta']) ]).
+                    returnRow([ sprintf($labelStr, 'Agree'), sprintf($fakeInputStr, $result['agree_vta']) ]).
+                    returnRow([ sprintf($labelStr, 'Safety Certifiable'), sprintf($fakeInputStr, $result['safety_cert_vta']) ]).
+                    returnRow([ sprintf($labelStr, 'Attachments'), sprintf($fakeInputStr, $result['attachments']) ]), // will need sep table
+                    sprintf($labelStr, 'Comments').sprintf($fakeInputStr, $result['comments_vta']). // new comments
+                    // comments will need sep table
+                    returnRow([
+                        sprintf($labelStr, 'Resolution disputed').returnCheckboxInput(['value' => $result['resolution_disputed']] + $checkbox),
+                        sprintf($labelStr, 'Structural').returnCheckboxInput(['value' => $result['structural']] + $checkbox)
+                    ])
+                ]
+            ];
+        
+            $bartFields = [
+                [
+                    returnRow([ sprintf($labelStr, 'BART ID').sprintf($fakeInputStr, stripcslashes($result['id_bart'])) ]),
+                ],
+                [
+                    returnRow([ sprintf($labelStr, 'Description').sprintf($fakeInputStr, stripcslashes($result['description_bart'])) ])
+                ],
+                [
+                    returnRow([ sprintf($labelStr, 'Cat1'), sprintf($fakeInputStr, $result['cat1_bart']) ]).
+                    returnRow([ sprintf($labelStr, 'Cat2'), sprintf($fakeInputStr, $result['cat2_bart']) ]).
+                    returnRow([ sprintf($labelStr, 'Cat3'), sprintf($fakeInputStr, $result['cat3_bart']) ]),
+                    returnRow([ sprintf($labelStr, 'Level'), sprintf($fakeInputStr, $result['level_bart']) ]).
+                    returnRow([ sprintf($labelStr, 'Date open'), sprintf($fakeInputStr, $result['dateOpen_bart']) ]).
+                    returnRow([ sprintf($labelStr, 'Date closed'), sprintf($fakeInputStr, $result['dateClose_bart']) ]).
+                    returnRow([ sprintf($labelStr, 'Status'), sprintf($fakeInputStr, $result['status_bart']) ])
+                ]
+            ];
+        
+            $stmt->close();
+            
+            if($result['Status_VTA'] === "Closed") {
+                $color = "bg-success text-white";
+            } else {
+                $color = "bg-red text-white";
+            }
+            
+            print "
+                <header class='container page-header'>
+                    <h1 class='page-title $color pad'>Deficiency No. $bartDefID</h1>
+                </header>
+                <main class='container main-content'>";
+            foreach ($topFields as $gridRow) {
+                print returnRow($gridRow);
+            }
+            print "<h5 class='grey-bg pad'>VTA Information</h5>";
+            foreach ($vtaFields as $gridRow) {
+                print returnRow($gridRow);
+            }
+            print "<h5 class='grey-bg pad'>BART Information</h5>";
+            foreach ($bartFields as $gridRow) {
+                print returnRow($gridRow);
+            }
+            
+            print "
+                <div class='center-content'>
+                    <a href='updateBartDef.php?bartDefID=$bartDefID' class='btn btn-primary btn-lg'>Update</a>
+                </div>
+            </main>";
+            // print "<header class='page-header'><h4 class='text-success'>&darr; BART def view will go here &darr;</h4></header>";
+        } else printSqlErrorAndExit($link, $sql);
+    }
+}
+include('fileend.php');
+$link->close(); 
 ?>

@@ -26,6 +26,3 @@ LEFT JOIN
     System Y
 ON 
     D.SystemAffected = Y.SystemID
-WHERE
-    D.Status <> 3
-ORDER BY DefID;

@@ -9,9 +9,11 @@ check.php
 error_log
 old_*
 bootstrap.*
+webColors.json
 
 # don't push this to remote
 node_modules
 composer.phar
 /vendor/
 img_uploads
+CDLdump.sql
