@@ -47,8 +47,8 @@ function populateTable(&$res, $fields, $authLvl) {
         $curRow = '';
         $end = end(array_keys($fields));
         foreach ($fields as $field) {
-            $datum = $i === $end ? $row[0] : $row[$i];
-            if (is_string($field)) $curTd = sprintf(is_string($field), $datum);
+            $datum = stripcslashes($i === $end ? $row[0] : $row[$i]);
+            if (is_string($field)) $curTd = sprintf($field, $datum);
             elseif (is_array($field)) {
                 $curField = $field;
                 if ($curField['auth'] && $authLvl < $curField['auth']) continue;
@@ -61,7 +61,6 @@ function populateTable(&$res, $fields, $authLvl) {
             $curRow .= $curTd;
             $i++;
         }
-        // print "<h4 class='text-yellow'>".$end."</h4>";
         $curRow = sprintf($tr, $curRow);
         $tableRows .= $curRow;
     }

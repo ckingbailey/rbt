@@ -17,8 +17,9 @@ $two = 2;
 // prepare POST and sql string for commit
 $post = $_POST;
 $defID = $post['id'];
+$userID = $_SESSION['UserID'];
 // hold onto comments and attachments separately
-$commentText = $post['bdComments'];
+$bdCommText = $post['bdCommText'];
 $attachment = $post['bdAttachments'];
 // unset keys from field list that will not be UPDATE'd
 $fieldList = preg_replace('/\s+/', '', file_get_contents('bartdl.sql'));
@@ -30,7 +31,6 @@ $i++;
 
 $fieldsArr = array_fill_keys(explode(',', $fieldList), '?');
 unset($fieldsArr['id'], $fieldsArr['created_by'], $fieldsArr['form_modified']);
-    // unset($fieldsArr['status_bart']);
 // append keys that do not or may not come from html form
 $post = ['updated_by' => $_SESSION['UserID']] + $post;
 $post['resolution_disputed'] || $post['resolution_disputed'] = 0;
@@ -91,30 +91,33 @@ if ($stmt = $link->prepare($sql)) {
                 <p id='defID' style='color: {$colorsJson['coolColors'][$i]}'>ID = $defID</p>";
             $i++;
             
+            $stmt->close();
+    
+            // insert new comment if one was submitted
+            if ($bdCommText) {
+                $sql = "INSERT bartdlComments (bdCommText, userID, bartdlID) VALUES (?, ?, ?)";
+                $types = 'sii';
+                
+                if(!$stmt = $link->prepare($sql)) printSqlErrorAndExit($link, $sql);
+                else print "<p id='commentSql'>$sql</p>";
+                if(!$stmt->bind_param($types,
+                    $link->escape_string($bdCommText),
+                    intval($userID),
+                    intval($defID))) printSqlErrorAndExit($stmt, $sql);
+                else print "<p id='commentsParams'>$types, $bdCommText, $userID, $defID</p>";
+                if(!$stmt->execute()) printSqlErrorAndExit($stmt, $sql);
+                else print "<p id='newCommentID'>$stmt->insert_id</p>";
+                
+                $stmt->close();
+            }
+
             echo "
                 <a href='ViewDef.php?bartDefID=$defID' class='btn btn-large btn-primary'>View updated deficiency</a>";
+                
             header("Location: ViewDef.php?bartDefID={$defID}");
-        } else {
-            echo "
-                </div>
-                <div style='color: {$colorsJson['warmColors'][$j]}'>";
-            $j++;
-            printSqlErrorAndExit($stmt, $sql);
-        }
-    } else {
-        echo "
-            </div>
-            <div style='color: {$colorsJson['warmColors'][$j]}'>";
-        $j++;
-        printSqlErrorAndExit($stmt, $sql);
-    }
+        } else printSqlErrorAndExit($stmt, $sql);
+    } else printSqlErrorAndExit($stmt, $sql);
+    
     echo "</div>";
-    $stmt->close();
-} else {
-    echo "
-        </div>
-        <div style='color: {$colorsJson['warmColors'][$j]}'>";
-    $j++;
-    printSqlErrorAndExit($link, $sql);
-}
+} else printSqlErrorAndExit($link, $sql);
 $link->close();

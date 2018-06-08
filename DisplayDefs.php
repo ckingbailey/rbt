@@ -201,26 +201,6 @@ function printSearchBar($cnxn, $post, $formAction) {
 function printDefsTable($cnxn, $qry, $elements, $lvl) {
     if ($result = $cnxn->query($qry)) {
         if ($result->num_rows) {
-            /*
-            // $lvl = is_bool(lvl) ? boolToStr($lvl) : $lvl;
-            // $table = "
-            //     <table class='table table-striped table-responsive svbx-table'>
-            //         <thead>
-            //             <tr class='svbx-tr table-heading'>
-            //                 <th class='svbx-th id-th'>ID</th>
-            //                 <th class='svbx-th loc-th collapse-sm collapse-xs'>Location</th>
-            //                 <th class='svbx-th sev-th collapse-xs'>Severity</th>
-            //                 <th class='svbx-th created-th collapse-md  collapse-sm collapse-xs'>Date Created</th>
-            //                 <th class='svbx-th status-th'>Status</th>
-            //                 <th class='svbx-th system-th collapse-sm collapse-xs'>System Affected</th>
-            //                 <th class='svbx-th descrip-th'>Brief Description</th>
-            //                 <th class='svbx-th collapse-md collapse-sm collapse-xs'>Spec Loc</th>";
-            // if ($lvl > 1) {
-            //     $table .= "
-            //         <th class='svbx-th updated-th collapse-md collapse-sm collapse-xs'>Last Updated</th>
-            //         <th class='svbx-th edit-th collapse-sm collapse-xs'>Edit</th>";
-            // } $table .= "</tr></thead><tbody>";
-            */
             print "<table class='table table-striped table-responsive svbx-table'>";
             printTableHeadings(array_column($elements, 'header'), $lvl);
             populateTable($result, array_column($elements, 'cell'), $lvl);
@@ -302,11 +282,11 @@ function printBartDefsTable($cnxn, $qry, $lvl) {
             'cell' => [ 'innerHtml' => "<a href='ViewDef.php?bartDefID=%s'>%s</a>" ]
         ],
         [
-            'header' => [ 'text' => 'BART Status' ],
+            'header' => [ 'text' => 'VTA Status' ],
             'cell' => []
         ],
         [
-            'header' => [ 'text' => 'VTA Status' ],
+            'header' => [ 'text' => 'BART Status' ],
             'cell' => []
         ],
         [
@@ -375,7 +355,23 @@ if($_POST['Search'] == NULL) {
         printInfoBox($roleLvl, 'NewDef.php');
         printProjectDefsTable($link, $sql, $roleLvl);
     } elseif ($bdPermit) {
-        $sql = 'SELECT '.file_get_contents('bartdl.sql').' FROM BARTDL';
+        // build SELECT query string from sql file
+        $fieldList = preg_replace('/\s+/', '', file_get_contents('bartdl.sql'))
+            .',form_modified';
+        // replace ambiguous or JOINED keys
+        $fieldList = str_replace('updated_by', 'BARTDL.updated_by AS updated_by', $fieldList);
+        $fieldList = str_replace('status_vta', 's.status AS status_vta', $fieldList);
+        $fieldList = str_replace('status_bart', 's2.status AS status_bart', $fieldList);
+        $fieldList = str_replace('agree_vta', 'ag.agreeDisagreeName AS agree_vta', $fieldList);
+        $fieldList = str_replace('creator', 'c.partyName AS creator', $fieldList);
+        $fieldList = str_replace('next_step', 'n.nextStepName AS next_step', $fieldList);
+        $sql = 'SELECT '
+            ." BARTDL.id, v.status, b.status, date_created, descriptive_title_vta, resolution_vta, n.nextStepName"
+            ." FROM BARTDL"
+            ." JOIN bdNextStep n ON BARTDL.next_step=n.bdNextStepID"
+            ." JOIN Status v ON BARTDL.status_vta=v.statusID"
+            ." JOIN Status b ON BARTDL.status_bart=b.statusID"
+            ." ORDER BY BARTDL.id";
         printInfoBox($roleLvl, 'newBartDef.php');
         printBartDefsTable($link, $sql, $bdPermit);
     }

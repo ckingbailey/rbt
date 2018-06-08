@@ -33,6 +33,33 @@ if ($stmt = $link->prepare($sql)) {
             $labelStr = "<label for='%s'%s>%s</label>";
             $required = " class='required'";
             $checkboxRequired = " class='form-check-label mr-2 required'";
+            $commentFormat = "
+                <div class='thin-grey-border pad mb-3'>
+                    <h6 class='d-flex flex-row justify-content-between text-secondary'><span>%s</span><span>%s</span></h6>
+                    <p>%s</p>
+                </div>";
+
+            
+            $stmt->close();
+            
+            // query for comments associated with this Def
+            $sql = "SELECT firstname, lastname, date_created, bdCommText
+                FROM bartdlComments bdc
+                JOIN users_enc u
+                ON bdc.userID=u.userID
+                WHERE bartdlID=?
+                ORDER BY date_created DESC";
+            
+            if (!$stmt = $link->prepare($sql)) printSqlErrorAndExit($link, $sql);
+            
+            if (!$stmt->bind_param('i', $defID)) printSqlErrorAndExit($stmt, $sql);
+            
+            if (!$stmt->execute()) printSqlErrorAndExit($stmt, $sql);
+            
+            $comments = stmtBindResultArray($stmt) ?: [];
+            
+            $stmt->close();
+            
             $topFields = [
                 [
                     returnRow([
@@ -65,7 +92,7 @@ if ($stmt = $link->prepare($sql)) {
                     'descriptive_title_vta' => [
                         'label' => sprintf($labelStr, 'descriptive_title_vta', $required, 'Description'),
                         'tagName' => 'textarea',
-                        'element' => "<textarea name='descriptive_title_vta' id='descriptive_title_vta' class='form-control' required>{$result['descriptive_title_vta']}</textarea>",
+                        'element' => "<textarea name='descriptive_title_vta' id='descriptive_title_vta' class='form-control' required>".stripcslashes($result['descriptive_title_vta'])."</textarea>",
                         'query' => null
                     ]
                 ]
@@ -76,7 +103,7 @@ if ($stmt = $link->prepare($sql)) {
                     'root_prob_vta' => [
                         'label' => sprintf($labelStr, 'root_prob_vta', $required, 'Root problem'),
                         'tagName' => 'textarea',
-                        'element' => "<textarea name='root_prob_vta' id='root_prob_vta' class='form-control' required>{$result['root_prob_vta']}</textarea>",
+                        'element' => "<textarea name='root_prob_vta' id='root_prob_vta' class='form-control' required>".stripcslashes($result['root_prob_vta'])."</textarea>",
                         'query' => null
                     ]
                 ],
@@ -84,7 +111,7 @@ if ($stmt = $link->prepare($sql)) {
                     'resolution_vta' => [
                         'label' => sprintf($labelStr, 'resolution_vta', $required, 'Resolution'),
                         'tagName' => 'textarea',
-                        'element' => "<textarea name='resolution_vta' id='resolution_vta' class='form-control' required>{$result['resolution_vta']}</textarea>",
+                        'element' => "<textarea name='resolution_vta' id='resolution_vta' class='form-control' required>".stripcslashes($result['resolution_vta'])."</textarea>",
                         'query' => null
                     ]
                 ],
@@ -135,13 +162,12 @@ if ($stmt = $link->prepare($sql)) {
                     ]),
                     returnRow([
                         [
-                            'label' => "<label for='bdComments'>Comment</label>",
+                            'label' => "<label for='bdCommText'>Add comment</label>",
                             'tagName' => 'textarea',
-                            'element' => "<textarea name='bdComments' id='bdComments' class='form-control' disabled>%s</textarea>",
+                            'element' => "<textarea name='bdCommText' id='bdCommText' class='form-control'>%s</textarea>",
                             'value' => ''
                         ]
                     ]).
-                    // comments will need sep table
                     returnRow([
                         sprintf($labelStr, 'resolution_disputed', '', 'Resolution disputed'),
                         'resolution_disputed' => [
@@ -170,20 +196,20 @@ if ($stmt = $link->prepare($sql)) {
                 ],
                 'description_bart' => [
                     sprintf($labelStr, 'description_bart', $required, 'Description')
-                    ."<textarea name='description_bart' id='description_bart' maxlength='1000' class='form-control' required>{$result['description_bart']}</textarea>"
+                    ."<textarea name='description_bart' id='description_bart' maxlength='1000' class='form-control' required>".stripcslashes($result['description_bart'])."</textarea>"
                 ],
                 [
                     returnRow([
                         sprintf($labelStr, 'cat1_bart', '', 'Category 1'),
-                        "<input name='cat1_bart' id='cat1_bart' type='text' maxlength='3' value='{$result['cat1_bart']}' class='form-control'>"
+                        "<input name='cat1_bart' id='cat1_bart' type='text' maxlength='3' value='".stripcslashes($result['cat1_bart'])."' class='form-control'>"
                     ]).
                     returnRow([
                         sprintf($labelStr, 'cat2_bart', '', 'Category 2'),
-                        "<input name='cat2_bart' id='cat2_bart' type='text' maxlength='3' value='{$result['cat2_bart']}' class='form-control'>"
+                        "<input name='cat2_bart' id='cat2_bart' type='text' maxlength='3' value='".stripcslashes($result['cat2_bart'])."' class='form-control'>"
                     ]).
                     returnRow([
                         sprintf($labelStr, 'cat3_bart', '', 'Category 3'),
-                        "<input name='cat3_bart' id='cat3_bart' type='text' maxlength='3' value='{$result['cat3_bart']}' class='form-control'>"
+                        "<input name='cat3_bart' id='cat3_bart' type='text' maxlength='3' value='".stripcslashes($result['cat3_bart'])."' class='form-control'>"
                     ]),
                     returnRow([
                         sprintf($labelStr, 'level_bart', $required, 'Level'),
@@ -234,6 +260,20 @@ if ($stmt = $link->prepare($sql)) {
                         foreach ($bartFields as $gridRow) {
                             print returnRow($gridRow);
                         }
+                        
+            echo "
+                        <h5 class='grey-bg pad'>Comments</h5>";
+                        foreach ($comments as $comment) {
+                            $timestamp = strtotime($comment['date_created']) - (60 * 60 * 7);
+                            
+                            printf(
+                                $commentFormat,
+                                $comment['firstname'].' '.$comment['lastname'],
+                                date('j/n/Y • g:i a', $timestamp),
+                                stripcslashes($comment['bdCommText'])
+                            );
+                        }
+
             echo "
                         <div class='center-content'>
                             <button type='submit' class='btn btn-primary btn-lg'>Submit</button>

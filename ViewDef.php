@@ -247,6 +247,7 @@ if ($defID) {
         printSqlErrorAndExit($link, $sql);
     } 
 } elseif ($bartDefID) {
+    // check for bd permission
     if ($result = $link->query('SELECT bdPermit from users_enc where userID='.$_SESSION['UserID'])) {
         if ($row = $result->fetch_row()) {
             $bdPermit = $row[0];
@@ -256,6 +257,8 @@ if ($defID) {
     if ($bdPermit) {
         // render View for bartDef
         $result = [];
+        $comments = [];
+        $attachments = [];
         // build SELECT query string from sql file
         $fieldList = preg_replace('/\s+/', '', file_get_contents('bartdl.sql'))
             .',form_modified';
@@ -282,6 +285,12 @@ if ($defID) {
             if (!$stmt->execute()) printSqlErrorAndExit($stmt, $sql);
             
             $result = stmtBindResultArray($stmt)[0];
+            
+            $commentFormat = "
+                <div class='thin-grey-border pad mb-3'>
+                    <h6 class='d-flex flex-row justify-content-between text-secondary'><span>%s</span><span>%s</span></h6>
+                    <p>%s</p>
+                </div>";
     
             $topFields = [
                 [
@@ -303,8 +312,7 @@ if ($defID) {
                     returnRow([ sprintf($labelStr, 'Agree'), sprintf($fakeInputStr, $result['agree_vta']) ]).
                     returnRow([ sprintf($labelStr, 'Safety Certifiable'), sprintf($fakeInputStr, $result['safety_cert_vta']) ]).
                     returnRow([ sprintf($labelStr, 'Attachments'), sprintf($fakeInputStr, $result['attachments']) ]), // will need sep table
-                    sprintf($labelStr, 'Comments').sprintf($fakeInputStr, $result['comments_vta']). // new comments
-                    // comments will need sep table
+                    sprintf($labelStr, 'Comments').sprintf($fakeInputStr, $result['comments_vta']). // latest comment
                     returnRow([
                         sprintf($labelStr, 'Resolution disputed').returnCheckboxInput(['value' => $result['resolution_disputed']] + $checkbox),
                         sprintf($labelStr, 'Structural').returnCheckboxInput(['value' => $result['structural']] + $checkbox)
@@ -313,10 +321,10 @@ if ($defID) {
             ];
         
             $bartFields = [
-                [
+                'BART ID' => [
                     returnRow([ sprintf($labelStr, 'BART ID').sprintf($fakeInputStr, stripcslashes($result['id_bart'])) ]),
                 ],
-                [
+                'Description' => [
                     returnRow([ sprintf($labelStr, 'Description').sprintf($fakeInputStr, stripcslashes($result['description_bart'])) ])
                 ],
                 [
@@ -332,6 +340,24 @@ if ($defID) {
         
             $stmt->close();
             
+            // query for comments associated with this Def
+            $sql = "SELECT firstname, lastname, date_created, bdCommText
+                FROM bartdlComments bdc
+                JOIN users_enc u
+                ON bdc.userID=u.userID
+                WHERE bartdlID=?
+                ORDER BY date_created DESC";
+            
+            if (!$stmt = $link->prepare($sql)) printSqlErrorAndExit($link, $sql);
+            
+            if (!$stmt->bind_param('i', $bartDefID)) printSqlErrorAndExit($stmt, $sql);
+            
+            if (!$stmt->execute()) printSqlErrorAndExit($stmt, $sql);
+            
+            $comments = stmtBindResultArray($stmt) ?: [];
+            
+            $stmt->close();
+
             if($result['Status_VTA'] === "Closed") {
                 $color = "bg-success text-white";
             } else {
@@ -353,6 +379,18 @@ if ($defID) {
             print "<h5 class='grey-bg pad'>BART Information</h5>";
             foreach ($bartFields as $gridRow) {
                 print returnRow($gridRow);
+            }
+            
+            print "<h5 class='grey-bg pad'>Comments</h5>";
+            foreach ($comments as $comment) {
+                $timestamp = strtotime($comment['date_created']) - (60 * 60 * 7);
+                
+                printf(
+                    $commentFormat,
+                    $comment['firstname'].' '.$comment['lastname'],
+                    date('j/n/Y • g:i a', $timestamp),
+                    stripcslashes($comment['bdCommText'])
+                );
             }
             
             print "
