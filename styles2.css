@@ -628,6 +628,10 @@ a.nav-cur-page:hover, button.nav-cur-page:hover {
     margin: 0;
 }
 
+.check-label-left {
+    margin-right: .3125rem;
+}
+
 .form-control.subtle {
     box-shadow: none;
     outline: none;

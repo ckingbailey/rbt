@@ -29,6 +29,14 @@ function returnFakeInputStr($val) {
     return returnHtmlForVal($val, $str, $altStr);
 }
 
+function iterateRows(array $rowGroup, $title) {
+    print "<h5 class='grey-bg pad'>$title</h5>";
+    foreach ($rowGroup as $row) {
+        $options = count($row) === 1 ? ['colWd' => 6] : [];
+        print returnRow($row, $options);
+    }
+}
+
 if ($defID) {
     $sql = file_get_contents("ViewDef.sql").$defID;
     
@@ -63,6 +71,7 @@ if ($defID) {
                 $defType);  
         while ($stmt->fetch()) {
             $requiredRows = [
+                'Required Information',
                 [
                     sprintf($labelStr, 'Safety Certifiable'),
                     sprintf($fakeInputStr, $SafetyCert),
@@ -105,6 +114,7 @@ if ($defID) {
             ];
             
             $optionalRows = [
+                'Optional Information',
                 [
                     sprintf($labelStr, 'Spec or Code'),
                     returnFakeInputStr(stripcslashes($Spec)),
@@ -119,6 +129,7 @@ if ($defID) {
             ];
             
             $closureRows = [
+                'Clouser Information',
                 [
                     sprintf($labelStr, 'Evidence Type'),
                     returnFakeInputStr($EvidenceType),
@@ -133,6 +144,7 @@ if ($defID) {
             ];
             
             $modHistory = [
+                'Modification History',
                 [
                     sprintf($labelStr, 'Date Created'),
                     sprintf($labelStr, $DateCreated),
@@ -156,32 +168,32 @@ if ($defID) {
                 <header class='container page-header'>
                     <h1 class='page-title $color pad'>Deficiency No. $defID</h1>
                 </header>
-                <main class='container main-content'>
-                    <div class='row'>
-                        <div class='col-12'>
-                            <h5 class='grey-bg pad'>Required Information</h5>
-                        </div>
-                    </div>";
-                    foreach ($requiredRows as $gridRow) {
-                        $options = count($gridRow) === 1 ? ['colWd' => 6] : [];
-                        print returnRow($gridRow, $options);
+                <main class='container main-content'>";
+                    foreach ([$requiredRows, $optionalRows, $closureRows, $modHistory] as $rowGroup) {
+                        $rowName = array_shift($rowGroup);
+                        iterateRows($rowGroup, $rowName);
                     }
-                    print "<h5 class='grey-bg pad'>Optional Information</h5>";
-                    foreach ($optionalRows as $gridRow) {
-                        $options = count($gridRow) === 1 ? ['colWd' => 6] : [];
-                        print returnRow($gridRow, $options);
-                    }
-                    print "<h5 class='grey-bg pad'>Closure Information</h5>";
-                    foreach ($closureRows as $gridRow) {
-                        $options = count($gridRow) === 1 ? ['colWd' => 6] : [];
-                        print returnRow($gridRow, $options);
-                    }
-                    print "<h5 class='grey-bg pad'>Modification Details</h5>";
-                    foreach ($modHistory as $gridRow) {
-                        $options = count($gridRow) === 1 ? ['colWd' => 6] : [];
-                        print returnRow($gridRow, $options);
-                    }
-                            
+                    // iterateRows($requiredRows, 'Required Information');
+                    // <h5 class='grey-bg pad'>Required Information</h5>";
+                    // foreach ($requiredRows as $gridRow) {
+                    //     $options = count($gridRow) === 1 ? ['colWd' => 6] : [];
+                    //     print returnRow($gridRow, $options);
+                    // }
+                    // print "<h5 class='grey-bg pad'>Optional Information</h5>";
+                    // foreach ($optionalRows as $gridRow) {
+                    //     $options = count($gridRow) === 1 ? ['colWd' => 6] : [];
+                    //     print returnRow($gridRow, $options);
+                    // }
+                    // print "<h5 class='grey-bg pad'>Closure Information</h5>";
+                    // foreach ($closureRows as $gridRow) {
+                    //     $options = count($gridRow) === 1 ? ['colWd' => 6] : [];
+                    //     print returnRow($gridRow, $options);
+                    // }
+                    // print "<h5 class='grey-bg pad'>Modification Details</h5>";
+                    // foreach ($modHistory as $gridRow) {
+                    //     $options = count($gridRow) === 1 ? ['colWd' => 6] : [];
+                    //     print returnRow($gridRow, $options);
+                    // }
         }
         $stmt->close();
         

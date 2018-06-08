@@ -101,31 +101,19 @@ if ($stmt = $link->prepare($sql)) {
           }
         }
       }
+      $link->close();
+      header("Location: ViewDef.php?defID=$newDefID");
     } elseif ($stmt->error) {
-      echo "<pre style='color: mediumSlateBlue; font-size: 1.2rem'>STATEMENT ERROR: ";
-      echo $stmt->error;
-      echo "</pre>";
+      $stmt->close();
+      printSqlErrorAndExit($link, $sql);
     } else {
-      echo "<pre style='color: goldenRod; font-size: 1.2rem'>LINK ERROR from execute: ";
-      echo $link->error;
-      echo "</pre>";
+      $stmt->close();
+      printSqlErrorAndExit($link, $sql);
     }
     // echo "<h4>did it execute? what was the result? who knows?</h4>";
   } else {
-    echo "<pre style='color: limeGreen'>";
-    echo $link->error;
-    echo "</pre>";
-    $link->close();
-    exit;
+    printSqlErrorAndExit($link, $sql);
   }
 } else {
-  echo "<pre style='color: fuchsia'>{$link->error}</pre>";
-  $link->close();
-  exit;
+  printSqlErrorAndExit($link, $sql);
 }
-  
-// $stmt->close();
-$link->close();
-	
-header("Location: ViewDef.php?defID=$newDefID");
-?>

@@ -16,7 +16,6 @@ if ($result = $link->query('SELECT bdPermit from users_enc where userID='.$_SESS
 if ($bdPermit) {
     $labelStr = "<label for='%s'%s>%s</label>";
     $required = " class='required'";
-    $checkboxRequired = " class='form-check-label mr-2 required'";
     
     $topFields = [
         [
@@ -121,24 +120,30 @@ if ($bdPermit) {
                     'element' => "<input name='bdAttachments' id='bdAttachments' type='file' class='form-control' disabled>"
                 ]
             ]),
-            returnRow([
-                [
-                    'label' => "<label for='bdCommText'>Comment</label>",
-                    'tagName' => 'textarea',
-                    'element' => "<textarea name='bdCommText' id='bdCommText' class='form-control'>%s</textarea>",
-                    'value' => ''
+            'col2' => [
+                'row1' => [
+                    'bdCommText' => [
+                        'label' => "<label for='bdCommText'>Add comment</label>",
+                        'tagName' => 'textarea',
+                        'element' => "<textarea name='bdCommText' id='bdCommText' class='form-control'>%s</textarea>",
+                    ]
+                ],
+                'row2' => [
+                    'options' => [ 'inline' => true ],
+                    'resolution_disputed' => [
+                        'label' => "<label for='resolution_disputed' class='form-check-label check-label-left'>Resolution disputed</label>",
+                        'tagName' => 'input',
+                        'type' => 'checkbox',
+                        'element' => "<input name='resolution_disputed' id='resolution_disputed' type='checkbox' value='1' class='form-check-input' %s>",
+                    ],
+                    'structural' => [
+                        'label' => "<label for='structural' class='form-check-label check-label-left'>Stuctural</label>",
+                        'tagName' => 'input',
+                        'type' => 'checkbox',
+                        'element' => "<input name='structural' id='structural' type='checkbox' value='1' class='form-check-input' %s>",
+                    ]
                 ]
-            ]).// comments will need sep table
-            returnRow([
-                "<div class='form-check form-check-inline'>"
-                    .sprintf($labelStr, 'resolution_disputed', '', 'Resolution disputed')
-                    ."<input name='resolution_disputed' id='resolution_disputed' type='checkbox' value='1' class='form-check-input'>
-                </div>",
-                "<div class='form-check form-check-inline'>"
-                    .sprintf($labelStr, 'structural', '', 'Structural')
-                    ."<input name='structural' id='structural' type='checkbox' value='1' class='form-check-input'>
-                </div>"
-            ])
+            ]
         ]
     ];
 

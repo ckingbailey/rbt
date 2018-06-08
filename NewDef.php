@@ -62,7 +62,7 @@ echo "
                     'Status' => [
                         "label" => "<label for='Status' class='required'>Status</label>",
                         "tagName" => "select",
-                        "element" => "<select name='SpecLoc' id='SpecLoc' class='form-control' required>%s</select>",
+                        "element" => "<select name='Status' id='Status' class='form-control' required>%s</select>",
                         "type" => null,
                         "name" => 'Status',
                         "id" => 'Status',

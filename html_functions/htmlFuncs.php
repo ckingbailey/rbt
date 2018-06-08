@@ -12,4 +12,8 @@ function returnClassList($arrVal) {
     elseif (is_array($arrVal)) $classList = " class='".implode(' ', $arrVal)."'";
     return $classList;
 }
+
+function returnHtmlFromArray(array $htmlArr) {
+    // placeholder
+}
 ?>
