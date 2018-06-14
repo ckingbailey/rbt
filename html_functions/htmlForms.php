@@ -21,7 +21,8 @@ function returnSelectInput($data) {
         } elseif (is_array($result)) {
             foreach ($result as $option) {
                 $selected = $option == $value ? ' selected' : '';
-                $optionEls .= sprintf($optionFormat, $option, $selected, $option);
+                $curOpt = sprintf($optionFormat, $option, $selected, $option);
+                $optionEls .= $curOpt;
             }
         }
     } elseif ($cnxn->error) {

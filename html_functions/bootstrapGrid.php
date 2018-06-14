@@ -46,13 +46,6 @@ function returnCol($element, $wd, $options = []) {
             } elseif (isset($element['element']) && $element['element']) {
                 $content = $element['element'];
             } else $content = $element[0];
-            // $content = isFormCtrl($element)
-            //     ? (isset($options['inline'])
-            //         ? returnRow([ $element['label'], returnFormCtrl($element) ])
-            //         : $element['label'].returnFormCtrl($element))
-            //     : (isset($element['element'])
-            //         ? $element['element']
-            //         : $element[0]);
         } else {
             $content = '';
             foreach ($element as $el) {
@@ -69,17 +62,11 @@ function returnCol($element, $wd, $options = []) {
 function returnRow(array $elements, $options = []) {
     // if options rolled into $elements, extract it
     ifOptionsExtract($elements, $options);
-    // print "<p class='text-yellow' style='font-size: .6rem'>";
-    // var_dump($options);
-    // print "</p>";
-    
     $elRow = "<div class='row item-margin-bottom'>%s</div>";
     $colCollection = '';
     $numEls = count($elements);
     
-    $purpleStar = "<span style='color: purple'>✳</span>";
-    $yellowStar = "<span style='color: goldenRod'>✳</span>";
-    
+
     // if number of elements doesn't divide evenly by 12 take the remainder
     // this number will be added to the last col
     $extraCols = 12 % $numEls;
@@ -105,11 +92,6 @@ function returnRow(array $elements, $options = []) {
             // write options to a new var so as not to preserve options from prev col
             $colOpts = $options;
             is_array($el) && ifOptionsExtract($el, $colOpts);
-            
-            // print "<h4 class='text-primary' style='font-size: .5rem'>";
-            // var_dump($options);
-            // print "</h4>";
-            
             $colWd = $i === $numEls ? $colWd + $extraCols : $colWd;
             $colCollection .= returnCol($el, $colWd, $colOpts);
             $i++;

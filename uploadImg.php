@@ -23,7 +23,7 @@ function saveImgToServer($file, $assocID = null) {
     if (!$file['error']) {
         // if assocID given, make it eleven figures long to match length of MySQL int(11)
         if ($assocID) {
-            $assocID = '_'.str_pad($assocID, 11 - strlen($assocID), '0', STR_PAD_LEFT);
+            $assocID = '_'.str_pad($assocID, 11, '0', STR_PAD_LEFT);
         }
         // validate image
         if ($filename = basename($file['name'])) {

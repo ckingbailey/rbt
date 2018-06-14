@@ -282,11 +282,7 @@ function printBartDefsTable($cnxn, $qry, $lvl) {
             'cell' => [ 'innerHtml' => "<a href='ViewDef.php?bartDefID=%s'>%s</a>" ]
         ],
         [
-            'header' => [ 'text' => 'VTA Status' ],
-            'cell' => []
-        ],
-        [
-            'header' => [ 'text' => 'BART Status' ],
+            'header' => [ 'text' => 'Status' ],
             'cell' => []
         ],
         [
@@ -366,11 +362,10 @@ if($_POST['Search'] == NULL) {
         $fieldList = str_replace('creator', 'c.partyName AS creator', $fieldList);
         $fieldList = str_replace('next_step', 'n.nextStepName AS next_step', $fieldList);
         $sql = 'SELECT '
-            ." BARTDL.id, v.status, b.status, date_created, descriptive_title_vta, resolution_vta, n.nextStepName"
+            ." BARTDL.id, s.status s, date_created, descriptive_title_vta, resolution_vta, n.nextStepName"
             ." FROM BARTDL"
             ." JOIN bdNextStep n ON BARTDL.next_step=n.bdNextStepID"
-            ." JOIN Status v ON BARTDL.status_vta=v.statusID"
-            ." JOIN Status b ON BARTDL.status_bart=b.statusID"
+            ." JOIN Status s ON BARTDL.status=s.statusID"
             ." ORDER BY BARTDL.id";
         printInfoBox($roleLvl, 'newBartDef.php');
         printBartDefsTable($link, $sql, $bdPermit);

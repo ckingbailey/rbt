@@ -1,9 +1,11 @@
 <?php
 include('session.php');
+include('html_components/defComponents.php');
 include('SQLFunctions.php');
 include('html_functions/bootstrapGrid.php');
 $link = f_sqlConnect();
 $title = 'SVBX - New BART Deficiency';
+$acceptFormats = preg_replace('/\s+/', ' ', file_get_contents('allowedFormats.csv'));
 
 include('filestart.php');
 
@@ -17,185 +19,62 @@ if ($bdPermit) {
     $labelStr = "<label for='%s'%s>%s</label>";
     $required = " class='required'";
     
-    $topFields = [
-        [
-            returnRow([
-                sprintf($labelStr, 'creator', $required, 'Creator'),
-                [
-                    'tagName' => 'select',
-                    'element' => "<select name='creator' id='creator' class='form-control' required>%s</select>",
-                    'value' => '',
-                    'query' => "SELECT partyID, partyName from bdParties WHERE partyName <> '' ORDER BY partyID"
-                ]
-            ]).
-            returnRow([
-                sprintf($labelStr, 'next_step', '', 'Next step'),
-                [
-                    'tagName' => 'select',
-                    'element' => "<select name='next_step' id='next_step' class='form-control'>%s</select>",
-                    'query' => "SELECT bdNextStepID, nextStepName FROM bdNextStep WHERE nextStepName <> '' ORDER BY bdNextStepID",
-                    'value' => ''
-                ]
-            ]).
-            returnRow([
-                sprintf($labelStr, 'bic', '', 'Ball in court'),
-                [
-                    'tagName' => 'select',
-                    'element' => "<select name='bic' id='bic' class='form-control'>%s</select>",
-                    'value' => '',
-                    'query' => "SELECT partyID, partyName from bdParties WHERE partyName <> '' ORDER BY partyID"
-                ]
-            ]),
-            'descriptive_title_vta' => [
-                'label' => sprintf($labelStr, 'descriptive_title_vta', $required, 'Description'),
-                'tagName' => 'textarea',
-                'element' => "<textarea name='descriptive_title_vta' id='descriptive_title_vta' class='form-control' required></textarea>",
-                'value' => '',
-                'query' => null
-            ]
+    $topRows = [
+        'row1' => [
+            'col1' => [
+                'options' => [ 'inline' => true ],
+                [ $generalElements['creator'] ],
+                [ $generalElements['next_step'] ],
+                [ $generalElements['bic'] ],
+                [ $generalElements['status'] ]
+            ],
+            $generalElements['descriptive_title_vta']
         ]
     ];
 
-    $vtaFields = [
-        [
-            'Root_Prob_VTA' => [
-                'label' => sprintf($labelStr, 'root_prob_vta', $required, 'Root problem'),
-                'tagName' => 'textarea',
-                'element' => "<textarea name='root_prob_vta' id='root_prob_vta' class='form-control' required></textarea>",
-                'value' => '',
-                'query' => null
-            ]
-        ],
-        [
-            'Resolution_VTA' => [
-                'label' => sprintf($labelStr, 'resolution_vta', $required, 'Resolution'),
-                'tagName' => 'textarea',
-                'element' => "<textarea name='resolution_vta' id='resolution_vta' class='form-control' required></textarea>",
-                'value' => '',
-                'query' => null
-            ]
-        ],
-        [
-            returnRow([
-                sprintf($labelStr, 'status_vta', $required, 'Status'),
+    $vtaRows = [
+        'row1' => [ $vtaElements['root_prob_vta'] ],
+        'row2' => [ $vtaElements['resolution_vta'] ],
+        'row3' => [
+            'col1' => [
+                'options' => [ 'inline' => true ],
+                [ $vtaElements['priority_vta'] ],
+                [ $vtaElements['agree_vta'] ],
+                [ $vtaElements['safety_cert_vta'] ],
                 [
-                    'tagName' => 'select',
-                    'element' => "<select name='status_vta' id='status_vta' class='form-control' required>%s</select>",
-                    'value' => '',
-                    'query' => "SELECT statusID, status from Status WHERE status <> 'Deleted'"
-                ]
-            ]).
-            returnRow([
-                sprintf($labelStr, 'priority_vta', $required, 'Priority'),
-                "<select name='priority_vta' id='priority_vta' class='form-control' required>
-                    <option></option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                </select>"
-            ]).
-            returnRow([
-                sprintf($labelStr, 'agree_vta', $required, 'Agree'),
-                [
-                    'tagName' => 'select',
-                    'element' => "<select name='agree_vta' id='agree_vta' class='form-control' required>%s</select>",
-                    'value' => '',
-                    'query' => "SELECT agreeDisagreeID, agreeDisagreeName FROM agreeDisagree WHERE agreeDisagreeName <> ''"
-                ]
-            ]).
-            returnRow([
-                sprintf($labelStr, 'safety_cert_vta', $required, 'Safety Certiable'),
-                [
-                    'tagName' => 'select',
-                    'element' => "<select name='safety_cert_vta' id='safety_cert_vta' class='form-control' required>%s</select>",
-                    'value' => '',
-                    'query' => 'SELECT yesNoID, yesNo from YesNo'
-                ]
-            ]).
-            returnRow([ // will need sep table
-                "<label for='bdAttachments'>Upload attachment</label>",
-                [
-                    'tagName' => 'input',
-                    'type' => 'file',
-                    'element' => "<input name='bdAttachments' id='bdAttachments' type='file' class='form-control' disabled>"
-                ]
-            ]),
-            'col2' => [
-                'row1' => [
-                    'bdCommText' => [
-                        'label' => "<label for='bdCommText'>Add comment</label>",
-                        'tagName' => 'textarea',
-                        'element' => "<textarea name='bdCommText' id='bdCommText' class='form-control'>%s</textarea>",
-                    ]
-                ],
-                'row2' => [
                     'options' => [ 'inline' => true ],
-                    'resolution_disputed' => [
-                        'label' => "<label for='resolution_disputed' class='form-check-label check-label-left'>Resolution disputed</label>",
-                        'tagName' => 'input',
-                        'type' => 'checkbox',
-                        'element' => "<input name='resolution_disputed' id='resolution_disputed' type='checkbox' value='1' class='form-check-input' %s>",
-                    ],
-                    'structural' => [
-                        'label' => "<label for='structural' class='form-check-label check-label-left'>Stuctural</label>",
-                        'tagName' => 'input',
-                        'type' => 'checkbox',
-                        'element' => "<input name='structural' id='structural' type='checkbox' value='1' class='form-check-input' %s>",
-                    ]
+                    $vtaElements['resolution_disputed'],
+                    $vtaElements['structural']
+                ]
+            ],
+            'col2' => [
+                [ $vtaElements['bdCommText'] ],
+                [
+                    'options' => [ 'inline' => true ],
+                    $vtaElements['attachment']
                 ]
             ]
         ]
     ];
 
-    $bartFields = [
-        'id_bart' => [
-            sprintf($labelStr, 'id_bart', $required, 'BART ID')
-            ."<input name='id_bart' id='id_bart' type='text' class='form-control' required>"
-        ],
-        'description_bart' => [
-            sprintf($labelStr, 'description_bart', $required, 'Description')
-            ."<textarea name='description_bart' id='description_bart' maxlength='1000' class='form-control' required></textarea>"
-        ],
-        [
-            returnRow([
-                sprintf($labelStr, 'cat1_bart', '', 'Category 1'),
-                "<input name='cat1_bart' id='cat1_bart' type='text' maxlength='3' class='form-control'>"
-            ]).
-            returnRow([
-                sprintf($labelStr, 'cat2_bart', '', 'Category 2'),
-                "<input name='cat2_bart' id='cat2_bart' type='text' maxlength='3' class='form-control'>"
-            ]).
-            returnRow([
-                sprintf($labelStr, 'cat3_bart', '', 'Category 3'),
-                "<input name='cat3_bart' id='cat3_bart' type='text' maxlength='3' class='form-control'>"
-            ]),
-            returnRow([
-                sprintf($labelStr, 'level_bart', $required, 'Level'),
-                "<select name='level_bart' id='level_bart' class='form-control' required>
-                    <option></option>
-                    <option>PROGRAM</option>
-                    <option>PROJECT</option>
-                </select>"
-            ]).
-            returnRow([
-                sprintf($labelStr, 'dateOpen_bart', $required, 'Date open'),
-                "<input name='dateOpen_bart' id='dateOpen_bart' type='date' class='form-control' required>"
-            ]).
-            returnRow([
-                sprintf($labelStr, 'dateClose_bart', '', 'Date closed'),
-                "<input name='dateClose_bart' id='dateClose_bart' type='date' class='form-control'>"
-            ]).
-            returnRow([
-                sprintf($labelStr, 'status_bart', $required, 'Status'),
-                'status_bart' => [
-                    'tagName' => 'select',
-                    'element' => "<select name='status_bart' id='status_bart' class='form-control' required>%s</select>",
-                    'value' => '',
-                    'query' => "SELECT statusID, status from Status WHERE status <> 'Deleted'"
-                ]
-            ])
+    $bartRows = [
+        'row1' => [ $bartElements['id_bart'] ],
+        'row2' => [ $bartElements['description_bart'] ],
+        'row3' => [
+            'options' => [ 'inline' => true ],
+            'col1' => [
+                [ $bartElements['cat1_bart'] ],
+                [ $bartElements['cat2_bart'] ],
+                [ $bartElements['cat3_bart'] ]
+            ],
+            'col2' => [
+                [ $bartElements['level_bart'] ],
+                [ $bartElements['dateOpen_bart'] ],
+                [ $bartElements['dateClose_bart'] ]
+            ]
         ]
     ];
+
     echo "
         <header class='container page-header'>
             <h1 class='page-title'>Add New Deficiency</h1>
@@ -204,17 +83,17 @@ if ($bdPermit) {
             <form action='recBartDef.php' method='POST' enctype='multipart/form-data'>
                 <input type='hidden' name='created_by' value='{$_SESSION['UserID']}' />
                 <h5 class='grey-bg pad'>General Information</h5>";
-                foreach ($topFields as $gridRow) {
+                foreach ($topRows as $gridRow) {
                     print returnRow($gridRow);
                 }
     echo "
                 <h5 class='grey-bg pad'>VTA Information</h5>";
-                foreach ($vtaFields as $gridRow) {
+                foreach ($vtaRows as $gridRow) {
                     print returnRow($gridRow);
                 }
     echo "
                 <h5 class='grey-bg pad'>BART Information</h5>";
-                foreach ($bartFields as $gridRow) {
+                foreach ($bartRows as $gridRow) {
                     print returnRow($gridRow);
                 }
     echo "

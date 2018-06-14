@@ -1,4 +1,43 @@
 <?php
+$attachmentFormats = preg_replace('/\s+/', ' ', file_get_contents('allowedFormats.csv'));
+
+function returnLabel($for, $text, $required = '', $str = "<label for='%s'%s>%s</label>") {
+    $required && $requiredAttr = " class='required'";
+    return sprintf($str, $for, $requiredAttr, $text);
+}
+
+function checkboxLabel($for, $text, $required = '') {
+    $str =  "<label for='%s' class='form-check-label check-label-left'%s>%s</label>";
+    return returnLabel($for, $text, $required, $str);
+}
+
+function getAttachments($cnxn, $id) {
+    $sql = "SELECT bdaFilepath, filename from bartdlAttachments WHERE bartdlID = ?";
+    if (!$stmt = $cnxn->prepare($sql)) printSqlErrorAndExit($cnxn, $sql);
+    if (!$stmt->bind_param('i', intval($id))) printSqlErrorAndExit($stmt, $sql);
+    if (!$stmt->execute()) printSqlErrorAndExit($stmt, $sql);
+    $attachments = stmtBindResultArray($stmt) ?: [];
+    $stmt->close();
+    return $attachments;
+}
+
+function renderAttachmentsAsAnchors(array $attachments = []) {
+    $list = '';
+    if (count($attachments)) {
+        foreach ($attachments as $attachment) {
+            $list .= "<li><a href='"
+                .htmlentities(stripcslashes($attachment['bdaFilepath']))."'>"
+                .htmlentities(stripcslashes($attachment['filename']))."</a></li>";
+        }
+    }
+    return sprintf("<ul class='pl-0 mb-0'>%s</ul>", $list);
+}
+
+$commentFormat = "
+    <div class='thin-grey-border pad mb-3'>
+        <h6 class='d-flex flex-row justify-content-between text-secondary'><span>%s</span><span>%s</span></h6>
+        <p>%s</p>
+    </div>";
 
 $projectDefEls = [
     $requiredRows = [
@@ -252,155 +291,170 @@ $projectDefEls = [
     ]
 ];
 
-$bartDefEls = [
-    $topElements => [
-        'creator' => [
-            "<label for='creator'>Creator</label>",
-            "<select name='creator' id='creator' class='form-control' >
-                <option></option>
-                <option>VTA</option>
-                <option>BART</option>
-            </select>"
-        ],
-        'next_step' => [
-            "<label for='next_step'>Next step</label>",
-            [
-                'tagName' => 'select',
-                'element' => "<select name='next_step' id='next_step' class='form-control'>%s</select>",
-                'query' => 'SELECT bdNextStepID, nextStepName FROM bdNextStep ORDER BY bdNextStepID',
-                'value' => ''
-            ]
-        ],
-        'bic' => [
-            "<label for='bic'>Ball in court</label>",
-            "<select name='bic' id='bic' class='form-control'>
-                <option></option>
-                <option>VTA</option>
-                <option>BART</option>
-            </select>"
-        ],
-        'descriptive_title_vta' => [
-            'label' => "<label for='descriptive_title_vta'>Description</label>",
-            'tagName' => 'textarea',
-            'element' => "<textarea name='descriptive_title_vta' id='descriptive_title_vta' class='form-control'></textarea>",
-            'value' => '',
-            'query' => null
-        ]
+$bartDefEls = [ 'topElement' => &$topElements, 'vtaELements' => &$vtaElements, 'bartElements' => &$bartElements ];
+
+$generalElements = [
+    'creator' => [
+        'label' => returnLabel('creator', 'Creator', 'required'),
+        'tagName' => 'select',
+        'element' => "<select name='creator' id='creator' class='form-control' required>%s</select>",
+        'value' => '',
+        'query' => "SELECT partyID, partyName from bdParties WHERE partyName <> '' ORDER BY partyID"
     ],
-    $vtaElements => [
-        'Root_Prob_VTA' => [
-            'label' => "<label for='root_prob_vta'>Root problem</label>",
-            'tagName' => 'textarea',
-            'element' => "<textarea name='root_prob_vta' id='root_prob_vta' class='form-control'></textarea>",
-            'value' => '',
-            'query' => null
-        ],
-        'resolution_vta' => [
-            'label' => "<label for='resolution_vta'>Resolution</label>",
-            'tagName' => 'textarea',
-            'element' => "<textarea name='resolution_vta' id='resolution_vta' class='form-control'></textarea>",
-            'value' => '',
-            'query' => null
-        ],
-        'status_vta' => [
-            "<label for='status_vta'>Status</label>",
-            [
-                'tagName' => 'select',
-                'element' => "<select name='status_vta' id='status_vta' class='form-control'>%s</select>",
-                'value' => '',
-                'query' => "SELECT statusID, status from Status WHERE status <> 'Deleted'"
-            ]
-        ],
-        'priority_vta' => [
-            "<label for='priority_vta'>Priority</label>",
-            "<select name='priority_vta' id='priority_vta' class='form-control'>
-                <option></option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-            </select>"
-        ],
-        'safety_cert_vta' => [
-            "<label for='safety_cert_vta'>Safety Certiable?</label>",
-            [
-                'tagName' => 'select',
-                'element' => "<select name='safety_cert_vta' id='safety_cert_vta' class='form-control'>%s</select>",
-                'value' => '',
-                'query' => 'SELECT yesNoID, yesNo from YesNo'
-            ]
-        ],
-        'bdAttachments' => [
-            "<label for='bdAttachments'>Upload attachment</label>",
-            [
-                'tagName' => 'input',
-                'type' => 'file',
-                'element' => "<input name='bdAttachments' id='bdAttachments' type='file' class='form-control'>"
-            ]
-        ],
-        'bdComments' => [
-            [
-                'label' => "<label for='bdComments'>Comment</label>",
-                'tagName' => 'textarea',
-                'element' => "<textarea name='bdComments' id='bdComments' class='form-control'>%s</textarea>",
-                'value' => ''
-            ]
-        ],
-        'resolution_disputed' => [
-            [
-                'label' => "<label for='resolution_disputed' class='form-check-label mr-2'>Resolution disputed</label>",
-                'element' => "<input name='resolution_disputed' id='resolution_disputed' type='checkbox' value='1' class='form-check-input'>"
-            ],
-            [
-                'label' => "<label for='structural' class='form-check-label mr-2'>Structural</label>",
-                'element' => "<input name='structural' id='structural' type='checkbox' value='1' class='form-check-input'>"
-            ]
-        ]
+    'next_step' => [
+        'label' => returnLabel('next_step', 'Next step'),
+        'tagName' => 'select',
+        'element' => "<select name='next_step' id='next_step' class='form-control'>%s</select>",
+        'query' => "SELECT bdNextStepID, nextStepName FROM bdNextStep WHERE nextStepName <> '' ORDER BY bdNextStepID",
+        'value' => ''
     ],
-    $bartElements => [
-        'id_bart' => [
-            "<label for='id_bart'>BART ID</label>
-            <input name='id_bart' id='id_bart' type='text' class='form-control'>"
-        ],
-        'description_bart' => [
-            "<label for='description_bart'>Description</label>
-            <textarea name='description_bart' id='description_bart' maxlength='1000' class='form-control'></textarea>"
-        ],
-        'cat1_bart' => [
-            "<label for='cat1_bart'>Cat1</label>",
-            "<input name='cat1_bart' id='cat1_bart' type='text' maxlength='3' class='form-control'>"
-        ],
-        'cat2_bart' => [
-            "<label for='cat2_bart'>Cat2</label>",
-            "<input name='cat2_bart' id='cat2_bart' type='text' maxlength='3' class='form-control'>"
-        ],
-        'cat3_bart' => [
-            "<label for='cat3_bart'>Cat3</label>",
-            "<input name='cat3_bart' id='cat3_bart' type='text' maxlength='3' class='form-control'>"
-        ],
-        'level_bart' => [
-            "<label for='level_bart'>Level</label>",
-            "<select name='level_bart' id='level_bart' class='form-control'>
-                <option></option>
-                <option>PROGRAM</option>
-                <option>PROJECT</option>
-            </select>"
-        ],
-        'dateOpen_bart' => [
-            "<label for='dateOpen_bart'>Date open</label>",
-            "<input name='dateOpen_bart' id='dateOpen_bart' type='date' class='form-control'>"
-        ],
-        'dateClose_bart' => [
-            "<label for='dateClose_bart'>Date closed</label>",
-            "<input name='dateClose_bart' id='dateClose_bart' type='date' class='form-control'>"
-        ],
-        'status_bart' => [
-            "<label for='status_bart'>Status</label>",
-            [
-                'tagName' => 'select',
-                'element' => "<select name='status_bart' id='status_bart' class='form-control'>%s</select>",
-                'value' => '',
-                'query' => "SELECT statusID, status from Status WHERE status <> 'Deleted'"
-            ]
-        ]
+    'bic' => [
+        'label' => returnLabel('bic', 'Ball in court'),
+        'tagName' => 'select',
+        'element' => "<select name='bic' id='bic' class='form-control'>%s</select>",
+        'query' => "SELECT partyID, partyName from bdParties WHERE partyName <> '' ORDER BY partyID",
+        'value' => ''
+    ],
+    'status' => [
+        'label' => returnLabel('status', 'Status', 1),
+        'tagName' => 'select',
+        'element' => "<select name='status' id='status' class='form-control' required>%s</select>",
+        'query' => "SELECT statusID, status from Status WHERE status <> 'Deleted'",
+        'value' => ''
+    ],
+    'descriptive_title_vta' => [
+        'label' => returnLabel('descriptive_title_vta', 'Description', 'required'),
+        'tagName' => 'textarea',
+        'element' => "<textarea name='descriptive_title_vta' id='descriptive_title_vta' class='form-control' maxlength='1000' required>%s</textarea>",
+        'query' => null
+    ]
+];
+
+$vtaElements = [
+    'root_prob_vta' => [
+        'label' => returnLabel('root_prob_vta', 'Root problem', true),
+        'tagName' => 'textarea',
+        'element' => "<textarea name='root_prob_vta' id='root_prob_vta' class='form-control' required>%s</textarea>",
+        'query' => null
+    ],
+    'resolution_vta' => [
+        'label' => returnLabel('resolution_vta', 'Resolution', 1),
+        'tagName' => 'textarea',
+        'element' => "<textarea name='resolution_vta' id='resolution_vta' class='form-control' required>%s</textarea>",
+        'query' => null
+    ],
+    'priority_vta' => [
+        'label' => returnLabel('priority_vta', 'Priority', 1),
+        'tagName' => 'select',
+        'element' => "<select name='priority_vta' id='priority_vta' class='form-control' required>%s</select>",
+        'value' => '',
+        'query' => [ 1, 2, 3 ]
+    ],
+    'agree_vta' => [
+        'label' => returnLabel('agree_vta', 'Agree', 1),
+        'tagName' => 'select',
+        'element' => "<select name='agree_vta' id='agree_vta' class='form-control' required>%s</select>",
+        'value' => '',
+        'query' => "SELECT agreeDisagreeID, agreeDisagreeName FROM agreeDisagree WHERE agreeDisagreeName <> ''"
+    ],
+    'safety_cert_vta' => [
+        'label' => returnLabel('safety_cert_vta', 'Safety Certiable', 1),
+        'tagName' => 'select',
+        'element' => "<select name='safety_cert_vta' id='safety_cert_vta' class='form-control' required>%s</select>",
+        'value' => '',
+        'query' => 'SELECT yesNoID, yesNo from YesNo'
+    ],
+    'bartdlAttachments' => [
+        'label' => returnLabel('bartdlAttachments', 'Attachments'),
+        'element' => "<div class='border-radius thin-grey-border pad scroll-y' style='height: 6.8rem'>%s</div>",
+        'query' => "SELECT filepath, filename from bartdlAttachments WHERE bartdlID = ?"
+    ],
+    'attachment' => [
+        'label' => returnLabel('attachment', 'Upload attachment'),
+        'tagName' => 'input',
+        'type' => 'file',
+        'element' => "
+            <input name='attachment' id='attachment' type='file' accept='$attachmentFormats' class='form-control'>
+            <label class='text-red'>max. allowed file size 5Mb</label>"
+    ],
+    'bdCommText' => [
+        'label' => returnLabel('bdCommText', 'Add comment'),
+        'tagName' => 'textarea',
+        'element' => "<textarea name='bdCommText' id='bdCommText' class='form-control'>%s</textarea>",
+        'value' => ''
+    ],
+    'resolution_disputed' => [
+        'label' => checkboxLabel('resolution_disputed', 'Resolution disputed'),
+        'tagName' => 'input',
+        'type' => 'checkbox',
+        'element' => "<input name='resolution_disputed' id='resolution_disputed' type='checkbox' value='1' class='form-check-input' %s>",
+        'value' => '',
+        'query' => null
+    ],
+    'structural' => [
+        'label' => checkboxLabel('structural', 'Stuctural'),
+        'tagName' => 'input',
+        'type' => 'checkbox',
+        'element' => "<input name='structural' id='structural' type='checkbox' value='1' class='form-check-input' %s>",
+        'value' => '',
+        'query' => null
+    ]
+];
+
+$bartElements = [
+    'id_bart' => [
+        'label' => returnLabel('id_bart', 'BART ID', 'required'),
+        'tagName' => 'input',
+        'type' => 'text',
+        'element' => "<input name='id_bart' id='id_bart' type='text' value='%s' class='form-control' required>",
+        'value' => ''
+    ],
+    'description_bart' => [
+        'label' => returnLabel('description_bart', 'Description', 1),
+        'tagName' => 'textarea',
+        'element' => "<textarea name='description_bart' id='description_bart' maxlength='1000' class='form-control' required>%s</textarea>",
+        'value' => ''
+    ],
+    'cat1_bart' => [
+        'label' => returnLabel('cat1_bart', 'Category 1'),
+        'tagName' => 'input',
+        'type' => 'text',
+        'element' => "<input name='cat1_bart' id='cat1_bart' type='text' maxlength='3' value='%s' class='form-control'>",
+        'value' => ''
+    ],
+    'cat2_bart' => [
+        'label' => returnLabel('cat2_bart', 'Category 2'),
+        'tagName' => 'input',
+        'type' => 'text',
+        'element' => "<input name='cat2_bart' id='cat2_bart' type='text' maxlength='3' value='%s' class='form-control'>",
+        'value' => ''
+    ],
+    'cat3_bart' => [
+        'label' => returnLabel('cat3_bart', 'Category 3'),
+        'tagName' => 'input',
+        'type' => 'text',
+        'element' => "<input name='cat3_bart' id='cat3_bart' type='text' maxlength='3' value='%s' class='form-control'>",
+        'value' => ''
+    ],
+    'level_bart' => [
+        'label' => returnLabel('level_bart', 'Level', true),
+        'tagName' => 'select',
+        'element' => "<select name='level_bart' id='level_bart' class='form-control' required>%s</select>",
+        'value' => '',
+        'query' => [ 'PROGRAM', 'PROJECT' ]
+    ],
+    'dateOpen_bart' => [
+        'label' => returnLabel('dateOpen_bart', 'Date open', 1),
+        'tagName' => 'input',
+        'type' => 'date',
+        'element' => "<input name='dateOpen_bart' id='dateOpen_bart' type='date' value='%s' class='form-control' required>",
+        'value' => ''
+    ],
+    'dateClose_bart' => [
+        'label' => returnLabel('dateClose_bart', 'Date closed'),
+        'tagName' => 'input',
+        'type' => 'date',
+        'value' => '',
+        'element' => "<input name='dateClose_bart' id='dateClose_bart' type='date' value='%s' class='form-control'>"
     ]
 ];

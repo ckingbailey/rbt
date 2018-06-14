@@ -16,4 +16,5 @@ node_modules
 composer.phar
 /vendor/
 img_uploads
+uploads
 CDLdump.sql

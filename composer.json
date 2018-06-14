@@ -2,6 +2,7 @@
     "require": {
         "mailgun/mailgun-php": "^2.5",
         "php-http/guzzle6-adapter": "^1.1",
-        "php-http/message": "^1.6"
+        "php-http/message": "^1.6",
+        "codeguy/upload": "^1.3"
     }
 }
