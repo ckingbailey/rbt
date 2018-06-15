@@ -3,6 +3,75 @@
     - dataToRender will be passed from php MySQL query
     - this will require refactoring fileend.php into a fcn
 */
+function PieChart(d3, id, d, palette, wd = '200', ht = '200') {
+    let data = Object.keys(d).map((el, i, arr) => {
+        return {
+            label: el,
+            count: d[el]
+        }
+    });
+    let width = wd;
+    let height = ht;
+    let container = document.getElementById(id);
+    let colors = Object.values(palette);
+    
+    
+    // TODO: setData(), setColors(), setDims(), setWd(), setHt(), setContainer()
+    // and get...() for all of the above
+    const public = {
+        draw: function() {
+            const radius = Math.min(width, height)/2;
+            const color = d3.scaleOrdinal(colors);
+            
+            const chart = d3.select(container)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .append('g')
+                .attr('transform', `translate(${width/2},${height/2})`);
+                
+            const arc = d3.arc()
+                .innerRadius(0)
+                .outerRadius(radius);
+                
+            const pie = d3.pie()
+                .value(d => d.count)
+                .sort(null);
+                
+            const path = chart.selectAll('path')
+                .data(pie(data))
+                .enter()
+                .append('path')
+                .attr('d', arc)
+                .attr('fill', d => color(d.data.label));
+                
+            drawLegend(container, data, colors);
+        },
+        getContainer: function() {
+            return container;
+        }
+    };
+    
+    function drawLegend(container, data, colorScheme) {
+        var legend = container.appendChild(document.createElement('div'));
+        legend.classList.add('d-flex', 'flex-column', 'flex-wrap', 'mt-3');
+    
+        data.forEach((datum, i) => {
+            const label = legend.appendChild(document.createElement('span'))
+            const swatch = document.createElement('i')
+            
+            label.classList.add('mr-2', 'mb-1', 'ml-2')
+            label.textContent = datum.label
+    
+            swatch.classList.add('legend-swatch')
+            swatch.style.backgroundColor = colorScheme[i]
+            label.insertAdjacentElement('afterbegin', swatch)
+        })
+    }
+    
+    return public;
+};
+
 function drawOpenCloseChart(d3, open, closed) {
     var openCloseData = [
         {label: 'open', count: open},

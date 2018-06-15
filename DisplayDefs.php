@@ -40,12 +40,20 @@ function concatSqlStr($arr, $tableName, $initStr = '') {
     return $qStr;
 }
 
-function printInfoBox($lvl, $href) {
+function printInfoBox($lvl, $href, $dataGraphic = false) {
+    $dataContainer = $dataGraphic
+        ? "<div class='row mb-3'><div id='dataContainer' class='col-md-4 offset-md-4 d-flex flex-row flex-wrap justify-content-start'></div></div>"
+        : '';
     $box ="
         <div class='card item-margin-bottom'>
-            <div class='card-body flex-row justify-content-between align-items-center grey-bg'>
-                <p class='mb-1'>Click Deficiency ID number to see full details</p>
-                %s
+            <div class='card-body grey-bg'>
+                $dataContainer
+                <div class='row'>
+                    <div class='col-12 d-flex flex-row flex-wrap justify-content-between align-items-center'>
+                        <span class='mb-2'>Click Deficiency ID number to see full details</span>
+                        %s
+                    </div>
+                </div>
             </div>
         </div>";
     $btn = $lvl > 1 ? "<a href='%s' class='btn btn-primary'>Add New Deficiency</a>" : '';
@@ -208,6 +216,7 @@ function printDefsTable($cnxn, $qry, $elements, $lvl) {
         } else {
             print "<h4 class='text-secondary text-center'>No results found for your search</h4>";
         }
+        $result->close();
     } elseif ($cnxn->error) {
         print "<h4 class='text-danger center-content'>Error: $cnxn->error</h4><p>$qry</p>";
     }
@@ -268,7 +277,23 @@ function printProjectDefsTable($cnxn, $qry, $lvl) {
     printDefsTable($cnxn, $qry, $tableFields, $lvl);
 }
 
-function printBartDefsTable($cnxn, $qry, $lvl) {
+function printBartDefsTable($cnxn, $lvl) {
+    // build SELECT query string from sql file
+    $fieldList = preg_replace('/\s+/', '', file_get_contents('bartdl.sql'))
+        .',form_modified';
+    // replace ambiguous or JOINED keys
+    $fieldList = str_replace('updated_by', 'BARTDL.updated_by AS updated_by', $fieldList);
+    $fieldList = str_replace('status', 's.status AS status', $fieldList);
+    $fieldList = str_replace('agree_vta', 'ag.agreeDisagreeName AS agree_vta', $fieldList);
+    $fieldList = str_replace('creator', 'c.partyName AS creator', $fieldList);
+    $fieldList = str_replace('next_step', 'n.nextStepName AS next_step', $fieldList);
+        
+    $qry = 'SELECT '
+            ." BARTDL.id, s.status s, date_created, descriptive_title_vta, resolution_vta, n.nextStepName"
+            ." FROM BARTDL"
+            ." JOIN bdNextStep n ON BARTDL.next_step=n.bdNextStepID"
+            ." JOIN Status s ON BARTDL.status=s.statusID"
+            ." ORDER BY BARTDL.id";
     $tdClassList = 'svbx-td';
     $thClassList = 'svbx-th';
     $collapseXs = 'collapse-xs';
@@ -309,6 +334,7 @@ function printBartDefsTable($cnxn, $qry, $lvl) {
             ]
         ]
     ];
+    
     printDefsTable($cnxn, $qry, $tableFields, $lvl);
 }
 
@@ -335,8 +361,8 @@ if($_POST['Search'] == NULL) {
             print "
                 <div class='row'>
                     <div class='col-12 d-flex'>
-                        <a href='DisplayDefs.php' class='btn $projBtn flex-grow item-margin-right'>Project deficiencies</a>
-                        <a href='DisplayDefs.php?view=BART' class='btn $bartBtn flex-grow item-margin-right'>BART deficiencies</a>
+                        <a href='DisplayDefs.php' class='btn $projBtn flex-grow item-margin-right text-wrap'>Project deficiencies</a>
+                        <a href='DisplayDefs.php?view=BART' class='btn $bartBtn flex-grow item-margin-right text-wrap'>BART deficiencies</a>
                     </div>
                 </div>
             ";
@@ -351,36 +377,44 @@ if($_POST['Search'] == NULL) {
         printInfoBox($roleLvl, 'NewDef.php');
         printProjectDefsTable($link, $sql, $roleLvl);
     } elseif ($bdPermit) {
-        // build SELECT query string from sql file
-        $fieldList = preg_replace('/\s+/', '', file_get_contents('bartdl.sql'))
-            .',form_modified';
-        // replace ambiguous or JOINED keys
-        $fieldList = str_replace('updated_by', 'BARTDL.updated_by AS updated_by', $fieldList);
-        $fieldList = str_replace('status_vta', 's.status AS status_vta', $fieldList);
-        $fieldList = str_replace('status_bart', 's2.status AS status_bart', $fieldList);
-        $fieldList = str_replace('agree_vta', 'ag.agreeDisagreeName AS agree_vta', $fieldList);
-        $fieldList = str_replace('creator', 'c.partyName AS creator', $fieldList);
-        $fieldList = str_replace('next_step', 'n.nextStepName AS next_step', $fieldList);
-        $sql = 'SELECT '
-            ." BARTDL.id, s.status s, date_created, descriptive_title_vta, resolution_vta, n.nextStepName"
-            ." FROM BARTDL"
-            ." JOIN bdNextStep n ON BARTDL.next_step=n.bdNextStepID"
-            ." JOIN Status s ON BARTDL.status=s.statusID"
-            ." ORDER BY BARTDL.id";
-        printInfoBox($roleLvl, 'newBartDef.php');
-        printBartDefsTable($link, $sql, $bdPermit);
+        $statusSql = 'SELECT s.status, count(id) from BARTDL b JOIN Status s ON b.status=s.statusID GROUP BY s.status';
+        $altStatusSql = "SELECT COUNT(CASE WHEN s.status='open' THEN 1
+            ELSE NULL END) AS statusOpen,
+            COUNT(CASE WHEN s.status='closed' THEN 1
+            ELSE NULL END) AS statusClosed
+            FROM BARTDL b JOIN Status s
+            ON b.status=s.statusID";
+            
+        $errFormat = "<p class='text-red'>%s</p>";
+        
+        if (!$res = $link->query($altStatusSql)) printf($errFormat, $link->error);
+        elseif (!$statusData = $res->fetch_assoc()) printf($errFormat, $res->error);
+
+        // print "<pre class='text-primary'>";
+        // var_dump($statusData);
+        // print "</pre>";
+        
+        printInfoBox($roleLvl, 'newBartDef.php', 1);
+        printBartDefsTable($link, $bdPermit);
     }
-    $result->close();
     echo "</main>";
     echo "
+        <script src='https://d3js.org/d3.v5.js'></script>
+        <script src='js/pie_chart.js'></script>
         <script>
             function resetSearch(ev) {
                 ev.target.form.reset();
                 ev.target.form.submit();
             }
+            const openCloseChart = new PieChart(
+                window.d3,
+                'dataContainer',
+                { open: {$statusData['statusOpen']}, closed: {$statusData['statusClosed']} },
+                { red: 'var(--red)', green: 'var(--green)' });
+            openCloseChart.draw();
         </script>";
                     
-mysqli_close($link);
+$link->close();
     
 include 'fileend.php';
 ?>

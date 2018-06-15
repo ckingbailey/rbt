@@ -109,13 +109,11 @@ session_start();
 </main>
 <?php
   echo "
-  <!--THIS IS A TERRIBLE WAY TO DO THIS
-      THIS IS ONLY FOR TESTING PURPOSES-->
   <script src='https://d3js.org/d3.v5.js'></script>
   <script src='js/pie_chart.js'></script>
   <script>
-    window.drawOpenCloseChart(window.d3, '".$statusOpen."', '".$statusClosed."')
-    window.drawSeverityChart(window.d3, '".$blockSev."', '".$critSev."', '".$majSev."', '".$minSev."')
+    window.drawOpenCloseChart(window.d3, '$statusOpen', '$statusClosed')
+    window.drawSeverityChart(window.d3, '$blockSev', '$critSev', '$majSev', '$minSev')
   </script>
   <!--REMOVE ABOVE SCRIPT TAGS ONCE TESTING IS DONE-->
   <!--DO NOT TYPE BELOW THIS LINE-->";
