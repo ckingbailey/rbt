@@ -5,7 +5,7 @@ function stmtBindResultArray(&$stmt) {
         $params[] = &$row[$field->name]; 
     }
     
-    call_user_func_array(array($stmt, 'bind_result'), $params); 
+    call_user_func_array(array($stmt, 'bind_result'), $params);
     
     while ($stmt->fetch()) { 
         foreach($row as $key => $val) 
@@ -24,7 +24,8 @@ function stmtBindResultArrayRef(&$stmt, array &$array) {
         $params[] = &$row[$field->name]; 
     }
     
-    call_user_func_array(array($stmt, 'bind_result'), $params); 
+    if (!call_user_func_array(array($stmt, 'bind_result'), $params))
+        return false;
     
     while ($stmt->fetch()) { 
         foreach($row as $key => $val) 
@@ -32,4 +33,6 @@ function stmtBindResultArrayRef(&$stmt, array &$array) {
             $array[$key]['value'] = $val; 
         } 
     }
+    
+    return true;
 }

@@ -2,19 +2,15 @@
 include('session.php');
 include('html_functions/bootstrapGrid.php');
 include('html_functions/htmlFuncs.php');
+include('html_components/defComponents.php');
 include('sql_functions/stmtBindResultArray.php');
 include('error_handling/sqlErrors.php');
 $defID = $_GET['defID'];
-$bartDefID = $_GET['bartDefID'];
 $Role = $_SESSION['Role'];
-$title = "SVBX - Deficiency No".$defID;
-//ini_set('display_errors', 1);
-//ini_set('display_startup_errors', 1);
-//error_reporting(E_ALL);
+$title = "SVBX - Deficiency No. " . $defID;
 include('filestart.php'); 
 $link = f_sqlConnect();
 
-// $spanStr = "<span>%s</span>";
 $labelStr = "<p>%s</p>";
 $checkbox = [
     'element' => "<input type='checkbox' value='1' class='x-checkbox' disabled %s>",
@@ -29,20 +25,15 @@ function returnFakeInputStr($val) {
     return returnHtmlForVal($val, $str, $altStr);
 }
 
-function iterateRows(array $rowGroup, $title) {
-    print "<h5 class='grey-bg pad'>$title</h5>";
-    foreach ($rowGroup as $row) {
-        $options = count($row) === 1 ? ['colWd' => 6] : [];
-        print returnRow($row, $options);
-    }
-}
-
 if ($defID) {
     $sql = file_get_contents("ViewDef.sql").$defID;
     
-    if($stmt = $link->prepare($sql)) {
-        $stmt->execute();  
-        $stmt->bind_result(
+    try {
+        if (!$stmt = $link->prepare($sql)) throw new mysqli_sql_exception($link->error);
+        
+        if (!$stmt->execute()) throw new mysqli_sql_exception($stmt->error);
+        
+        if (!$stmt->bind_result(
                 $OldID, 
                 $Location, 
                 $SpecLoc, 
@@ -68,7 +59,8 @@ if ($defID) {
                 $ClosureComments,
                 $DueDate,
                 $SafetyCert,
-                $defType);  
+                $defType)) throw new mysqli_sql_exception($stmt->error);
+                
         while ($stmt->fetch()) {
             $requiredRows = [
                 'Required Information',
@@ -129,7 +121,7 @@ if ($defID) {
             ];
             
             $closureRows = [
-                'Clouser Information',
+                'Closure Information',
                 [
                     sprintf($labelStr, 'Evidence Type'),
                     returnFakeInputStr($EvidenceType),
@@ -144,7 +136,6 @@ if ($defID) {
             ];
             
             $modHistory = [
-                'Modification History',
                 [
                     sprintf($labelStr, 'Date Created'),
                     sprintf($labelStr, $DateCreated),
@@ -159,7 +150,7 @@ if ($defID) {
                 ]
             ];
     
-            if($Status == "Open") {
+            if ($Status == "Open") {
                 $color = "bg-red text-white";
             } else {
                 $color = "bg-success text-white"; 
@@ -169,95 +160,129 @@ if ($defID) {
                     <h1 class='page-title $color pad'>Deficiency No. $defID</h1>
                 </header>
                 <main class='container main-content'>";
-                    foreach ([$requiredRows, $optionalRows, $closureRows, $modHistory] as $rowGroup) {
-                        $rowName = array_shift($rowGroup);
-                        iterateRows($rowGroup, $rowName);
-                    }
-                    // iterateRows($requiredRows, 'Required Information');
-                    // <h5 class='grey-bg pad'>Required Information</h5>";
-                    // foreach ($requiredRows as $gridRow) {
-                    //     $options = count($gridRow) === 1 ? ['colWd' => 6] : [];
-                    //     print returnRow($gridRow, $options);
-                    // }
-                    // print "<h5 class='grey-bg pad'>Optional Information</h5>";
-                    // foreach ($optionalRows as $gridRow) {
-                    //     $options = count($gridRow) === 1 ? ['colWd' => 6] : [];
-                    //     print returnRow($gridRow, $options);
-                    // }
-                    // print "<h5 class='grey-bg pad'>Closure Information</h5>";
-                    // foreach ($closureRows as $gridRow) {
-                    //     $options = count($gridRow) === 1 ? ['colWd' => 6] : [];
-                    //     print returnRow($gridRow, $options);
-                    // }
-                    // print "<h5 class='grey-bg pad'>Modification Details</h5>";
-                    // foreach ($modHistory as $gridRow) {
-                    //     $options = count($gridRow) === 1 ? ['colWd' => 6] : [];
-                    //     print returnRow($gridRow, $options);
-                    // }
+            foreach ([$requiredRows, $optionalRows, $closureRows] as $rowGroup) {
+                $rowName = array_shift($rowGroup);
+                $content = iterateRows($rowGroup);
+                printSection($rowName, $content);
+            }
         }
+        
         $stmt->close();
         
-        // show photos linked to this Def
-        if ($stmt = $link->prepare("SELECT pathToFile FROM CDL_pics WHERE defID=?")) {
-            $stmt->bind_param('i', $defID);
-            $stmt->execute();
-            $stmt->store_result();
-            $stmt->bind_result($pathToFile);
+        // query for comments associated with this Def
+        $sql = "SELECT firstname, lastname, date_created, cdlCommText
+            FROM cdlComments c
+            JOIN users_enc u
+            ON c.userID=u.userID
+            WHERE c.defID=?
+            ORDER BY c.date_created DESC";
             
-            if ($count = $stmt->num_rows) {
-                $collapseCtrl = "<h5 class='grey-bg pad'><a data-toggle='collapse' href='#defPics' role='button' aria-expanded='false' aria-controls='defPics' class='collapsed'>Photos<i class='typcn typcn-arrow-sorted-down'></i></a></h5>";
-                $photoSection = sprintf("%s<section id='defPics' class='collapse item-margin-bottom'>", $collapseCtrl)."%s</section>";
-                $curRow = "<div class='row item-margin-bottom'>%s</div>";
+        if (!$stmt = $link->prepare($sql))
+            throw new mysqli_sql_exception($link->error);
+        
+        if (!$stmt->bind_param('i', intval($defID)))
+            throw new mysqli_sql_exception($stmt->error);
+        
+        if (!$stmt->execute())
+            throw new mysqli_sql_exception($stmt->error);
+        
+        $comments = stmtBindResultArray($stmt) ?: [];
+        
+        // query for photos linked to this Def
+        if (!$stmt = $link->prepare("SELECT pathToFile FROM CDL_pics WHERE defID=?"))
+            throw new mysqli_sql_exception($link->error);
             
-                $i = 0;
-                $j = 1;
-                while ($stmt->fetch()) {
-                    $img = sprintf("<img src='%s' alt='photo related to deficiency number %s'>", $pathToFile, $defID);
-                    $col = sprintf("<div class='col-md-4 text-center item-margin-bottom'>%s</div>", $img);
-                    $marker = $j < $count ? '%s' : '';
-                    
-                    if ($i < 2) {
-                        // if this is not 3rd col in row, append an extra format marker '%s' after col
-                        $curRow = sprintf($curRow, $col.$marker);
-                        // if this is the last photo in resultset, append row to section
-                        if ($j >= $count) {
-                            $photoSection = sprintf($photoSection, $curRow);
-                        }
-                        $i++;
-                    }
-                    // if this is 3rd col in row append row to section
-                    else {
-                        // if this is not the last photo is resultset append a str format marker, '%s', to row before appending row to section
-                        $curRow = sprintf($curRow, $col).$marker;
-                        $photoSection = sprintf($photoSection, $curRow);
-                        // reset row string
-                        $curRow = "<div class='row item-margin-bottom'>%s</div>";
-                        $i = 0;
-                    }
-                    $j++;
-                }
-                echo $photoSection;
-            }
-            $stmt->close();
-        } else {
-            printSqlErrorAndExit($link, $sql);
+        if (!$stmt->bind_param('i', $defID))
+            throw new mysqli_sql_exception($stmt->error);
+            
+        if (!$stmt->execute())
+            throw new mysqli_sql_exception($stmt->error);
+            
+        if (!$stmt->store_result())
+            throw new mysqli_sql_exception($stmt->error);
+            
+        $photos = stmtBindResultArray($stmt);
+        
+        $stmt->close();
+        
+        if (count($comments)) {
+            print returnCollapseSection(
+                'Comments',
+                'comments',
+                returnCommentsHTML($comments)
+            );
         }
+        
+        print returnCollapseSection(
+            'Modification History',
+            'modHistory',
+            iterateRows($modHistory)
+        );
+        
+        if (count($photos)) {
+            print returnCollapseSection(
+                'Photos',
+                'defPics',
+                returnPhotoSection(
+                    $photos,
+                    "<img src='%s' alt='photo related to deficiency number {$defID}'>"
+                ),
+                'item-margin-bottom'
+            );
+            
+            // $collapseCtrl = "<h5 class='grey-bg pad'><a data-toggle='collapse' href='#defPics' role='button' aria-expanded='false' aria-controls='defPics' class='collapsed'>Photos<i class='typcn typcn-arrow-sorted-down'></i></a></h5>";
+            // $photoSection = sprintf("%s<section id='defPics' class='collapse item-margin-bottom'>", $collapseCtrl) . "%s</section>";
+            
+            // $imgFormat = "<img src='%s' alt='photo related to deficiency number %s'>";
+
+            // $curRow = "<div class='row item-margin-bottom'>%s</div>";
+        
+            // $i = 0;
+            // $j = 1;
+            // foreach ($photos as $photo) {
+            //     $img = sprintf($imgFormat, $photo['pathToFile'], $defID);
+            //     $col = sprintf("<div class='col-md-4 text-center item-margin-bottom'>%s</div>", $img);
+            //     $marker = $j < $numPhotos ? '%s' : '';
+                
+            //     if ($i < 2) {
+            //         // if this is not 3rd col in row, append an extra format marker '%s' after col
+            //         $curRow = sprintf($curRow, $col.$marker);
+            //         // if this is the last photo in resultset, append row to section
+            //         if ($j >= $numPhotos) {
+            //             $photoSection = sprintf($photoSection, $curRow);
+            //         }
+            //         $i++;
+            //     }
+            //     // if this is 3rd col in row append row to section
+            //     else {
+            //         // if this is not the last photo is resultset append a str format marker, '%s', to row before appending row to section
+            //         $curRow = sprintf($curRow, $col).$marker;
+            //         $photoSection = sprintf($photoSection, $curRow);
+            //         // reset row string
+            //         $curRow = "<div class='row item-margin-bottom'>%s</div>";
+            //         $i = 0;
+            //     }
+            //     $j++;
+            // }
+            // echo $photoSection;
+        }
+        
         // if Role has permission level show Update and Clone buttons
         if($Role == 'S' OR $Role == 'A' OR $Role == 'U') {
             echo "
-                <div style='display: flex; align-items: center; justify-content: center; hspace:20; margin-bottom:3rem'>
-                    <a href='UpdateDef.php?defID=$defID' class='btn btn-primary btn-lg'>Update</a>
-                    <form action='CloneDef.php' method='POST' onsubmit='' style='text-align:center'>
-                        <div style='width:5px; height:auto; display:inline-block'></div>
-                        <input type='hidden' name='defID' value='$defID'/>
-                        <input type='submit' value='Clone' class='btn btn-primary btn-lg'  />
-                    </form>
+                <div class='row item-margin-botom'>
+                    <div class='col-12 center-content'>
+                        <a href='UpdateDef.php?defID=$defID' class='btn btn-primary btn-lg'>Update</a>
+                        <a href='CloneDef.php?defID=$defID' class='btn btn-primary btn-lg'>Clone</a>
+                    </div>
                 </div>";
         }
         echo "</main>";
-    } else {  
-        printSqlErrorAndExit($link, $sql);
-    } 
+    } catch (Exception $e) {
+        print "Unable to retrieve record";
+        $link->close();
+        exit;
+    }
 } elseif ($bartDefID) {
     include('html_components/defComponents.php');
     // check for bartdl permission
@@ -270,7 +295,6 @@ if ($defID) {
     if ($bdPermit) {
         // render View for bartDef
         $result = [];
-        $comments = [];
         // query for attachments and render then as a list of links
         $attachments = getAttachments($link, $bartDefID);
         $attachmentList = renderAttachmentsAsAnchors($attachments);
@@ -320,12 +344,6 @@ if ($defID) {
             $dateOpen = formatOpenCloseDate($result['dateOpen_bart']);
             $dateClosed = formatOpenCloseDate($result['dateClose_bart']);
             
-            $commentFormat = "
-                <div class='thin-grey-border pad mb-3'>
-                    <h6 class='d-flex flex-row justify-content-between text-secondary'><span>%s</span><span>%s</span></h6>
-                    <p>%s</p>
-                </div>";
-    
             $generalFields = [
                 [
                     [

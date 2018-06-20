@@ -197,7 +197,7 @@ function printSearchBar($cnxn, $post, $formAction) {
                 </div>
                 <div class='col-sm-2 pl-1 pr-1 pt-2 flex-row justify-center align-end'>
                     <button name='Search' value='search' type='submit' class='btn btn-primary item-margin-right'>Search</button>
-                    <button name='Reset' value='reset' type='button' class='btn btn-primary item-margin-right' onclick='return resetSearch(event)'>Reset</button>
+                    <button type='button' class='btn btn-primary item-margin-right' onclick='return resetSearch(event)'>Reset</button>
                 </div>
             </div>
             </div>
@@ -390,10 +390,6 @@ if($_POST['Search'] == NULL) {
         if (!$res = $link->query($altStatusSql)) printf($errFormat, $link->error);
         elseif (!$statusData = $res->fetch_assoc()) printf($errFormat, $res->error);
 
-        // print "<pre class='text-primary'>";
-        // var_dump($statusData);
-        // print "</pre>";
-        
         printInfoBox($roleLvl, 'newBartDef.php', 1);
         printBartDefsTable($link, $bdPermit);
     }
@@ -405,14 +401,17 @@ if($_POST['Search'] == NULL) {
             function resetSearch(ev) {
                 ev.target.form.reset();
                 ev.target.form.submit();
-            }
-            const openCloseChart = new PieChart(
-                window.d3,
-                'dataContainer',
-                { open: {$statusData['statusOpen']}, closed: {$statusData['statusClosed']} },
-                { red: 'var(--red)', green: 'var(--green)' });
-            openCloseChart.draw();
-        </script>";
+            }";
+        if ($view === 'BART' && $bdPermit) {
+            echo "
+                const openCloseChart = new PieChart(
+                    window.d3,
+                    'dataContainer',
+                    { open: '{$statusData['statusOpen']}', closed: '{$statusData['statusClosed']}' },
+                    { red: 'var(--red)', green: 'var(--green)' });
+                openCloseChart.draw();";
+        }
+    echo "</script>";
                     
 $link->close();
     

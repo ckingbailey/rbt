@@ -27,12 +27,6 @@ function saveImgToServer($file, $assocID = null) {
         }
         // validate image
         if ($filename = basename($file['name'])) {
-            // if current uploaded img has same name as the last one, reject it
-                // if ($_SESSION['lastUploadedImg'] && $_SESSION['lastUploadedImg'] === $filename) {
-                //     echo "Uploaded image $filename has same name as previously uploaded image {$_SESSION['lastUploadedImg']}.\n"
-                //         ."Please choose a new image before attempting to upload again.";
-                //     exit;
-                // }
             $tmpName = $file['tmp_name'];
             // name new file for username, any associated ID, and timestamp
             $targetFilename = substr($_SESSION['Username'], 0, 6).$assocID.'_'.time();
@@ -40,14 +34,9 @@ function saveImgToServer($file, $assocID = null) {
             $targetTmpDir = '/img_tmp';
             $targetTmpPath = $targetDir.$targetTmpDir.'/'.$targetFilename.'_tmp';
             $targetLocalPath = $targetDir.'/'.$targetFilename;
-            // checking MIME type depends on browser. Remove this check until and unless a more reliable MIME check is found
-            // if ($fileIsImg = mimetypeCheck($file['type'])) {
-                $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-            //     echo "<h1>{$_SESSION['Username']}, {$_SESSION['UserID']}, {$_SESSION['Role']}</h1>";
-            //     echo "<h4 style='color: darkMagenta'><i>MIME type:</i> {$fileIsImg}, {$file['type']}</h4>";
-            // } else {
-            //     echo "File did not pass MIME type check: ".$file['type'];
-            //     exit; }
+
+            $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
             if ($fileIsImg = filetypeCheck($ext)) {
                 // append file extension to target temp path
                 $targetTmpPath .= '.'.$ext;

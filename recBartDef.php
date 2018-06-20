@@ -10,7 +10,6 @@ $link = f_sqlConnect();
 
 $date = date('Y-m-d');
 $userID = $_SESSION['UserID'];
-$nullVal = null;
 
 function printException(\Exception $exc, $color = 'orangeRed') {
     print "
@@ -40,7 +39,7 @@ if ($_FILES['attachment']['size']
     $folder = 'uploads/bartdlUploads';
     $attachmentKey = 'attachment';
 }
-$fieldList = preg_replace('/\s+/', '', file_get_contents('bartdl.sql')).',date_created';
+$fieldList = preg_replace('/\s+/', '', file_get_contents('bartdl.sql')) . ',date_created';
 $fieldsArr = array_fill_keys(explode(',', $fieldList), '?');
 // unset keys that will not be INSERT'd
 unset($fieldsArr['id']);

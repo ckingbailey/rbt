@@ -75,9 +75,6 @@ session_start();
                 <span class='dash-list-right'>{$row[1]}</span>
               </li>
           ";
-          if ($row[1] == 2) {
-            echo "<script>console.log('{$row[0]}: ', '{$row[1]}');</script>";
-          }
         }
         echo "</ul>";
         if (count($cardSpecs) > 3) {

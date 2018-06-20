@@ -7,7 +7,7 @@ function PieChart(d3, id, d, palette, wd = '200', ht = '200') {
     let data = Object.keys(d).map((el, i, arr) => {
         return {
             label: el,
-            count: d[el]
+            count: +d[el]
         }
     });
     let width = wd;

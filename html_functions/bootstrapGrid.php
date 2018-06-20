@@ -70,7 +70,7 @@ function returnRow(array $elements, $options = []) {
     // if number of elements doesn't divide evenly by 12 take the remainder
     // this number will be added to the last col
     $extraCols = 12 % $numEls;
-    $colWd = floor(12 / $numEls);
+    $colWd = isset($options['colWd']) ? $options['colWd'] : floor(12 / $numEls);
     // if row is singular and has a specific wd, pass it and its wd to returnCol without looping
     if ($numEls === 1) {
         $el = array_shift($elements);

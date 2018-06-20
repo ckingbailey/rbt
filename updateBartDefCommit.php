@@ -24,7 +24,9 @@ $post = $_POST;
 $defID = $post['id'];
 $userID = $_SESSION['UserID'];
 
-// validate POST data, if it's empty bump user back to form
+// validate POST data
+// if it's empty then file upload exceeds post_max_size
+// bump user back to form
 if (!count($post) || !$defID) {
     include('js/emptyPostRedirect.php');
     exit;
