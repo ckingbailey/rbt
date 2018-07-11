@@ -1,21 +1,21 @@
 <?PHP
     include('SQLFunctions.php');
     session_start();
-    $table = EvidenceType;
+    $table = 'evidenceType';
     
 
     echo '<br>display full contents of the _POST: <br>';
     var_dump($_POST);
     
     $link = f_sqlConnect();
-    $check = "SELECT * FROM $table WHERE EviType = '".$_POST['EviType']."'";
-    $UserID = $_SESSION['UserID'];
-    $user = "SELECT Username FROM users_enc WHERE UserID = ".$UserID;
+    $check = "SELECT * FROM $table WHERE eviTypeName = '".$_POST['EviTypeName']."'";
+    $UserID = $_SESSION['userID'];
+    $user = "SELECT username FROM users_enc WHERE UserID = ".$UserID;
     if($result=mysqli_query($link,$user)) 
         {
           /*from the sql results, assign the username that returned to the $username variable*/    
           while($row = mysqli_fetch_assoc($result)) {
-            $Username = $row['Username'];
+            $Username = $row['username'];
           }
         }
     $keys = implode(", ", (array_keys($_POST)));
@@ -34,7 +34,7 @@
       header("location: $duplicate?msg=1");
     }
     else {
-    $sql = "INSERT INTO $table($keys, Update_TS, Updated_by) VALUES ('$values', NOW(), '$Username')";
+    $sql = "INSERT INTO $table($keys, lastUpdated, updatedBy) VALUES ('$values', NOW(), '$UserID')";
     //echo '<br>sql: ' .$sql;
     //echo '<br>Num_rows: ' .$num_rows;
     

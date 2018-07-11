@@ -9,9 +9,11 @@ function isElementArray(array $el) {
 }
 
 function isFormCtrl(array $el) {
-    return $el['tagName'] === 'select'
-        || $el['tagName'] === 'input'
-        || $el['tagName'] === 'textarea';
+    if (isset($el['tagName']) && $el['tagName']) {
+        return $el['tagName'] === 'select'
+            || $el['tagName'] === 'input'
+            || $el['tagName'] === 'textarea';
+    } else return false;
 }
 
 function ifOptionsExtract(array &$el, array &$opts) {
@@ -65,7 +67,7 @@ function returnRow(array $elements, $options = []) {
     $elRow = "<div class='row item-margin-bottom'>%s</div>";
     $colCollection = '';
     $numEls = count($elements);
-    
+
 
     // if number of elements doesn't divide evenly by 12 take the remainder
     // this number will be added to the last col
@@ -79,11 +81,11 @@ function returnRow(array $elements, $options = []) {
         // option on column takes precendence if given
         isset($options['colWd']) && $colWd = $options['colWd'];
         isset($el['options']['colWd']) && $colWd = $el['options']['colWd'];
-        
+
         $options['offset'] = isset($options['offset'])
             ? $options['offset']
             : (int) floor(12 - $colWd)/2;
-            
+
         $colCollection .= returnCol($el, $colWd, $options);
     } else {
         // if you're iterating you'll need a counter

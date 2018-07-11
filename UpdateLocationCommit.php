@@ -6,7 +6,7 @@ session_start();
 if(!empty($_POST)) {
     $LocationID = $_POST['LocationID'];
     $LocationName = $_POST['LocationName'];
-    $UserID = $_SESSION['UserID'];
+    $UserID = $_SESSION['userID'];
     $link = f_sqlConnect();
     
     $user = "SELECT Username FROM users_enc WHERE UserID = ".$UserID;
@@ -14,14 +14,14 @@ if(!empty($_POST)) {
         {
           /*from the sql results, assign the username that returned to the $username variable*/    
           while($row = mysqli_fetch_assoc($result)) {
-            $Username = $row['Username'];
+            $Username = $row['username'];
           }
         }
     
     $sql = "UPDATE Location
             SET LocationName = '".$LocationName."'
-                ,Updated_by = '".$Username."'
-                ,Update_TS = NOW()
+                ,updatedBy = '".$Username."'
+                ,lastUpdated = NOW()
             WHERE LocationID = ".$LocationID.";";
 
             if(mysqli_query($link,$sql)) {

@@ -1,38 +1,37 @@
 <?php
 require_once('SQLFunctions.php');
 
-if(!isset($_SESSION['UserID'])) {
+if(!isset($_SESSION['userID'])) {
     $navHeading = 'Login now';
     $navItems = [
-      'Home' => 'stats.php',
+      'Home' => 'dashboard.php',
       'Help' => 'help.php'
     ];
 } else {
     /*copy the session UserID to a local variable*/
-    $UserID = $_SESSION['UserID'];
-    $Username = $_SESSION['Username'];
-    $Role = $_SESSION['Role'];
+    $UserID = $_SESSION['userID'];
+    $Username = $_SESSION['username'];
+    $Role = $_SESSION['role'];
     $navItems = [
-      'Home' => 'stats.php',
+      'Home' => 'dashboard.php',
       'Help' => 'help.php',
-      'Deficiencies' => 'DisplayDefs.php',
+      'Deficiencies' => 'defs.php',
       'Safety Certs' => 'ViewSC.php'
     ];
 
   try {
-    /*Connect to CRUD Database*/
     $link = f_sqlConnect();
 
     /* Prep SQL statement to find the user name based on the UserID */
-    $sql = "SELECT Username, firstname, lastname, Role, viewIDR FROM users_enc WHERE UserID = ".$UserID;
+    $sql = "SELECT Username, firstname, lastname, Role, inspector FROM users_enc WHERE UserID = ".$UserID;
 
     /*execute the sql statement*/
-    if($result=mysqli_query($link,$sql)) {
+    if($result = $link->query($sql)) {
       /*from the sql results, assign the username that returned to the $username variable*/
-      while($row = mysqli_fetch_assoc($result)) {
+      while($row = $result->fetch_assoc()) {
         $firstname = $row['firstname'];
         $lastname = $row['lastname'];
-        if ($row['viewIDR']) {
+        if ($row['inspector']) {
           $navItems['Daily Report'] = 'idr.php';
         }
       }
@@ -60,15 +59,17 @@ if(!isset($_SESSION['UserID'])) {
   /*if something goes wrong, return the following error*/
   catch (Exception $e) {
       $login = 'Unable to process request.';
+  } finally {
+      $link->close();
   }
 }
 ?>
-<nav class="navbar navbar-expand-md navbar-dark navbar-vta-blue fixed-top">
+<nav class="navbar navbar-expand-md navbar-dark navbar-vta-blue">
   <span class="navbar-brand navbar-heading">
     <?php
       $navbarHref = 'login.php';
       // if UserID is already set, link to userAccount page
-      if (isset($_SESSION['UserID'])) {
+      if (isset($_SESSION['userID'])) {
         $navbarHref = 'userAccount.php';
       }
       echo "<a href='{$navbarHref}' class='navbar-link navbar-brand-link'>{$navHeading}</a>";

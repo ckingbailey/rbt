@@ -1,14 +1,14 @@
 <?php 
     include('session.php');
     include('SQLFunctions.php');
-    $link = f_sqlConnect();
     $table = Severity;
     $q = $_POST["q"];
     $title = "SVBX - Update Severity";
     $Loc = "SELECT SeverityName, Description FROM $table WHERE SeverityID = ".$q;
     include('filestart.php');
+    $link = f_sqlConnect();
     
-    if($Role == 'U' OR $Role == 'V' OR $Role == 'A') {
+    if($Role >= 20) {
         header('location: unauthorised.php');
     }
 ?>

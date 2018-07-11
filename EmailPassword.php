@@ -2,7 +2,7 @@
 include('SQLFunctions.php');
 
 if(isset($_POST) & !empty($_POST)) {
-    $Username = $_POST['Username'];
+    $Username = $_POST['username'];
     $Username = filter_var($Username, FILTER_SANITIZE_STRING);
     $link = f_sqlConnect();
     

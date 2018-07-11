@@ -2,30 +2,20 @@
 include 'session.php';
 include 'SQLFunctions.php';
 
-$userID = $_SESSION['UserID'];
-$role = $_SESSION['Role'];
+$title = 'SVBX - Inspectors\' Daily Reports';
+$userID = $_SESSION['userID'];
+$role = $_SESSION['role'];
 
-$link = f_sqlConnect();
 $qry = "SELECT userid, username, firstname, lastname, viewidr FROM users_enc where userid='$userID'";
 
-if ($result = $link->query($qry)) {
-        $row = $result->fetch_assoc();
-        $userFullName = $row['firstname'].' '.$row['lastname'];
-        $authLvl = [
-            'V' => 0,
-            'U' => 1,
-            'A' => 2,
-            'S' => 3
-        ];
-        $idrAuth = $row['viewidr'] ? $authLvl[$role] : $row['viewidr'];
-        $result->close();
-} elseif ($link->error) {
-    $userFullName = 'Unable to retrieve user account information';
+if ($_SESSION['inspector']) {
+    $idrAuth = $role;
+} else {
     $idrAuth = 0;
 }
-    
-$qry = "SELECT idrID, i.UserID, idrForDate, Username FROM IDR i JOIN users_enc u on i.UserID=u.UserID";
-$orderBy = " ORDER BY idrID";
+
+$qry = "SELECT idrID, i.userID, idrForDate, username FROM IDR i JOIN users_enc u on i.UserID=u.UserID";
+$orderBy = " ORDER BY idrID DESC";
 
 $errorMsg = [
     'myIDRs' => 'Unable to retrieve reports for user',
@@ -33,19 +23,22 @@ $errorMsg = [
 ];
 
 // check if non-admin user has own IDRs
-if ($myIDRs = $link->query("$qry WHERE i.UserID='$userID'$orderBy")) {
-    // if auth level > 1 OR user has own IDRs, grant permission
-    $idrAuth = ($idrAuth > 1 || $myIDRs->num_rows) ? $idrAuth : 0;
-}
-
-if ($link->error) {
-    $myIDRs = $link->error.' '.$errorMsg['myIDRs'];
-    // if error, do not grant view permission to User or Viewer level
-    $idrAuth = $idrAuth <= 1 ? 0 : $idrAuth;
+try {
+    $link = f_sqlConnect();
+    if ($myIDRs = $link->query("$qry WHERE i.UserID='$userID'$orderBy")) {
+        // if auth level > 1 OR user has own IDRs, grant permission
+        $idrAuth = ($idrAuth > 10 || $myIDRs->num_rows) ? $idrAuth : 0;
+    }
+    if ($link->error) throw new mysqli_sql_exception($link->error);
+} catch (Exception $e) {
+    echo "Unable to retrieve your daily reports";
+} finally {
+    $link->close();
 }
 
 if ($idrAuth) {
     include 'filestart.php';
+    $link = f_sqlConnect();
     echo "
         <header class='container page-header'>
             <h1 class='page-title'>Inspectors' Daily Reports</h1>
@@ -58,7 +51,7 @@ if ($idrAuth) {
                             <ul class='nav nav-tabs no-border flex-row flex-nowrap justify-content-center' role='tablist'>";
                                 $active = ' active';
                                 $expanded = " aria-expanded='true'";
-                                if ($idrAuth > 1) {
+                                if ($idrAuth > 10) {
                                     echo "
                                         <li class='item-margin-right-less' role='presentation'>
                                             <a href='#allReports' aria-controls='allReports'{$expanded} role='tab' data-toggle='tab' class='h4 pl-3 pb-3 pr-3 border-dark-blue{$active}'>All Reports</a>
@@ -78,7 +71,7 @@ if ($idrAuth) {
                             <div class='tab-content mt-3 thick-grey-line'>";
                                 // if user is admin or super, query for all IDRs
                                 $active = ' active';
-                                if ($role === 'S' || $role === 'A') {
+                                if ($role >= 30) {
                                     if ($result = $link->query($qry.$orderBy)) {
                                         if ($result->num_rows) {
                                             echo "
@@ -91,7 +84,7 @@ if ($idrAuth) {
                                                     </li>",
                                                     "/idr.php?idrID={$row['idrID']}",
                                                     $row['idrForDate'],
-                                                    $row['Username']
+                                                    $row['username']
                                                 );
                                             }
                                             echo "

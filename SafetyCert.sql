@@ -4,22 +4,22 @@ SELECT
     A.Requirement,
     A.DesignCode,
     A.DesignSpec,
-    C.Contract,
+    C.ContractName,
     A.ControlNo,
     E.ElementGroup,
     S.CertifiableElement
 FROM
-    SafetyCert A
+    safetyCert A
 LEFT JOIN 
-    Contract C
+    contract C
 ON 
     C.ContractID = A.ContractNo
 LEFT JOIN 
-    ElementGroup E
+    elementGroup E
 ON 
     E.EG_ID = A.ElementGroup
 LEFT JOIN 
-    CertifiableElement S
+    certifiableElement S
 ON 
     S.CE_ID = A.CertElement
 ORDER BY A.Item

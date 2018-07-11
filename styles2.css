@@ -324,7 +324,7 @@ ul li {
 }
 
 .page-header {
-    margin-top: 3.5rem; margin-bottom: .35rem;
+    margin-bottom: .35rem;
     padding-top: .5rem; padding-bottom: .6rem;
 }
 
@@ -434,7 +434,7 @@ a.nav-cur-page:hover, button.nav-cur-page:hover {
     .dash-card {
         max-width: 46%;
     }
-    
+
     .dash-card:nth-child(2n + 1) {
         margin-right: 2%;
     }
@@ -661,6 +661,10 @@ select:invalid {
     background-color: var(--tenth-trans-grey);
 }
 
+.btn>i.typcn {
+    padding: 1px;
+}
+
 .btn.btn-a {
     color: var(--vta-blue);
 }
@@ -695,7 +699,7 @@ a[data-toggle="collapse"].collapsed>.typcn-arrow-sorted-down:before {
         width:0;
         height:0;
         opacity:0;
-        visibility: collapse;       
+        visibility: collapse;
     }
 }
 /* #Mobile (Landscape) */
@@ -706,7 +710,7 @@ a[data-toggle="collapse"].collapsed>.typcn-arrow-sorted-down:before {
         height:0;
         opacity:0;
         visibility: collapse;
-    } 
+    }
 
 }
 /*  #Mobile (Portrait) */
@@ -717,7 +721,7 @@ a[data-toggle="collapse"].collapsed>.typcn-arrow-sorted-down:before {
         height:0;
         opacity:0;
         visibility: collapse;
-    } 
+    }
 }
 
 .table-layout-fixed, .table-layout-fixed>thead, .table-layout-fixed>tbody,

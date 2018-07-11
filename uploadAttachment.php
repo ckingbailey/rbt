@@ -29,7 +29,7 @@ function uploadAttachment($cnxn, $key, $dir, $assocID) {
         if (!$stmt->bind_param($types,
             $cnxn->escape_string($filepath),
             intval($assocID),
-            intval($_SESSION['UserID']),
+            intval($_SESSION['userID']),
             intval($filesize),
             $cnxn->escape_string($fileext),
             $cnxn->escape_string($filename))) throw new mysqli_sql_exception($stmt->error);

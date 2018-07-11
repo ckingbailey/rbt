@@ -2,7 +2,7 @@
 include('session.php');
 $title = "SVBX - Add New Location";
 include('filestart.php');
-    if($Role == 'U' OR $Role == 'V') {
+    if ($Role <= 20) {
         header('location: unauthorised.php');
     }
     ?>
@@ -10,7 +10,7 @@ include('filestart.php');
           <h1 class="page-title">Add New Location</h1>
         </header>
     </div>
-        <div class="container main-content"> 
+        <div class="container main-content">
         <FORM action="RecLocation.php" method="POST">
             <table class='table svbx-table'>
                 <tr class='usertr'>

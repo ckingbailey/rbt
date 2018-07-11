@@ -16,11 +16,11 @@ session_start();
         </header>
         <div class="container main-content">        
 <?php
-    $table = users_enc;
+    $table = 'users_enc';
     
-    if(!f_tableExists($link, $table, DB_Name)) {
-        die('<br>Destination table does not exist: '.$table);
-    }
+    // if(!f_tableExists($link, $table, DB_Name)) {
+    //     die('<br>Destination table does not exist: '.$table);
+    // }
     
     $sql = "SELECT firstname, lastname, Email FROM $table WHERE Role = 'A' OR Role = 'S' ORDER BY lastname";
    

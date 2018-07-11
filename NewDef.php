@@ -4,9 +4,9 @@ include('SQLFunctions.php');
 include('html_components/defComponents.php');
 include('html_functions/bootstrapGrid.php');
 $link = f_sqlConnect();
-$Role = $_SESSION['Role'];
+$Role = $_SESSION['role'];
 $title = "SVBX - New Deficiency";
-if($Role == 'V') {
+if ($Role <= 10) {
     header('Location: unauthorised.php');
 }
 
@@ -50,7 +50,7 @@ $requiredRows = [
         $elements['description']
     ]
 ];
-        
+
 $optionalRows = [
     'Optional Information',
     [
@@ -67,7 +67,7 @@ $optionalRows = [
         $elements['cdlCommText']
     ]
 ];
-        
+
 $closureRows = [
     'Closure Information',
     [
@@ -87,7 +87,7 @@ echo "
     </header>
     <main role='main' class='container main-content'>
         <form action='RecDef.php' method='POST' enctype='multipart/form-data'>
-            <input type='hidden' name='username' value='{$_SESSION['Username']}' />";
+            <input type='hidden' name='username' value='{$_SESSION['username']}' />";
 
         foreach ([$requiredRows, $optionalRows, $closureRows] as $rowGroup) {
             $rowName = array_shift($rowGroup);
@@ -121,7 +121,7 @@ echo "
 //                 print returnRow($gridRow, $options);
 //             }
 //             echo "</div>";
-            
+
 echo "
         <div class='center-content'>
             <button type='submit' value='submit' class='btn btn-primary btn-lg'>Submit</button>

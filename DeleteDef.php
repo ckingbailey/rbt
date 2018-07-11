@@ -6,7 +6,7 @@ $user = "SELECT Username FROM users_enc WHERE UserID = ".$AUserID;
 if($result=mysqli_query($link,$user)) {
     /*from the sql results, assign the username that returned to the $username variable*/    
     while($row = mysqli_fetch_assoc($result)) {
-        $AUsername = $row['Username'];
+        $AUsername = $row['username'];
     }
 }
 
@@ -18,7 +18,7 @@ if(!empty($_POST)) {
     $sql = "UPDATE CDL
             SET 
                  Status = '3'
-                ,Updated_by = '".$AUsername."'
+                ,updatedBy = '".$AUsername."'
                 ,LastUpdated = NOW()
             WHERE DefID = ".$DefID.";";
     //echo "sql: " .$sql. "Comment out Later";
@@ -29,7 +29,7 @@ if(!empty($_POST)) {
         echo "<br>Error: " .$sql. "<br>" .mysqli_error($link);
     }
     mysqli_close($link);
-    header("Location: DisplayDefs.php");
+    header("Location: defs.php");
     
 }
 ?>

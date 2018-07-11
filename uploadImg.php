@@ -1,6 +1,4 @@
 <?php
-session_start();
-
 include 'utils/utils.php';
 include 'nimrod.php';
 include 'error_handling/uploadException.php';
@@ -29,7 +27,7 @@ function saveImgToServer($file, $assocID = null) {
         if ($filename = basename($file['name'])) {
             $tmpName = $file['tmp_name'];
             // name new file for username, any associated ID, and timestamp
-            $targetFilename = substr($_SESSION['Username'], 0, 6).$assocID.'_'.time();
+            $targetFilename = substr($_SESSION['username'], 0, 6).$assocID.'_'.time();
             $targetDir = '/img_uploads';
             $targetTmpDir = '/img_tmp';
             $targetTmpPath = $targetDir.$targetTmpDir.'/'.$targetFilename.'_tmp';
@@ -40,26 +38,15 @@ function saveImgToServer($file, $assocID = null) {
             if ($fileIsImg = filetypeCheck($ext)) {
                 // append file extension to target temp path
                 $targetTmpPath .= '.'.$ext;
-                echo "<h4 style='color: mediumBlue'><i>file extension:</i>$ext, ".boolToStr($fileIsImg)."</h4>";
-            } else {
-                echo "File did not pass extension type check: $ext, ".boolToStr($fileIsImg);
-                exit;
-            } if ($tmpName && $uploadImgData = getimagesize($tmpName)) {
+            } else throw new uploadException(8);
+            if ($tmpName && $uploadImgData = getimagesize($tmpName)) {
                 echo "<h4 style='color: forestGreen'><i>file info:</i> {$uploadImgData[3]}, {$uploadImgData['mime']}</h4>";
-            } else {
-                echo "File $tmpName did not pass getimagesize test";
-                exit;
-            }
+            } else throw new Exception("File $tmpName did not pass getimagesize test");
             // if image is valid, move it to temporary destination before resizing
             if ($fileIsImg = move_uploaded_file($tmpName, $_SERVER['DOCUMENT_ROOT'].$targetTmpPath)) {
                 // if move is successful, prepare filepath target string
                 $targetLocalPath .= '.'.$ext;
-                echo "
-                    <h4 style='color: slateBlue'><i>File moved:</i> {$tmpName} -> {$_SERVER['DOCUMENT_ROOT']}{$targetTmpPath}</h4>";
-                    // <img src='{$targetLocalPath}'>
-            } else {
-                echo "Could not move file $tmpName -> $targetTmpPath";
-            }
+            } else throw new uploadException(7);
             /*
              * @param  $file - file name to resize
              * @param  $string - The image data, as a string
@@ -72,7 +59,7 @@ function saveImgToServer($file, $assocID = null) {
              * @param  $quality - enter 1-100 (100 is best quality) default is 100
              * @return boolean|resource
              */
-     
+
             // resize img to 320px max
             list($cur_w, $cur_h) = $uploadImgData;
             $r = $cur_w/$cur_h;
@@ -86,7 +73,7 @@ function saveImgToServer($file, $assocID = null) {
                 $scale = $cur_h / 320;
                 $new_w = $cur_w * scale;
             }
-    
+
             if ($imgResized = smart_resize_image(
                 $_SERVER['DOCUMENT_ROOT'].$targetTmpPath,
                 null,

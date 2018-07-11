@@ -5,36 +5,44 @@ include('html_functions/bootstrapGrid.php');
 include('sql_functions/stmtBindResultArray.php');
 
 $title = "SVBX - Update Deficiency";
-$role = $_SESSION['Role'];
-$defID = $_GET['defID'];
+$role = $_SESSION['role'];
+$defID = filter_input(INPUT_GET, 'defID');
 
 // prepare sql statement
-$fieldList = preg_replace('/\s+/', '', file_get_contents('UpdateDef.sql'));
+$fieldList = preg_replace('/\s+/', '', file_get_contents('updateDef.sql'));
 $fieldsArr = array_fill_keys(explode(',', $fieldList), '?');
-
-// replace fields that reference other tables with JOINs
-$fieldsArr['safetyCert'];
-
-$link = f_sqlConnect();
 
 include('filestart.php');
 
+if (isset($_SESSION['errorMsg'])) {
+    echo "
+        <h1 style='font-size: 4rem; font-family: monospace; color: red;'>{$_SESSION['errorMsg']}</h1>";
+    unset($_SESSION['errorMsg']);
+}
+
 try {
-    $sql = 'SELECT ' . $fieldList . ' FROM CDL WHERE defID = ?';
+    $link = f_sqlConnect();
+    $sql = "SELECT $fieldList FROM CDL WHERE defID=?";
 
     $elements = $requiredElements + $optionalElements + $closureElements;
-    
+
     if (!$stmt = $link->prepare($sql)) throw new mysqli_sql_exception($link->error);
-    
-    if (!$stmt->bind_param('i', intval($defID))) throw new mysqli_sql_exception($stmt->error);
+
+    if (!$stmt->bind_param('i', $defID)) throw new mysqli_sql_exception($stmt->error);
 
     if (!$stmt->execute()) throw new mysqli_sql_exception($stmt->error);
-    
+
     if (!stmtBindResultArrayRef($stmt, $elements))
         throw new mysqli_sql_exception($stmt->error);
-        
+
     $stmt->close();
-    
+
+    $defStatus = $elements['status']['value'];
+    // special options for Contractor level when Def is Open
+    if ($role === 15 && $defStatus === 1) {
+        $elements['status']['query'] = [ 1 => 'Open', 4 => 'Request closure' ];
+    }
+
     // query for comments associated with this Def
     $sql = "SELECT firstname, lastname, date_created, cdlCommText
         FROM cdlComments c
@@ -42,36 +50,49 @@ try {
         ON c.userID=u.userID
         WHERE c.defID=?
         ORDER BY c.date_created DESC";
-        
+
     if (!$stmt = $link->prepare($sql)) throw new mysqli_sql_exception($link->error);
-    
+
     if (!$stmt->bind_param('i', $defID)) throw new mysqli_sql_exception($stmt->error);
-    
+
     if (!$stmt->execute()) throw new mysqli_sql_exception($stmt->error);
-    
+
     $comments = stmtBindResultArray($stmt) ?: [];
-    
+
     $stmt->close();
-    
+
     // query for photos linked to this Def
     if (!$stmt = $link->prepare("SELECT pathToFile FROM CDL_pics WHERE defID=?"))
+        throw new mysqli_sql_exception($link->error);
+
+    if (!$stmt->bind_param('i', $defID))
+        throw new mysqli_sql_exception($stmt->error);
+
+    if (!$stmt->execute())
+        throw new mysqli_sql_exception($stmt->error);
+
+    if (!$stmt->store_result())
+        throw new mysqli_sql_exception($stmt->error);
+
+    $photos = stmtBindResultArray($stmt);
+
+    $stmt->close();
+    
+    if (!$stmt = $link->prepare("SELECT closureRequested, closureRequestedBy from CDL where defID = ?"))
         throw new mysqli_sql_exception($link->error);
         
     if (!$stmt->bind_param('i', $defID))
         throw new mysqli_sql_exception($stmt->error);
-        
+
     if (!$stmt->execute())
         throw new mysqli_sql_exception($stmt->error);
+
+    $closureRequested = stmtBindResultArray($stmt)[0]['closureRequested'];
         
-    if (!$stmt->store_result())
-        throw new mysqli_sql_exception($stmt->error);
-        
-    $photos = stmtBindResultArray($stmt);
-    
     $stmt->close();
-        
+
     $toggleBtn = '<a data-toggle=\'collapse\' href=\'#%1$s\' role=\'button\' aria-expanded=\'false\' aria-controls=\'%1$s\' class=\'collapsed\'>%2$s<i class=\'typcn typcn-arrow-sorted-down\'></i></a>';
-            
+
     $requiredRows = [
         [
             $elements['safetyCert'],
@@ -101,7 +122,7 @@ try {
             $elements['description']
         ]
     ];
-            
+
     $optionalRows = [
         [
             $elements['spec'],
@@ -112,7 +133,7 @@ try {
             $elements['CDL_pics']
         ]
     ];
-            
+
     $closureRows = [
         [
             $elements['evidenceType'],
@@ -124,26 +145,32 @@ try {
         ]
     ];
     
+    $color = ($defStatus === 1 ? "bg-red " : "bg-success ") . "text-white";
+
     echo "
         <header class='container page-header'>
-            <h1 class='page-title'>Update Deficiency ".$defID."</h1>
+            <h1 class='page-title $color pad'>Update Deficiency ".$defID."</h1>";
+            if (!empty($closureRequested)) {
+                echo "<h4 class='bg-yellow text-light pad-less'>Closure requested</h4>";
+            }
+    echo "
         </header>
         <main class='container main-content'>
-        <form action='UpdateDefCommit.php' method='POST' enctype='multipart/form-data' onsubmit='' class='item-margin-bottom'>
+        <form action='updateDefCommit.php' method='POST' enctype='multipart/form-data' onsubmit='' class='item-margin-bottom'>
             <input type='hidden' name='defID' value='$defID'>
             <div class='row'>
                 <div class='col-12'>
                     <h4 class='pad grey-bg'>Deficiency No. $defID</h4>
                 </div>
             </div>";
-                        
+
             foreach ($requiredRows as $gridRow) {
                 $options = [ 'required' => true ];
                 if (count($gridRow) > 1) $options['inline'] = true;
                 else $options['colWd'] = 6;
                 print returnRow($gridRow, $options);
             }
-                
+
         echo "
             <h5 class='grey-bg pad'>
                 <a data-toggle='collapse' href='#optionalInfo' role='button' aria-expanded='false' aria-controls='optionalInfo' class='collapsed'>Optional Information<i class='typcn typcn-arrow-sorted-down'></i></a>
@@ -182,7 +209,7 @@ try {
                 printf($commentFormat, $userFullName, $comment['date_created'], $text);
             }
         echo "</div>";
-            
+
         if (count($photos)) {
             print returnCollapseSection(
                 'Photos',
@@ -193,49 +220,26 @@ try {
                 ),
                 'item-margin-bottom'
             );
-            // $collapseCtrl = "<h5 class='grey-bg pad'><a data-toggle='collapse' href='#defPics' role='button' aria-expanded='false' aria-controls='defPics' class='collapsed'>Photos<i class='typcn typcn-arrow-sorted-down'></i></a></h5>";
-            // $photoSection = sprintf("%s<section id='defPics' class='collapse item-margin-bottom'>", $collapseCtrl) . "%s</section>";
-            // $curRow = "<div class='row item-margin-bottom'>%s</div>";
-        
-            // $i = 0;
-            // $j = 1;
-            // foreach ($photos as $photo) {
-            //     $img = sprintf("<img src='%s' alt='photo related to deficiency number %s'>", $photo['pathToFile'], $defID);
-            //     $col = sprintf("<div class='col-md-4 text-center item-margin-bottom'>%s</div>", $img);
-            //     $marker = $j < $count ? '%s' : '';
-                
-            //     if ($i < 2) {
-            //         // if this is not 3rd col in row, append an extra format marker '%s' after col
-            //         $curRow = sprintf($curRow, $col.$marker);
-            //         // if this is the last photo in resultset, append row to section
-            //         if ($j >= $count) {
-            //             $photoSection = sprintf($photoSection, $curRow);
-            //         }
-            //         $i++;
-            //     }
-            //     // if this is 3rd col in row append row to section
-            //     else {
-            //         // if this is not the last photo is resultset append a str format marker, '%s', to row before appending row to section
-            //         $curRow = sprintf($curRow, $col).$marker;
-            //         $photoSection = sprintf($photoSection, $curRow);
-            //         // reset row string
-            //         $curRow = "<div class='row item-margin-bottom'>%s</div>";
-            //         $i = 0;
-            //     }
-            //     $j++;
-            // }
-            // echo $photoSection;
         }
-        
-        echo "
-            <div class='row item-margin-bottom'>
-                <div class='col-12 center-content'>
-                    <button type='submit' class='btn btn-primary btn-lg'>Submit</button>
-                    <button type='reset' class='btn btn-primary btn-lg'>Reset</button>
+
+            echo "
+                <div class='row item-margin-bottom'>
+                    <div class='col-12 center-content'>";
+                    // if Def is not Closed, show submit btn
+                    // if Def is Closed, show "Re-open" btn
+                    if ($defStatus !== 2) {
+                        echo "
+                            <button type='submit' class='btn btn-primary btn-lg'>Submit</button>
+                            <button type='reset' class='btn btn-primary btn-lg'>Reset</button>";
+                    } else {
+                        echo "
+                            <button type='button' onclick='return reopenDef(event)'>Re-open Deficiency</button>";
+                    }
+            echo "
+                    </div>
                 </div>
-            </div>
-        </form>";
-    if ($role === 'S') {
+            </form>";
+    if ($role >= 40) {
         echo "
             <form action='DeleteDef.php' method='POST' onsubmit=''>
                 <div class='row'>
@@ -247,10 +251,18 @@ try {
             </form>";
     }
     echo "</main>";
+    echo "
+        <script>
+            function reopenDef(ev) {
+                const form = document.forms[0];
+                document.forms[0].status.value = 1;
+                forms.submit();
+            }
+        </script>";
 } catch (Exception $e) {
-    print "Unable to retrieve record";
-    $link->close();
+    print "Unable to retrieve record: {$e->getMessage()}";
     exit;
+} finally {
+    $link->close();
+    include('fileend.php');
 }
-$link->close();
-include('fileend.php');

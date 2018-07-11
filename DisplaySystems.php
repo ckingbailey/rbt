@@ -1,18 +1,18 @@
 <?php 
 include('session.php');
 include('SQLFunctions.php');
-$link = f_sqlConnect();
-$Role = $_SESSION['Role'];
-$table = System;
+$Role = $_SESSION['role'];
+$table = 'system';
 $title = "SVBX - Display Status Types";
 include('filestart.php');
+$link = f_sqlConnect();
         //echo '<br>Source table: ' .$table;
         
-    if(!f_tableExists($link, $table, DB_Name)) {
-        die('<br>Destination table does not exist: '.$table);
-    }
+    // if(!f_tableExists($link, $table, DB_Name)) {
+    //     die('<br>Destination table does not exist: '.$table);
+    // }
     
-    $sql = "SELECT SystemID, System, Update_TS, Updated_by FROM $table ORDER BY System";
+    $sql = "SELECT SystemID, SystemName, lastUpdated, updatedBy FROM $table ORDER BY SystemName";
     $sql1 = "SELECT COUNT(*) FROM $table";
     
     // display Page Heading
@@ -36,7 +36,7 @@ include('filestart.php');
                     <tr class='def-tr'>
                         <th class='userth'>ID</th>
                         <th class='userth'>System</th>";
-                        if(!isset($_SESSION['UserID'])) 
+                        if(!isset($_SESSION['userID'])) 
                         {
                         echo "</tr>";
                         } else {
@@ -44,7 +44,7 @@ include('filestart.php');
                             <th class='userth'>Last Update</th>
                             <th class='userth'>Updated By</th>
                             <th class='userth'>Edit</th>";
-                            if($Role == 'S') {
+                            if($Role >= 40) {
                                 echo "
                             <th class='userth'>Delete</th>";
                             }
@@ -55,7 +55,7 @@ include('filestart.php');
         echo"       <tr class='def-tr'>
                         <td class='usertd'>{$row[0]}</td>
                         <td class='usertd'>{$row[1]}</td>";
-                        if(!isset($_SESSION['UserID'])) 
+                        if(!isset($_SESSION['userID'])) 
                         {
                             echo "</tr>";
                         } else {
@@ -64,7 +64,7 @@ include('filestart.php');
                             <td class='usertd'>{$row[3]}</td>
                             <td class='usertd'><form action='UpdateSystem.php' method='POST' onsubmit=''>
                                 <button type='submit' name='q' value='.$row[0].'><i class='typcn typcn-edit'></i></button></form></td>";
-                            if($Role == 'S') {
+                            if($Role >= 40) {
                                 echo "
                                 <td class='usertd'><form action='DeleteSystem.php' method='POST' onsubmit='' onclick='return confirm(`do you want to delete {$row[1]} Status`)'/>
                                 <button type='Submit' name='q' value='".$row[0]."'><i class='typcn typcn-times'></i></button></form></td>";

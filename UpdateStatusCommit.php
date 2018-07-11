@@ -1,27 +1,27 @@
 <?php
 include('SQLFunctions.php');
-include('Session.php');
+// include('Session.php');
 session_start();
 
 if(!empty($_POST)) {
     $StatusID = $_POST['StatusID'];
-    $Status = $_POST['Status'];
-    $UserID = $_SESSION['UserID'];
+    $Status = $_POST['StatusName'];
+    $UserID = $_SESSION['userID'];
     $link = f_sqlConnect();
     
-    $user = "SELECT Username FROM users_enc WHERE UserID = ".$UserID;
+    $user = "SELECT username FROM users_enc WHERE UserID = ".$UserID;
     if($result=mysqli_query($link,$user)) 
         {
           /*from the sql results, assign the username that returned to the $username variable*/    
           while($row = mysqli_fetch_assoc($result)) {
-            $Username = $row['Username'];
+            $Username = $row['username'];
           }
         }
     
-    $sql = "UPDATE Status
-            SET Status = '".$Status."'
-                ,Updated_by = '".$Username."'
-                ,Update_TS = NOW()
+    $sql = "UPDATE status
+            SET StatusName = '".$Status."'
+                ,updatedBy = '".$UserID."'
+                ,lastUpdated = NOW()
             WHERE StatusID = ".$StatusID.";";
 
             if(mysqli_query($link,$sql)) {

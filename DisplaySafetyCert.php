@@ -1,13 +1,13 @@
-<?php 
+<?php
 //include('session.php');
 //include('SQLFunctions.php');
 $title = "View Safety Certificate";
 //$link = f_sqlConnect();
 //$CDL = file_get_contents("CDList.sql");
-$Role = $_SESSION['Role'];
+$Role = $_SESSION['role'];
 include('filestart.php');
 ?>
-    
+
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
         <div class="container">
@@ -15,7 +15,7 @@ include('filestart.php');
         </div>
     </div>
     <div class="container main-content">
-<?php     
+<?php
     //if($result = mysqli_query($link,$CDL)) {
         echo "<p style='color:black'>Click System certificate Item Number to see full details</p>
             <table width='100%' class='deftable'>
@@ -31,7 +31,7 @@ include('filestart.php');
                     <th class='col_2  col_3  col_4 svbxth' width='10%'>Design</th>
                     <th class='col_2  col_3  col_4 svbxth' width='10%'>Contruction</th>
                     <th class='col_2  col_3  col_4 svbxth' width='10%'>Testing</th>";
-                    if($Role == 'S' OR $Role == 'A' OR $Role == 'U') 
+                    if($Role >= 20) 
                     {
                         echo "
                             <th class='col_1  col_2  col_3  col_4 svbxth'>Last Updated</th>
@@ -40,11 +40,11 @@ include('filestart.php');
                         echo "
                             </tr>";
                             }
-                            if($Role == 'S')
+                            if($Role >= 40)
                             {
                             echo "
                                 <th class='svbxth'>Delete</th>
-                            </tr>"; 
+                            </tr>";
                     }
             //while($row = mysqli_fetch_array($result)) {
                 echo "  <tr class='svbxtr'>
@@ -56,7 +56,7 @@ include('filestart.php');
                         <td class='col_2  col_3  col_4 svbxtd'>{$row[5]}</td>
                         <td class='svbxtd'>"; echo nl2br($row[6]);
                         echo "</td>";
-                        if($Role == 'S' OR $Role == 'A' OR $Role == 'U') 
+                        if($Role >= 20)
                         {
                             echo "
                             <td class='col_1  col_2  col_3  col_4 svbxtd'>{$row[7]}</td>
@@ -65,7 +65,7 @@ include('filestart.php');
                         } else {
                         echo "</tr>";
                             }
-                            if($Role == 'S')
+                            if($Role >= 40)
                             {
                             echo "
                             <td class='svbxtd' style='text-align:center'><form action='DeleteSC.php' method='POST' onsubmit='' onclick='return confirm(`ARE YOU SURE? Deficiencies should not be deleted, your deletion will be logged.`)'/>
@@ -82,8 +82,8 @@ include('filestart.php');
     //if(mysqli_error( $link )) {
         //echo '<br>Error: ' .mysqli_error($link);
     //}
-                    
+
 //mysqli_close($link);
-    
+
 include 'fileend.php';
 ?>

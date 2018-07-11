@@ -2,14 +2,14 @@
     include 'SQLFunctions.php';
     include 'mailer.php';
     session_start();
-    
+
     // if request is not a POST or POST is empty show the user Apache's default 404 by redirecting to a non-existent custom 404
     if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !count($_POST)) {
         http_response_code('404');
         header('Location: 404.php');
         exit;
     } else {
-        $post = $_POST;
+        $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
         $idrTable = 'IDR';
         $equipTable = 'equipment';
         $laborTable = 'labor';
@@ -23,15 +23,24 @@
         $editableUntil->
             setDate($editableUntil->format('Y'), $editableUntil-> format('m'), $editableUntil->format('j') + 1)->
             setTime('00', '59', '59');
-        
-        $userID = $_SESSION['UserID'] || $_POST['UserID'];
-        $username = $_SESSION['Username'] || $_POST['Username'];
-    
-    
+
+        $userID = $_SESSION['userID'];
+        $username = $_SESSION['username'];
+
+
         // check for existing submission
-        $check = "SELECT idrID, idrDate, LocationID FROM $idrTable WHERE (idrDate='{$_POST['idrDate']}') AND (UserID={$_POST['UserID']}) AND (LocationID={$_POST['LocationID']}";
+        $idrForDate = $post['idrForDate'];
+        $locationID = $post['locationID'];
+        $check = "SELECT
+            idrID,
+            idrDate,
+            locationID
+            FROM IDR
+            WHERE idrForDate = '$idrForDate'
+            AND userID = $userID
+            AND locationID = $locationID";
         $result = $link->query($check);
-        
+
         if ($result) {
             while ($row = $result->fetch_array() > 0) {
                 http_response_code(409);
@@ -40,7 +49,6 @@
             }
         } else {
             // if no dupe, handle POST data
-            
             // first, qry IDR column names, store them as keys of an array
             $query = 'SHOW COLUMNS FROM '.$idrTable;
             $result = $link->query($query);
@@ -53,24 +61,24 @@
                 // destroy in $post any key found in result
                 unset($post[$key]);
             }
-            
+
             // append editableUntil to $idrData;
             $idrData['editableUntil'] = $editableUntil->format($editableUntil::W3C);
-            if (!isset($idrData['UserID'])) $idrData['UserID'] = $userID;
-        
+            if (!isset($idrData['userID'])) $idrData['userID'] = $userID;
+
             $keys = implode(", ", array_keys($idrData));
             $vals = implode("', '", array_values($idrData));
-        
+
             // currently this fcn, found in SQLFunctions, is broken
             // don't repair it unless you're ready to deal with the bugs that may produce
-            if (!f_tableExists($link, $idrTable, DB_Name)) {
+            // if (!f_tableExists($link, $idrTable, DB_Name)) {
             // shouldn't this be an error handler like the duplicate check above(?)
-                echo 'table "'.$idrTable.'" could not be found';
-            } else {
+                // echo 'table "'.$idrTable.'" could not be found';
+            // } else {
             // create INSERT query
                 $query = "INSERT INTO $idrTable ($keys) VALUES ('$vals')";
-            }
-        
+            // }
+
             // this is the block that actually executes the INSERT query
             if ($result = $link->query($query)) {
                 http_response_code(201);
@@ -83,7 +91,7 @@
                 // test for comment and insert if present
                 if ($comment = $link->escape_string($post['comment'])) {
                     $commentQry = "INSERT idrComments (userID, comment, idrID)
-                        VALUES ('{$_POST['UserID']}', '{$comment}', '{$newIdrID}')";
+                        VALUES ('{$_POST['userID']}', '{$comment}', '{$newIdrID}')";
                     if ($result = $link->query($commentQry)) {
                         http_response_code(201);
                         $code = http_response_code();

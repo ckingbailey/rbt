@@ -11,7 +11,7 @@ if(!empty($_POST)) {
     $link = f_sqlConnect();
  
     $sql = "DELETE 
-            FROM EvidenceType
+            FROM evidenceType
             WHERE EviTypeID = ".$EviTypeID.";";
     //echo "sql: " .$sql. "Comment out Later";
     

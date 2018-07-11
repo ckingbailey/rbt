@@ -1,27 +1,27 @@
 <?php
 include('session.php');
-$Role = $_SESSION['Role'];
-$title = "SVBX - Safety Certifications".$DefID;
+$Role = $_SESSION['role'];
+$title = "SVBX - Safety Certifications";
 //ini_set('display_errors', 1);
 //ini_set('display_startup_errors', 1);
-//error_reporting(E_ALL);
+// error_reporting(E_ALL & ~E_NOTICE);
 include('filestart.php'); 
 $link = f_sqlConnect();
 $AND = 0;
 
-if($_POST['Search'] == NULL) {
+$ItemS = isset($_POST['Item']) ? $_POST['Item'] : null;
+$RequirementS = isset($_POST['Requirement']) ? $_POST['Requirement'] : '';
+$DesignCodeS = isset($_POST['DesignCode']) ? $_POST['DesignCode'] : '';
+$DesignSpecS = isset($_POST['DesignSpec']) ? $_POST['DesignSpec'] : '';
+$ContractNoS = isset($_POST['ContractNo']) ? $_POST['ContractNo'] : '';
+$ControlNoS = isset($_POST['ControlNo']) ? $_POST['ControlNo'] : '';
+$ElementGroupS = isset($_POST['ElementGroup']) ? $_POST['ElementGroup'] : '';
+$CertElementS = isset($_POST['CertElement']) ? $_POST['CertElement'] : '';
+    
+if(!isset($_POST['Search']) || $_POST['Search'] == NULL) {
     $sql = file_get_contents("SafetyCert.sql");
     $count = "SELECT COUNT(*) FROM SafetyCert A";
 } else {
-    
-    $ItemS = $_POST['Item'];
-    $RequirementS = $_POST['Requirement'];
-    $DesignCodeS = $_POST['DesignCode'];
-    $DesignSpecS = $_POST['DesignSpec'];
-    $ContractNoS = $_POST['ContractNo'];
-    $ControlNoS = $_POST['ControlNo'];
-    $ElementGroupS = $_POST['ElementGroup'];
-    $CertElementS = $_POST['CertElement'];
     
     $sql = "SELECT 
                 A.CertID,
@@ -29,28 +29,28 @@ if($_POST['Search'] == NULL) {
                 A.Requirement, 
                 A.DesignCode, 
                 A.DesignSpec, 
-                B.Contract, 
+                B.ContractName, 
                 A.ControlNo, 
                 C.ElementGroup, 
                 D.CertifiableElement 
             FROM 
-                SafetyCert A 
+                safetyCert A 
             LEFT JOIN 
-                Contract B 
+                contract B 
             ON 
                 B.ContractID = A.ContractNo
             LEFT JOIN 
-                ElementGroup C 
+                elementGroup C 
             ON 
                 C.EG_ID = A.ElementGroup
             LEFT JOIN 
-                CertifiableElement D 
+                certifiableElement D 
             ON 
                 D.CE_ID = A.CertElement";
     $count = "SELECT COUNT(*) FROM SafetyCert A";
     
     if($ItemS <> NULL) {
-       $ItemSQL = " WHERE A.Item = '".$ItemS."'";
+       $ItemSQL = " WHERE A.Item = '$ItemS'";
        $AND = 1;
     } else {
         $ItemSQL = "";
@@ -129,9 +129,6 @@ if($_POST['Search'] == NULL) {
     $count = $count.$ItemSQL.$ReqSQL.$DesignCodeSQL.$DesignSpecSQL.$ContractNoSQL.$ControlNoSQL.$ElementGroupSQL.$CertElementSQL;
     
 }
-
-
-
 ?>
     <table style='width:96%;margin-left:auto;margin-right:auto;margin-top:100px'>
         <tr>
@@ -152,7 +149,7 @@ if($_POST['Search'] == NULL) {
             <form action="ViewSC.php" method="POST">
                 <input type='hidden' name='Search' value=1>
                     <td><?php
-                            $sqlI = "SELECT Item FROM SafetyCert ORDER BY Item";
+                            $sqlI = "SELECT Item FROM safetyCert ORDER BY Item";
                              //if($result = mysqli_query($link,$sqlL)) {
                                     echo "<select name='Item'' style='width:100%' value='".$ItemS."'></option>";
                                     echo "<option value=''></option>";

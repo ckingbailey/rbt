@@ -11,7 +11,7 @@ if(!empty($_POST)) {
     $link = f_sqlConnect();
  
     $sql = "DELETE 
-            FROM System
+            FROM system
             WHERE SystemID = ".$SysID.";";
     //echo "sql: " .$sql. "Comment out Later";
     

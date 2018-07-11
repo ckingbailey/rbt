@@ -4,8 +4,8 @@ include('SQLFunctions.php');
 include('uploadImg.php');
 
 $date = date('Y-m-d');
-$userID = intval($_SESSION['UserID']);
-$username = $_SESSION['Username'];
+$userID = intval($_SESSION['userID']);
+$username = $_SESSION['username'];
 $nullVal = null;
 
 $link = f_sqlConnect();
@@ -62,7 +62,7 @@ if ($_FILES['CDL_pics']['size']
 $cdlCommText = trim($_POST['cdlCommText']);
     
 // prepare parameterized string from external .sql file
-$fieldList = preg_replace('/\s+/', '', file_get_contents('UpdateDef.sql'));
+$fieldList = preg_replace('/\s+/', '', file_get_contents('updateDef.sql'));
 $fieldsArr = array_fill_keys(explode(',', $fieldList), '?');
 
 // unset keys that will not be updated before imploding back to string
@@ -91,28 +91,12 @@ if ($_FILES['CDL_pics']['size']
     $CDL_pics = $_FILES['CDL_pics'];
 } else $CDL_pics = null;
 
-// echo "<p style='font-family: monospace'>SQL string: $sql</p>";
-// echo "<pre style='color: blue'>";
-// var_dump($post);
-// echo "</pre>";
-
 try {
-    $success = "<div style='background-color: gold; background-clip: padding-box; border: 5px dashed limeGreen;'>%s</div>";
-    $successFormat = "<p style='color: %s'>%s</p>";
-    $linkBtn = "<a href='UpdateDef.php?defID=%s' style='text-decoration: none; border: 2px solid plum; padding: .35rem;'>Back to Update Def</a>";
+    $linkBtn = "<a href='updateDef.php?defID=%s' style='text-decoration: none; border: 2px solid plum; padding: .35rem;'>Back to Update Def</a>";
     
     if (!$stmt = $link->prepare($sql)) throw new Exception($link->error);
     
-    $success = sprintf($success, sprintf($successFormat, 'blue', '&#x2714; CDL stmt prepared') . '%s');
-    
     $types = 'iiisiisiiisissssiisssss';
-    
-    print "
-    <p id='strlenTypes' style='font-family: monospace'>" . strlen($types) . "</p>
-    <p id='countPost' style='font-family: monospace'>" . count($post) . "</p>
-    <pre>";
-    var_dump($post);
-    print "</pre>";
     
     if (!$stmt->bind_param('iiisiisiiisissssiisssss',
         $post['safetyCert'],
@@ -140,39 +124,26 @@ try {
         $nullVal
     )) throw new mysqli_sql_exception($stmt->error);
     
-    $success= sprintf($success, sprintf($successFormat, 'forestGreen', '&#x2714; CDL params bound') . '%s');
-    
     if (!$stmt->execute()) throw new mysqli_sql_exception($stmt->error);
     
     $defID = intval($stmt->insert_id);
     
-    $success = sprintf($success, sprintf($successFormat, 'dodgerBlue', '&#x2714; CDL insert executed') . '%s');
-    
     $stmt->close();
-    
-    $success = sprintf($success, sprintf($successFormat, 'indigo', '&#x2714; CDL stmt closed') . '%s');
     
     // if INSERT succesful, prepare, upload, and INSERT photo
     if ($CDL_pics) {
         $sql = "INSERT CDL_pics (defID, pathToFile) values (?, ?)";
         
-        $pathToFile = $link->escape_string(saveImgToServer($_FILES['CDL_pics'], $newDefID));
+        $pathToFile = $link->escape_string(saveImgToServer($_FILES['CDL_pics'], $defID));
         if ($pathToFile) {
             if (!$stmt = $link->prepare($sql)) throw new Exception($link->error);
-            $success = sprintf($success, sprintf($successFormat, 'cadetBlue', '&#x2714; cdlPics stmt prepared') . '%s');
             
             if (!$stmt->bind_param('is', $defID, $pathToFile)) throw new mysqli_sql_exception($stmt->error);
-            $success = sprintf($success, sprintf($successFormat, 'cornFlower', '&#x2714; cdlPics params bound') . '%s');
             
             if (!$stmt->execute()) throw new mysqli_sql_exception($stmt->error);
-            $success = sprintf($success, sprintf($successFormat, 'aqua', '&#x2714; cdlPics insert executed') . '%s');
             
             $stmt->close();
-            
-            $success = sprintf($success, sprintf($successFormat, 'aquamarine', '&#x2714; cdlPics stmt closed') . '%s');
         }
-    } else {
-        $success = sprintf($success, sprintf($successFormat, 'cyan', '&#x2718; no cdlPics found') . '%s');
     }
     
     // if comment submitted commit it to a separate table
@@ -185,29 +156,18 @@ try {
                 FILTER_FLAG_NO_ENCODE_QUOTES
             ), FILTER_SANITIZE_SPECIAL_CHARS);
         if (!$stmt = $link->prepare($sql)) throw new Exception($link->error);
-        $success = sprintf($success, sprintf($successFormat, 'darkCyan', '&#x2714; cdlComments stmt prepared') . '%s');
         if (!$stmt->bind_param('isi',
             $defID,
             $commentText,
             $userID)) throw new mysqli_sql_exception($stmt->error);
-        $success = sprintf($success, sprintf($successFormat, 'darkBlue', '&#x2714; cdlComments params bound') . '%s');
         if (!$stmt->execute()) throw new mysqli_sql_exception($stmt->error);
-        $success = sprintf($success, sprintf($successFormat, 'darkTurquoise', '&#x2714; cdlComments stmt executed') . '%s');
         $stmt->close();
-        $success = sprintf($success, sprintf($successFormat, 'deepSkyBlue', '&#x2714; cdlComments stmt closed') . '%s');
-    } else {
-        $success = sprintf($success, sprintf($successFormat, 'mediumAquamarine', '&#x2718; no cdlComments found') . '%s');
     }
 
-    $link->close();
-    
-    $success = sprintf($success, sprintf($successFormat, 'lightSteelBlue', '&#x2714; link closed') . '%s');
-    $success = sprintf($success, sprintf($linkBtn, $defID));
-    print $success;
-    
-    header("Location: ViewDef.php?defID=$defID");
+    header("Location: viewDef.php?defID=$defID");
 } catch (Exception $e) {
     print "There was an error in committing your submission";
+} finally {
     $link->close();
     exit;
 }

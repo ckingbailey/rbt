@@ -21,7 +21,7 @@
         $SecQ = $_POST['SecQ'];
         $seca = $_POST['SecA'];
         $SecA = filter_var($seca, FILTER_SANITIZE_STRING);
-        $Username = $_SESSION['Username'];
+        $Username = $_SESSION['username'];
         
         if(!isset($Username)) {
             $message = "No user logged in";
@@ -33,7 +33,7 @@
             SET 
                 SecQ = '$SecQ'
                 ,SecA = '$SecA'
-                ,Updated_by = '$Username'
+                ,updated_By = '$Username'
                 ,LastUpdated = NOW()
             WHERE 
                 Username = '$Username'";
@@ -42,7 +42,7 @@
             die("Insert failed. " . mysqli_error($link));
               
             //$message = "<p class='message'>Your security question has been saved</p>";
-            header('location: stats.php');
+            header('location: dashboard.php');
             } 
     }
 mysqli_close($link);

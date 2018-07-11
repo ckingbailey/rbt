@@ -24,7 +24,7 @@ function returnCollapseSection($sectionName, $id, $content, $addClasses = '', $e
     $collapse = $expanded ? '' : 'collapse';
     $classList = $addClasses ? $collapse.' '.$addClasses : $collapse;
     $section = "%s<section id='%s' class='$classList'>%s</section>";
-    
+
     $sectionHeading = returnSectionHeading(returnCollapseHeading($id, $sectionName, $expanded));
     return sprintf($section, $sectionHeading, $id, $content);
 }
@@ -56,35 +56,35 @@ function checkboxLabel($for, $text, $required = '') {
 function returnSubarrays(array $arr, $num, $key) {
     $reducer = function ($acc, $el) use ($num, $key) {
         static $i = 0;
-        
+
         $index = floor($i/$num);
-        
+
         $acc[$index][] = $el[$key];
-        
+
         $i++;
-        
+
         return $acc;
     };
-    
+
     return array_reduce($arr, $reducer, array());
 }
 
 function wrapArrayEls(array $arr, $format) {
     $acc = array();
-    
+
     foreach($arr as $el) {
         if (is_array($el)) {
             $acc[] = wrapArrayEls($el, $format);
         } else $acc[] = sprintf($format, $el);
     }
-    
+
     return $acc;
 }
 
 function returnPhotoSection($pics, $imgFormat) {
     $arr = returnSubarrays($pics, 3, 'pathToFile');
     $acc = '';
-    
+
     foreach (wrapArrayEls(
         $arr,
         $imgFormat
@@ -92,7 +92,7 @@ function returnPhotoSection($pics, $imgFormat) {
     {
         $acc .= returnRow($el, ['colWd' => 4]);
     }
-    
+
     return $acc;
 }
 
@@ -100,7 +100,7 @@ function returnPhotoSection($pics, $imgFormat) {
 function getAttachments($cnxn, $id) {
     $sql = "SELECT bdaFilepath, filename from bartdlAttachments WHERE bartdlID = ?";
     if (!$stmt = $cnxn->prepare($sql)) printSqlErrorAndExit($cnxn, $sql);
-    if (!$stmt->bind_param('i', intval($id))) printSqlErrorAndExit($stmt, $sql);
+    if (!$stmt->bind_param('i', $id)) printSqlErrorAndExit($stmt, $sql);
     if (!$stmt->execute()) printSqlErrorAndExit($stmt, $sql);
     $attachments = stmtBindResultArray($stmt) ?: [];
     $stmt->close();
@@ -126,7 +126,7 @@ function returnCommentsHTML(array $comments) {
             <h6 class='d-flex flex-row justify-content-between text-secondary'><span>%s</span><span>%s</span></h6>
             <p>%s</p>
         </div>";
-    
+
     foreach ($comments as $comment) {
         $userFullName = $comment['firstname'].' '.$comment['lastname'];
         $text = stripcslashes($comment['cdlCommText']);
@@ -153,7 +153,7 @@ $requiredElements = [
         "tagName" => 'select',
         'element' => "<select name='safetyCert' id='safetyCert' class='form-control' required>%s</select>",
         "type" => '',
-        "query" => "SELECT YesNoID, YesNo FROM YesNo ORDER BY YesNo",
+        "query" => "SELECT YesNoID, YesNoName FROM yesNo ORDER BY YesNoName",
         'value' => ''
     ],
     'systemAffected' => [
@@ -161,7 +161,7 @@ $requiredElements = [
         "tagName" => 'select',
         'element' => "<select name='systemAffected' id='systemAffected' class='form-control' required>%s</select>",
         "type" => '',
-        "query" => "SELECT SystemID, System FROM System ORDER BY System",
+        "query" => "SELECT SystemID, SystemName FROM system ORDER BY SystemName",
         'value' => ''
     ],
     'location' => [
@@ -169,7 +169,7 @@ $requiredElements = [
         "tagName" => 'select',
         'element' => "<select name='location' id='location' class='form-control' required>%s</select>",
         "type" => '',
-        "query" => "SELECT LocationID, LocationName FROM Location ORDER BY LocationName",
+        "query" => "SELECT LocationID, LocationName FROM location ORDER BY LocationName",
         'value' => ''
     ],
     'specLoc' => [
@@ -187,7 +187,7 @@ $requiredElements = [
         "tagName" => "select",
         "element" => "<select name='status' id='status' class='form-control' required>%s</select>",
         "type" => null,
-        "query" => "SELECT StatusID, Status FROM Status WHERE StatusID <> 3 ORDER BY StatusID",
+        "query" => "SELECT StatusID, StatusName FROM status WHERE (StatusID <> 3 AND StatusID <> 4) ORDER BY StatusID",
         'value' => ''
     ],
     'severity' => [
@@ -195,7 +195,7 @@ $requiredElements = [
         "tagName" => "select",
         "element" => "<select name='severity' id='severity' class='form-control' required>%s</select>",
         "type" => null,
-        "query" => "SELECT SeverityID, SeverityName FROM Severity ORDER BY SeverityName",
+        "query" => "SELECT SeverityID, SeverityName FROM severity ORDER BY SeverityName",
         'value' => ''
     ],
     'dueDate' => [
@@ -211,7 +211,7 @@ $requiredElements = [
         "tagName" => "select",
         "element" => "<select name='groupToResolve' id='groupToResolve' class='form-control' required>%s</select>",
         "type" => null,
-        "query" => "SELECT SystemID, System FROM System ORDER BY System",
+        "query" => "SELECT SystemID, SystemName FROM system ORDER BY SystemName",
         'value' => ''
     ],
     'requiredBy' => [
@@ -219,7 +219,7 @@ $requiredElements = [
         "tagName" => "select",
         "element" => "<select name='requiredBy' id='requiredBy' class='form-control' required>%s</select>",
         "type" => null,
-        "query" => "SELECT ReqByID, RequiredBy FROM RequiredBy ORDER BY RequiredBy",
+        "query" => "SELECT ReqByID, RequiredBy FROM requiredBy ORDER BY RequiredBy",
         'value' => ''
     ],
     'contractID' => [
@@ -227,7 +227,7 @@ $requiredElements = [
         'tagName' => 'select',
         'element' => "<select name='contractID' id='contractID' class='form-control' required>%s</select>",
         'type' => null,
-        'query' => "SELECT contractID, contract FROM Contract ORDER BY contractID",
+        'query' => "SELECT contractID, contractName FROM contract ORDER BY contractID",
         'value' => ''
     ],
     'identifiedBy' => [
@@ -304,7 +304,7 @@ $closureElements = [
         "tagName" => 'select',
         'element' => "<select name='evidenceType' id='evidenceType' class='form-control'>%s</select>",
         "type" => '',
-        "query" => "SELECT EviTypeID, EviType FROM EvidenceType ORDER BY EviType",
+        "query" => "SELECT EviTypeID, EviTypeName FROM evidenceType ORDER BY EviTypeName",
         'value' => ''
     ],
     'repo' => [
@@ -312,7 +312,7 @@ $closureElements = [
         'tagName' => 'select',
         'element' => "<select name='repo' id='repo' class='form-control'>%s</select>",
         'type' => '',
-        'query' => "SELECT RepoID, Repo FROM Repo ORDER BY Repo",
+        'query' => "SELECT RepoID, RepoName FROM repo ORDER BY RepoName",
         'value' => ''
     ],
     'evidenceLink' => [
@@ -361,7 +361,7 @@ $generalElements = [
         'label' => returnLabel('status', 'Status', 1),
         'tagName' => 'select',
         'element' => "<select name='status' id='status' class='form-control' required>%s</select>",
-        'query' => "SELECT statusID, status from Status WHERE status <> 'Deleted'",
+        'query' => "SELECT statusID, statusName from status WHERE statusName <> 'Deleted'",
         'value' => ''
     ],
     'descriptive_title_vta' => [
@@ -404,7 +404,7 @@ $vtaElements = [
         'tagName' => 'select',
         'element' => "<select name='safety_cert_vta' id='safety_cert_vta' class='form-control' required>%s</select>",
         'value' => '',
-        'query' => 'SELECT yesNoID, yesNo from YesNo'
+        'query' => 'SELECT yesNoID, yesNoName from yesNo'
     ],
     'bartdlAttachments' => [
         'label' => returnLabel('bartdlAttachments', 'Attachments'),

@@ -22,7 +22,7 @@ function printException(Exception $exc, $sql = '') {
 // prepare POST and sql string for commit
 $post = $_POST;
 $defID = $post['id'];
-$userID = $_SESSION['UserID'];
+$userID = $_SESSION['userID'];
 
 // validate POST data
 // if it's empty then file upload exceeds post_max_size
@@ -50,7 +50,7 @@ $fieldsArr = array_fill_keys(explode(',', $fieldList), '?');
 unset($fieldsArr['id'], $fieldsArr['created_by'], $fieldsArr['form_modified']);
 
 // append keys that do not or may not come from html form
-$post = ['updated_by' => $_SESSION['UserID']] + $post;
+$post = ['updated_by' => $_SESSION['userID']] + $post;
 $post['resolution_disputed'] || $post['resolution_disputed'] = 0;
 $post['structural'] || $post['structural'] = 0;
 
@@ -89,7 +89,7 @@ try {
             
     $stmt->close();
     
-    $location = "ViewDef.php?bartDefID=$defID";
+    $location = "viewDef.php?bartDefID=$defID";
     
     // insert new comment if one was submitted
     if ($bdCommText) {
@@ -126,7 +126,7 @@ if ($location) {
     header("Location: $location");
 } else {
     print "
-        <p><a href='DisplayDefs.php?view=BART'>back to DisplayDefs</a></p>
+        <p><a href='defs.php?view=BART'>back to DisplayDefs</a></p>
         <p><a href='newBartDef.php'>back to newBartDef</a></p>";
 }
 exit();

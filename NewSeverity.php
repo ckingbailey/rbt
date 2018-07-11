@@ -2,15 +2,16 @@
 include('session.php');
 $title = "SVBX - Add New Severity Type";
 include('filestart.php');
-if($Role == 'U' OR $Role == 'V' OR $Role == 'A') {
-        header('location: unauthorised.php');
-    }
+if($_SESSION['role'] < 30) {
+    header('location: unauthorised.php');
+    exit;
+}
 ?>
         <header class="container page-header">
           <h1 class="page-title">Add New Severity type</h1>
         </header>
     </div>
-        <div class="container main-content"> 
+        <div class="container main-content">
         <FORM action="RecSeverity.php" method="POST">
             <table class='table svbx-table'>
                 <tr class='usertr'>
@@ -22,7 +23,7 @@ if($Role == 'U' OR $Role == 'V' OR $Role == 'A') {
                 <tr class='usertr'>
                     <th class='userth'>Description:</th>
                     <td class='usertd'>
-                        <textarea type="message"  rows="5" cols="99%" name="Description" max="255" required></textarea>
+                        <textarea type="message"  rows="5" cols='50' name="Description" max="255" required></textarea>
                     </td>
                 </tr>
             </table>

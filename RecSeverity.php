@@ -9,13 +9,13 @@
     
     $link = f_sqlConnect();
     $check = "SELECT * FROM $table WHERE SeverityName = '".$_POST['SeverityName']."'";
-    $UserID = $_SESSION['UserID'];
+    $UserID = $_SESSION['userID'];
     $user = "SELECT Username FROM users_enc WHERE UserID = ".$UserID;
     if($result=mysqli_query($link,$user)) 
         {
           /*from the sql results, assign the username that returned to the $username variable*/    
           while($row = mysqli_fetch_assoc($result)) {
-            $Username = $row['Username'];
+            $Username = $row['username'];
           }
         }
     
@@ -35,7 +35,7 @@
       header("location: $duplicate?msg=1");
     }
     else {
-    $sql = "INSERT INTO $table($keys, Update_TS, Updated_by) VALUES ('$values', NOW(), '$Username')";
+    $sql = "INSERT INTO $table($keys, lastUpdated, updatedBy) VALUES ('$values', NOW(), '$Username')";
     //echo '<br>sql: ' .$sql;
     //echo '<br>Num_rows: ' .$num_rows;
     

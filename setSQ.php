@@ -11,7 +11,7 @@
 <BODY>
 <div="background">
 <div class="index">
-  <img src="vta_logo.png" alt="VTA - Solutions that move you" class="logo" />
+  <img src="assets/img/vta_logo.png" alt="VTA - Solutions that move you" class="logo" />
     <h1 class='index-text'>Silicon Valley Berryessa Extension Project</h1>
     <h2>You are required to set your security question for password recovery before you continue</h2>
   <form action="SecQSubmit.php" method="post">

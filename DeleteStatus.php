@@ -11,7 +11,7 @@ if(!empty($_POST)) {
     $link = f_sqlConnect();
  
     $sql = "DELETE 
-            FROM Status
+            FROM status
             WHERE StatusID = ".$StatusID.";";
     //echo "sql: " .$sql. "Comment out Later";
     

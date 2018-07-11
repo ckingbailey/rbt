@@ -1,26 +1,27 @@
-<?php 
+<?php
+    include('session.php');
     include('SQLFunctions.php');
-    $link = f_sqlConnect();
-    $table = EvidenceType;
+    $table = 'evidenceType';
     $q = $_POST["q"];
     $title = "SVBX - Update Evidence Type";
-    $Loc = "SELECT EviType FROM $table WHERE EviTypeID = ".$q;
-    include('filestart.php'); 
-    
-    if($Role == 'U' OR $Role == 'V' OR $Role == '') {
+    $Loc = "SELECT EviTypeName FROM $table WHERE EviTypeID = ".$q;
+    include('filestart.php');
+    $link = f_sqlConnect();
+
+    if($Role <= 20) {
         header('location: unauthorised.php');
     }
 ?>
         <div class="container page-header">
             <h1 class="page-title">Update Evidence Type</h1>
         </div>
-        <?php       
+        <?php
             if($stmt = $link->prepare($Loc)) {
                 $stmt->execute();
                 $stmt->bind_result($EviType);
                 while ($stmt->fetch()) {
                     echo "
-                        <div class='container main-content'> 
+                        <div class='container main-content'>
                             <FORM action='UpdateEvidenceCommit.php' method='POST'>
                                 <input type='hidden' name='EviTypeID' value='".$q."'>
                                 <table class='table'>

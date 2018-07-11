@@ -1,22 +1,22 @@
-<?php 
+<?php
 include('session.php');
 include('SQLFunctions.php');
-$link = f_sqlConnect();
-$table = users_enc;
+$table = 'users_enc';
 $title = "SVBX - Display Users";
 include('filestart.php');
-$adminID = $_SESSION['UserID'];
-$Role = $_SESSION['Role'];
-        
+$adminID = $_SESSION['userID'];
+$Role = $_SESSION['role'];
+
+$link = f_sqlConnect();
     if(!f_tableExists($link, $table, DB_Name)) {
         die('<br>Destination table does not exist: '.$table);
     }
-    
-    $sql = "SELECT UserID, Username, firstname, lastname, Role, LastUpdated, Updated_by, DateAdded, Created_by, Email, Company, LastLogin FROM $table ORDER BY lastname";
+
+    $sql = "SELECT UserID, Username, firstname, lastname, Role, LastUpdated, updated_By, DateAdded, Created_by, Email, Company, LastLogin FROM $table ORDER BY lastname";
     $sql1 = "SELECT COUNT(*) FROM $table";
-    
+
     if($result = mysqli_query($link,$sql1)) {
-        echo"   
+        echo"
                 <header class='container page-header'>
                     <h1 class='page-title'>Users</h1>
                 <table class='sumtable'>
@@ -24,19 +24,18 @@ $Role = $_SESSION['Role'];
                         <td class='sumtd'>Users in Database: </td>";
             while ($row = mysqli_fetch_array($result)) {
                     echo "<td class='sumtd'>{$row[0]}</td>";
-            }    
+            }
             echo "</table><br></header>";
 }
     if($result = mysqli_query($link,$sql)) {
-        echo"   
+        echo"
                 <div class='container main-content' style='max-width: 1600px;'>
                 <table class='table'>
                     <tr class='usertr'>
                         <th class='userth'>First name</th>
                         <th class='userth'>Last name</th>
                         <th class='userth'>Email</th>";
-                        if(!isset($_SESSION['UserID'])) 
-                        {
+                        if(!isset($_SESSION['userID'])) {
                         echo "</tr>";
                         } else {
                         echo "
@@ -45,8 +44,7 @@ $Role = $_SESSION['Role'];
                             <th class='userth'>Role</th>
                             <th class='userth'>Company</th>";
                             }
-                        if($Role == 'A' OR $Role == 'S')
-                        {
+                        if ($Role >= 30) {
                         echo "
                             <th class='userth'>Last Login</th>
                             <th class='userth'>Date Created</th>
@@ -54,20 +52,20 @@ $Role = $_SESSION['Role'];
                             <th class='userth'>Last Updated</th>
                             <th class='userth'>Updated By</th>
                             <th class='userth'>Edit</th>";
-                            if($Role == 'S') {
+                            if ($Role >= 40) {
                                 echo "
                             <th class='userth'>Delete</th>";
                             }
                             echo "
-                            </tr>"; 
+                            </tr>";
                         }
             while ($row = mysqli_fetch_array($result)) {
         echo"       <tr class='usertr'>
-                        
+
                         <td class='usertd'>{$row[2]}</td>
                         <td class='usertd'>{$row[3]}</td>
                         <td class='usertd'><a href='mailto:{$row[9]}' style='color:black'>{$row[9]}</a></td>";
-                        if(!isset($_SESSION['UserID'])) 
+                        if(!isset($_SESSION['userID']))
                         {
                             echo "</tr>";
                         } else {
@@ -77,7 +75,7 @@ $Role = $_SESSION['Role'];
                         <td style='text-align:center' class='usertd'>{$row[4]}</td>
                         <td class='usertd'>{$row[10]}</td>";
                         }
-                        if($Role == 'A' OR $Role == 'S')
+                        if ($Role >= 30)
                         {
                             if($row[11] == '0000-00-00 00:00:00') {
                                 echo "
@@ -86,7 +84,7 @@ $Role = $_SESSION['Role'];
                                 echo "
                                 <td class='usertd'>{$row[11]}</td>";
                             }
-                    echo "    
+                    echo "
                         <td class='usertd'>{$row[7]}</td>
                         <td class='usertd'>{$row[8]}</td>
                         <td class='usertd'>{$row[5]}</td>
@@ -94,24 +92,24 @@ $Role = $_SESSION['Role'];
                         <td class='usertd'>
                         <form action='UpdateUser.php' method='POST' onsubmit=''/>
                         <input type='hidden' name='q' value='".$row[0]."'/><input type='submit' value='Update'></form></td>";
-                            if($Role == 'S') {
+                            if($Role >= 40) {
                                 echo "
                         <td class='usertd'><form action='DeleteUser.php' method='POST' onsubmit='' onsubmit='' onclick='return confirm(`do you want to delete user {$row[2]} {$row[3]}`)'/>
                         <button type='Submit' name='q' value='".$row[0]."'><i class='typcn typcn-times'></i></button></form></td>";
                             }
                             echo "</tr>";
                     }
-            }    
+            }
             echo "</table></div>";
     }
     mysqli_free_result($result);
-    
+
     if(mysqli_error($link)) {
         echo '<br>Error: ' .mysqli_error($link);
     } else //echo '<br>Success';
-    
+
     mysqli_close($link);
-    
+
 ?>
 <?php include 'fileend.php';?>
 </Body>

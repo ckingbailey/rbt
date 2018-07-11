@@ -22,26 +22,26 @@ if (isset($_POST['subStep']) && !isset($_GET['a']) && $_SESSION['lockout'] != tr
             } else {
                 $error = false;
                 $show = 'securityForm';
-                $securityUser = $result['UserID'];
+                $securityUser = $result['userID'];
             }
         break;
         case 2:
             //we just submitted the security question for verification
-            if ($_POST['UserID'] != "" && $_POST['answer'] != "")
+            if ($_POST['userID'] != "" && $_POST['answer'] != "")
             {
-                $result = checkSecAnswer($_POST['UserID'],$_POST['answer']);
+                $result = checkSecAnswer($_POST['userID'],$_POST['answer']);
                 if ($result == true)
                 {
                     //answer was right
                     $error = false;
                     $show = 'successPage';
-                    $passwordMessage = sendPasswordEmail($_POST['UserID']);
+                    $passwordMessage = sendPasswordEmail($_POST['userID']);
                     $_SESSION['badCount'] = 0;
                 } else {
                     //answer was wrong
                     $error = true;
                     $show = 'securityForm';
-                    $securityUser = $_POST['UserID'];
+                    $securityUser = $_POST['userID'];
                     $_SESSION['badCount']++;
                 }
             } else {
@@ -51,7 +51,7 @@ if (isset($_POST['subStep']) && !isset($_GET['a']) && $_SESSION['lockout'] != tr
         break;
         case 3:
             //we are submitting a new password (only for encrypted)
-            if ($_POST['UserID'] == '' || $_POST['key'] == '') header("location: login.php");
+            if ($_POST['userID'] == '' || $_POST['key'] == '') header("location: login.php");
             if (strcmp($_POST['pw0'],$_POST['pw1']) != 0 || trim($_POST['pw0']) == '')
             {
                 $error = true;
@@ -59,7 +59,7 @@ if (isset($_POST['subStep']) && !isset($_GET['a']) && $_SESSION['lockout'] != tr
             } else {
                 $error = false;
                 $show = 'recoverSuccess';
-                updateUserPassword($_POST['UserID'],$_POST['pw0'],$_POST['key']);
+                updateUserPassword($_POST['userID'],$_POST['pw0'],$_POST['key']);
             }
         break;
     }
@@ -73,7 +73,7 @@ if (isset($_POST['subStep']) && !isset($_GET['a']) && $_SESSION['lockout'] != tr
     } elseif ($result['status'] == true) {
         $error = false;
         $show = 'recoverForm';
-        $securityUser = $result['UserID'];
+        $securityUser = $result['userID'];
     }
 }
 if ($_SESSION['badCount'] >= 3)
@@ -94,7 +94,7 @@ if ($_SESSION['badCount'] >= 3)
   <BODY>
     <div="background">
       <div class="index">
-        <img src="vta_logo.png" alt="VTA - Solutions that move you" class="logo" />
+        <img src="/assets/img/vta_logo.png" alt="VTA - Solutions that move you" class="logo" />
         <h1 class="index-text">Silicon Valley Berryessa Extension Project</h1>
 <?php
   switch($show) {
@@ -148,14 +148,14 @@ if ($_SESSION['badCount'] >= 3)
      <style='color:black'><?= $passwordMessage;?></style><br>
      <?php break; case 'recoverForm': ?>
     <h2>Password Recovery</h2>
-    <p>Welcome back, <?= getUserName($securityUser=='' ? $_POST['UserID'] : $securityUser); ?>.</p>
+    <p>Welcome back, <?= getUserName($securityUser=='' ? $_POST['userID'] : $securityUser); ?>.</p>
     <p>In the fields below, enter your new password.</p>
     <?php if ($error == true) { ?><span>The new passwords must match and must not be empty.</span><?php } ?>
     <form action="<?= $_SERVER['PHP_SELF']; ?>" method="post">
         <label for="pw0">New Password</label><input type="password" name="pw0" id="pw0" value="" maxlength="20">
         <label for="pw1">Confirm Password</label><input type="password" name="pw1" id="pw1" value="" maxlength="20">
         <input type="hidden" name="subStep" value="3" />
-        <input type="hidden" name="UserID" value="<?= $securityUser=='' ? $_POST['UserID'] : $securityUser; ?>" />
+        <input type="hidden" name="UserID" value="<?= $securityUser=='' ? $_POST['userID'] : $securityUser; ?>" />
         <input type="hidden" name="key" value="<?= $_GET['email']=='' ? $_POST['key'] : $_GET['email']; ?>" />
         <input type="submit" value="Submit" style="margin-left: 150px;" />
         <p><?php echo $securityUser; ?></p>

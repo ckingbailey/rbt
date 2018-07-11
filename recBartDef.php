@@ -9,7 +9,7 @@ include('uploadAttachment.php');
 $link = f_sqlConnect();
 
 $date = date('Y-m-d');
-$userID = $_SESSION['UserID'];
+$userID = $_SESSION['userID'];
 
 function printException(\Exception $exc, $color = 'orangeRed') {
     print "
@@ -22,7 +22,7 @@ function printException(\Exception $exc, $color = 'orangeRed') {
 }
 
 // prepare POST and sql string for commit
-$post = $_POST;
+$post = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
 $bdCommText = $post['bdCommText'];
 
 // validate POST data, if it's empty bump user back to form
@@ -86,7 +86,7 @@ try {
     $defID = $stmt->insert_id;
     $stmt->close();
 
-    $location = "ViewDef.php?bartDefID=$defID";
+    $location = "viewDef.php?bartDefID=$defID";
 
     // insert comment if one was submitted
     if ($bdCommText) {
@@ -109,10 +109,10 @@ try {
         }
         $stmt->close();
     }
-        
-    // upload and insert attachment if found    
+
+    // upload and insert attachment if found
     if ($attachmentKey) uploadAttachment($link, $attachmentKey, $folder, $defID);
-} catch (\mysqli_sql_exception $e) {
+} catch (mysqli_sql_exception $e) {
     $location = '';
     if (strpos($e->getMessage(), 'Duplicate entry') == false) {
         $msg = $link->escape_string($e->getMessage());
@@ -148,7 +148,7 @@ if ($location) {
     header("Location:$location");
 } else {
     print "
-        <p><a href='DisplayDefs.php?view=BART'>back to DisplayDefs</a></p>
+        <p><a href='defs.php?view=BART'>back to DisplayDefs</a></p>
         <p><a href='newBartDef.php'>back to newBartDef</a></p>";
 }
 exit();

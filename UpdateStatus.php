@@ -1,14 +1,14 @@
 <?php 
     include('session.php');
     include('SQLFunctions.php');
-    $link = f_sqlConnect();
-    $table = Status;
+    $table = 'status';
     $q = $_POST["q"];
     $title = "SVBX - Update Status Type";
-    $Loc = "SELECT Status FROM $table WHERE StatusID = ".$q;
+    $Loc = "SELECT StatusName FROM $table WHERE StatusID = ".$q;
     include('filestart.php');
+    $link = f_sqlConnect();
     
-    if($Role == 'U' OR $Role == 'V') {
+    if($Role <= 20) {
         header('location: unauthorised.php');
     }
 ?>
@@ -22,13 +22,13 @@
                 while ($stmt->fetch()) {
                     echo "
                         <div class='container'> 
-                            <FORM action='UpdateEvidenceCommit.php' method='POST'>
+                            <FORM action='UpdateStatusCommit.php' method='POST'>
                                 <input type='hidden' name='StatusID' value='".$q."'>
                                 <table class='table'>
                                     <tr class='usertr'>
-                                        <th class='userth'>Evidence Type Name:</th>
+                                        <th class='userth'>Status Name:</th>
                                         <td class='usertd'>
-                                            <input type='text' name='EviType' maxlength='50' required value='".$Status."'/>
+                                            <input type='text' name='StatusName' maxlength='50' required value='".$Status."'/>
                                         </td>
                                     </tr>
                                 </table>

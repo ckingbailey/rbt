@@ -10,22 +10,25 @@ EXAMPLE $fields ARRAY:
     ]
 ]
 */
-function printTableHeadings($fields, $authLvl) {
+function printTableHeadings($headers, $userLvl) {
     $thead = "<thead><tr>%s</tr></thead>";
     $th = "<th %s>%s</th>";
-    $headings = '';
-    foreach ($fields as $field) {
-        if (is_string($field)) {
-            $curHeading = sprintf($th, '', $field);
-        } elseif (is_array($field)) {
-            if ($field['auth'] && $authLvl < $field['auth']) continue;
-            $text = $field['text'];
-            $classList = returnClassList($field['classList']);
-            $curHeading = sprintf($th, $classList, $text);
-        }
-        $headings .= $curHeading;
+    $tHeadings = '';
+    foreach ($headers as $header) {
+        $header['auth'] = isset($header['auth']) ? $header['auth'] : 0;
+        if (is_string($header)) {
+            $tHeadings .= sprintf($th, '', $header);
+        } elseif (is_array($header)) {
+            if ($userLvl < $header['auth']) continue;
+            else {
+                $text = $header['text'];
+                $classList = isset($header['classList'])
+                    ? returnClassList($header['classList']) : '';
+                $tHeadings .= sprintf($th, $classList, $text);
+            }
+        } else $tHeadings .= sprintf($th, '', $text);
     }
-    printf($thead, $headings);
+    printf($thead, $tHeadings);
 }
 
 /*
@@ -37,32 +40,36 @@ function printTableHeadings($fields, $authLvl) {
 **   classList
 ** ISSUE: 'innerHtml' prop requires two %s args. It would be nice if I could detect # of args and fill them appropriately
 */
-function populateTable(&$res, $fields, $authLvl) {
+function populateTable(&$res, $cells, $userLvl) {
     $tbody = "<tbody>%s</tbody>";
     $tr = "<tr>%s</tr>";
     $td = "<td%s>%s</td>";
     $tableRows = '';
-    while($row = $res->fetch_row()) {
-        $i = 0;
-        $curRow = '';
-        $end = end(array_keys($fields));
-        foreach ($fields as $field) {
-            $datum = stripcslashes($i === $end ? $row[0] : $row[$i]);
-            if (is_string($field)) $curTd = sprintf($field, $datum);
-            elseif (is_array($field)) {
-                $curField = $field;
-                if ($curField['auth'] && $authLvl < $curField['auth']) continue;
-                // should factor this out into sep fcn and test for # %s args
-                // the only way to do this is with regex, yecch!
-                $innerHtml = $curField['innerHtml'] ? sprintf($curField['innerHtml'], $datum, $datum) : $datum;
-                $classList = returnClassList($curField['classList']);
-                $curTd = sprintf($td, $classList, $innerHtml);
+    foreach ($res as $row) {
+        $fields = '';
+        foreach ($cells as $col => $cell) {
+            if ($col === 'edit' || $col === 'delete') {
+                $val = stripcslashes($row['ID']);
+            } else {
+                $val = isset($row[$col])
+                    ? stripcslashes($row[$col]) : 'no data found';
             }
-            $curRow .= $curTd;
-            $i++;
+            if (is_string($cell)) $fields .= sprintf($cell, $val);
+            elseif (is_array($cell)) {
+                $cell['auth'] = isset($cell['auth'])
+                    ? $cell['auth'] : 0;
+                if ($userLvl < $cell['auth']) continue;
+                else {
+                    $innerHtml = isset($cell['innerHtml'])
+                        ? sprintf($cell['innerHtml'], $val, $val)
+                        : $val;
+                    $classList = isset($cell['classList'])
+                        ? returnClassList($cell['classList']) : '';
+                    $fields .= sprintf($td, $classList, $innerHtml);
+                }
+            } else $fields .= sprintf($td, '', $val);
         }
-        $curRow = sprintf($tr, $curRow);
-        $tableRows .= $curRow;
+        $tableRows .= sprintf($tr, $fields);
     }
     printf($tbody, $tableRows);
 }

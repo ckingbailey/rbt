@@ -12,9 +12,13 @@ $fieldList = file_get_contents('bartdl.sql');
 $fieldsArr = array_fill_keys(explode(',', $fieldList), '?');
 $fieldList = implode(',', array_keys($fieldsArr));
 
+include('filestart.php');
+
+$sql = "SELECT $fieldList FROM BARTDL WHERE id=$defID";
+
 $link = f_sqlConnect();
 
-if ($result = $link->query('SELECT bdPermit from users_enc where userID='.$_SESSION['UserID'])) {
+if ($result = $link->query('SELECT bdPermit from users_enc where userID='.$_SESSION['userID'])) {
     if ($row = $result->fetch_row()) {
         $bdPermit = $row[0];
     }
@@ -24,16 +28,12 @@ if ($result = $link->query('SELECT bdPermit from users_enc where userID='.$_SESS
 // copy elements from external file '/html_components/defComponents.php'
 $elements = $generalElements + $vtaElements + $bartElements;
 
-// query for attachments and render then as a list of links
+// query for attachments and append them to elements as a list of links
 $attachments = getAttachments($link, $defID);
 $attachmentList = renderAttachmentsAsAnchors($attachments);
 $elements['bartdlAttachments']['element'] =
     $elements['bartdlAttachments']['label']
     .sprintf($elements['bartdlAttachments']['element'], $attachmentList);
-
-include('filestart.php');
-
-$sql = "SELECT $fieldList FROM BARTDL WHERE id=$defID";
 
 if ($stmt = $link->prepare($sql)) {
     if ($stmt->execute()) {
@@ -49,7 +49,7 @@ if ($stmt = $link->prepare($sql)) {
 
 
         $stmt->close();
-        
+
         // query for comments associated with this Def
         $sql = "SELECT firstname, lastname, date_created, bdCommText
             FROM bartdlComments bdc
@@ -57,17 +57,17 @@ if ($stmt = $link->prepare($sql)) {
             ON bdc.userID=u.userID
             WHERE bartdlID=?
             ORDER BY date_created DESC";
-        
+
         if (!$stmt = $link->prepare($sql)) printSqlErrorAndExit($link, $sql);
-        
+
         if (!$stmt->bind_param('i', $defID)) printSqlErrorAndExit($stmt, $sql);
-        
+
         if (!$stmt->execute()) printSqlErrorAndExit($stmt, $sql);
-        
+
         $comments = stmtBindResultArray($stmt) ?: [];
-        
+
         $stmt->close();
-            
+
         $generalRows = [
             'row1' => [
                 'col1' => [
@@ -88,7 +88,7 @@ if ($stmt = $link->prepare($sql)) {
                 $elements['descriptive_title_vta']
             ]
         ];
-    
+
         $vtaRows = [
             'row1' => [ $elements['root_prob_vta'] ],
             'row2' => [ $elements['resolution_vta'] ],
@@ -112,7 +112,7 @@ if ($stmt = $link->prepare($sql)) {
                     ]                    ]
             ]
         ];
-    
+
         $bartRows = [
             'row1' => [ $elements['id_bart'] ],
             'row2' => [ $elements['description_bart'] ],
@@ -151,13 +151,13 @@ if ($stmt = $link->prepare($sql)) {
                     foreach ($bartRows as $gridRow) {
                         print returnRow($gridRow);
                     }
-                    
+
         echo "
                     <h5 class='grey-bg pad'>Comments</h5>";
                     print returnRow([ $elements['bdCommText'] ], [ 'colWd' => 8 ]);
                     foreach ($comments as $comment) {
                         $timestamp = strtotime($comment['date_created']) - (60 * 60 * 7);
-                        
+
                         printf(
                             $commentFormat,
                             $comment['firstname'].' '.$comment['lastname'],

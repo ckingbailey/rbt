@@ -19,9 +19,9 @@ function returnSelectInput($data) {
             }
             $result->close();
         } elseif (is_array($result)) {
-            foreach ($result as $option) {
-                $selected = $option == $value ? ' selected' : '';
-                $curOpt = sprintf($optionFormat, $option, $selected, $option);
+            foreach ($result as $optVal => $optText) {
+                $selected = $optVal === $value ? ' selected' : '';
+                $curOpt = sprintf($optionFormat, $optVal, $selected, $optText);
                 $optionEls .= $curOpt;
             }
         }

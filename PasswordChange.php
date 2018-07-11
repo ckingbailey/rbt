@@ -2,7 +2,7 @@
 
 include('session.php');
 session_start();
-$Username = $_POST['Username'];
+$Username = $_POST['username'];
 $oldpw = ($_POST['oldpw']);
 $newpw = ($_POST['newpw']);
 
@@ -24,7 +24,7 @@ elseif ($_POST['newpw'] <> $_POST['conpw'])
     $message = "Your new passwords do not match";
 }
 elseif(!empty($_POST)) {
-    $UserID = $_POST['UserID'];
+    $UserID = $_POST['userID'];
     $oldpwd = filter_var($_POST['oldpw'], FILTER_SANITIZE_STRING);
     $newpwd = filter_var($_POST['newpw'], FILTER_SANITIZE_STRING);
     
@@ -54,7 +54,7 @@ elseif(!empty($_POST)) {
                             users_enc 
                         SET 
                             Password = '$new_pwd'
-                            ,Updated_by = '$Username'
+                            ,updatedBy = '$Username'
                             ,LastUpdated = NOW()
                         WHERE 
                             Username = '$Username'";
