@@ -130,13 +130,13 @@ try {
     
     // if INSERT succesful, prepare, upload, and INSERT photo
     if ($def_pics) {
-        $sql = "INSERT def_pics (defID, pathToFile) values (?, ?)";
+        $sql = "INSERT def_pics (defID, pathToFile, uploadedBy) values (?, ?, ?)";
         
         $pathToFile = $link->escape_string(saveImgToServer($_FILES['def_pics'], $defID));
         if ($pathToFile) {
             if (!$stmt = $link->prepare($sql)) throw new Exception($link->error);
             
-            if (!$stmt->bind_param('is', $defID, $pathToFile)) throw new mysqli_sql_exception($stmt->error);
+            if (!$stmt->bind_param('isi', $defID, $pathToFile, $userID)) throw new mysqli_sql_exception($stmt->error);
             
             if (!$stmt->execute()) throw new mysqli_sql_exception($stmt->error);
             
@@ -145,14 +145,10 @@ try {
     }
     
     // if comment submitted commit it to a separate table
-    if (strlen($defCommentText)) {
-        $sql = "INSERT def_comments (defID, defCommentText, userID) VALUES (?, ?, ?)";
-        $commentText = filter_var(
-            filter_var(
-                $defCommentText,
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_NO_ENCODE_QUOTES
-            ), FILTER_SANITIZE_SPECIAL_CHARS);
+    if (!empty($defCommentText)) {
+        $sql = "INSERT def_comments (defID, defCommentText, dateCreated, createdBy) VALUES (?, ?, NOW(), ?)";
+        $commentText = filter_var($defCommentText, FILTER_SANITIZE_SPECIAL_CHARS);
+        $commentText = $link->escape_string($commentText);
         if (!$stmt = $link->prepare($sql)) throw new Exception($link->error);
         if (!$stmt->bind_param('isi',
             $defID,

@@ -43,9 +43,12 @@ try {
 
     $stmt->close();
 
-    $defStatus = $elements['status']['value'];
+    $res = $link->query('select statusName from status where statusID = ' . $elements['status']['value']);
+    while ($row = $res->fetch_assoc()) {
+        $defStatusName = $row['statusName'];
+    }
     // special options for Contractor level when Def is Open
-    if ($role === 15 && $defStatus === 1) {
+    if ($role === 15 && stripos($defStatusName, 'open') !== false) {
         $elements['status']['query'] = [ 1 => 'Open', 4 => 'Request closure' ];
     }
 
@@ -151,7 +154,7 @@ try {
         ]
     ];
     
-    $color = ($defStatus === 1 ? "bg-red " : "bg-success ") . "text-white";
+    $color = (stripos($defStatusName, 'open') !== false ? "bg-red " : "bg-success ") . "text-white";
 
     // initialize twig
     $loader = new Twig_Loader_Filesystem("$baseDir/templates");
@@ -240,7 +243,7 @@ try {
                     <div class='col-12 center-content'>";
                     // if Def is not Closed, show submit btn
                     // if Def is Closed, show "Re-open" btn
-                    if ($defStatus !== 2) {
+                    if (stripos($defStatusName, 'open') !== false) {
                         echo "
                             <button type='submit' class='btn btn-primary btn-lg'>Submit</button>
                             <button type='reset' class='btn btn-primary btn-lg'>Reset</button>";

@@ -344,143 +344,55 @@ if(!empty($_GET['search'])) {
 } else {
     $get = null;
 }
-/*
-?>
-<header class="container page-header">
-    <h1 class="page-title">Deficiencies</h1>
-    <?php
-        $btnSelected = 'btn-light border-dark-blue box-shadow-blue';
-        $btnNotSelected = 'btn-secondary text-white';
-        list($bartBtn, $projBtn) = $view === 'BART'
-            ? [$btnSelected, $btnNotSelected]
-            : [$btnNotSelected, $btnSelected];
-        if ($bartPermit) {
-            echo "
-                <div class='row'>
-                    <div class='col-12 d-flex'>
-                        <a href='defs.php' class='btn $projBtn flex-grow item-margin-right text-wrap'>Project deficiencies</a>
-                        <a href='defs.php?view=BART' class='btn $bartBtn flex-grow item-margin-right text-wrap'>BART deficiencies</a>
-                    </div>
-                </div>
-            ";
-        }
-    ?>
-</header>
-<main class='container main-content'>
-<?php*/
     // render Project Defs table and Search Fields
-    if ($view !== 'BART' || !$bartPermit) {
-        try {
-            // printSearchBar($link, $get, ['method' => 'GET', 'action' => 'defs.php']);
-        } catch (Exception $e) {
-            echo "<h1 id='searchBarCatch' style='color: #fa0;'>print search bar got issues: {$e}</h1>";
-        }
-
-        // printInfoBox($role, 'NewDef.php');
-
-        try {
-            $fields = [
-                "c.defID AS ID",
-                "l.locationName AS location",
-                "s.severityName AS severity",
-                "DATE_FORMAT(c.dateCreated, '%d %b %Y') AS dateCreated",
-                "t.statusName AS status",
-                "y.systemName AS systemAffected",
-                "SUBSTR(c.description, 1, 50) AS description",
-                "c.specLoc AS specLoc",
-                "c.lastUpdated AS lastUpdated"
-            ];
-            $joins = [
-                "location l" => "c.location = l.locationID",
-                "severity s" => "c.severity = s.severityID",
-                "status t" => "c.status = t.statusID",
-                "system y" => "c.systemAffected = y.systemID"
-            ];
-            foreach ($joins as $tableName => $on) {
-                $link->join($tableName, $on, 'LEFT');
-            }
-
-            if ($get) {
-                foreach ($get as $param => $val) {
-                    if ($param === 'description') $link->where($param, "%{$val}%", 'LIKE');
-                    else $link->where($param, $val);
-                }
-            }
-
-            $link->orderBy('ID', 'ASC');
-            $link->where('c.status', 3, '<>');
-            
-            $context['data'] = $result = $link->get("$table c", 100, $fields);
-            $template->display($context);
-            // printProjectDefsTable($result, $_SESSION['role']);
-        } catch (Twig_Error $e) {
-            echo $e->getTemplateLine . ' ' . $e->getRawMessage();
-        } catch (Exception $e) {
-            echo $e->getMessage();
-        }
-    } elseif ($bartPermit) {
-        $statusSql = "SELECT COUNT(CASE WHEN s.statusName='open' THEN 1
-            ELSE NULL END) AS statusOpen,
-            COUNT(CASE WHEN s.statusName='closed' THEN 1
-            ELSE NULL END) AS statusClosed
-            FROM BARTDL b JOIN status s
-            ON b.status=s.statusID";
-
-        // get status data for data graphic (in script tag below)
-        try {
-            if (!$statusData = $link->query($statusSql)[0])
-                throw new mysqli_sql_exception("There was a problem retrieving status data");
-        } catch (Exception $e) {
-            echo "<h1 style='color: #b82;'>{$e->getMessage()}</h1>";
-        }
-
-        printInfoBox($role, 'newBartDef.php', 1);
-
-        try {
-            $fields = [
-                'ID',
-                's.statusName as status',
-                'date_created',
-                'SUBSTR(descriptive_title_vta, 1, 132) AS descriptive_title_vta',
-                'SUBSTR(resolution_vta, 1, 132) AS resolution_vta',
-                'n.nextStepName AS next_step'
-            ];
-            $joins = [
-                'status s' => 'b.status = s.statusID',
-                'bdNextStep n' => 'b.next_step = n.bdNextStepID'
-            ];
-
-            foreach ($joins as $tableName => $on) {
-                $link->join($tableName, $on, 'LEFT');
-            }
-            $link->orderBy('ID', 'ASC');
-            $res = $link->get('BARTDL b', null, $fields);
-            printBartDefsTable($res, $bartPermit);
-        } catch (Exception $e) {
-            echo "<h1 style='color: #b82;'>{$e->getMessage()}</h1>";
-        }
+    try {
+        // printSearchBar($link, $get, ['method' => 'GET', 'action' => 'defs.php']);
+    } catch (Exception $e) {
+        echo "<h1 id='searchBarCatch' style='color: #fa0;'>print search bar got issues: {$e}</h1>";
     }
-    // echo "</main>";
-    // // script tags will eventually go elsewhere once Twig is fully implemented
-    // echo "
-    //     <script src='https://d3js.org/d3.v5.js'></script>
-    //     <script src='js/pie_chart.js'></script>
-    //     <script>
-    //         function resetSearch(ev) {
-    //             ev.target.form.reset();
-    //             ev.target.form.submit();
-    //         }";
-    //     if ($view === 'BART' && $bartPermit) {
-    //         echo "
-    //             const openCloseChart = new PieChart(
-    //                 window.d3,
-    //                 'dataContainer',
-    //                 { open: '{$statusData['statusOpen']}', closed: '{$statusData['statusClosed']}' },
-    //                 { red: 'var(--red)', green: 'var(--green)' });
-    //             openCloseChart.draw();";
-    //     }
-    // echo "</script>";
+
+    // printInfoBox($role, 'NewDef.php');
+
+    try {
+        $fields = [
+            "c.defID AS ID",
+            "l.locationName AS location",
+            "s.severityName AS severity",
+            "DATE_FORMAT(c.dateCreated, '%d %b %Y') AS dateCreated",
+            "t.statusName AS status",
+            "y.systemName AS systemAffected",
+            "SUBSTR(c.description, 1, 50) AS description",
+            "c.specLoc AS specLoc",
+            "c.lastUpdated AS lastUpdated"
+        ];
+        $joins = [
+            "location l" => "c.location = l.locationID",
+            "severity s" => "c.severity = s.severityID",
+            "status t" => "c.status = t.statusID",
+            "system y" => "c.systemAffected = y.systemID"
+        ];
+        foreach ($joins as $tableName => $on) {
+            $link->join($tableName, $on, 'LEFT');
+        }
+
+        if ($get) {
+            foreach ($get as $param => $val) {
+                if ($param === 'description') $link->where($param, "%{$val}%", 'LIKE');
+                else $link->where($param, $val);
+            }
+        }
+
+        $link->orderBy('ID', 'ASC');
+        $link->where('c.status', 'closed', '<>');
+        
+        $context['data'] = $result = $link->get("$table c", null, $fields);
+        $template->display($context);
+        // printProjectDefsTable($result, $_SESSION['role']);
+    } catch (Twig_Error $e) {
+        echo $e->getTemplateLine . ' ' . $e->getRawMessage();
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
 
 $link->disconnect();
 
-// include 'fileend.php';

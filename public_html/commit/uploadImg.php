@@ -71,7 +71,7 @@ function saveImgToServer($file, $assocID = null) {
             } else {
                 $new_h = $max_dim;
                 $scale = $cur_h / 320;
-                $new_w = $cur_w * scale;
+                $new_w = $cur_w * $scale;
             }
 
             if ($imgResized = smart_resize_image(

@@ -46,7 +46,7 @@ $requiredRows = [
     ],
     [
         'options' => [ 'inline' => true ],
-        $elements['requiredFor'],
+        $elements['milestone'],
         $elements['contract']
     ],
     [

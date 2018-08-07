@@ -96,7 +96,7 @@ try {
         $commentData = [
             'defID' => $defID,
             'defCommentText' => filter_var($defCommentText, FILTER_SANITIZE_SPECIAL_CHARS),
-            'dateCreated' => "NOW()",
+            'dateCreated' => date('Y-m-d H:i:s'),
             'createdBy' => $userID
         ];
 
