@@ -187,7 +187,7 @@ $requiredElements = [
         "tagName" => "select",
         "element" => "<select name='status' id='status' class='form-control' required>%s</select>",
         "type" => null,
-        "query" => "SELECT StatusID, StatusName FROM status WHERE (StatusID <> 3 AND StatusID <> 4) ORDER BY StatusID",
+        "query" => "SELECT StatusID, StatusName FROM status ORDER BY StatusID",
         'value' => ''
     ],
     'severity' => [

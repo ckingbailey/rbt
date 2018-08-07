@@ -4,6 +4,8 @@ require_once "$baseDir/vendor/autoload.php";
 require_once 'sql_functions/sqlFunctions.php';
 require 'session.php';
 
+$_SESSION['timeout'] = time();
+
 try {
     // set default redirect location to login page
     $redirectUrl = '/login.php';
@@ -63,7 +65,6 @@ try {
 } catch (Exception $e) {
     $_SESSION['errorMsg'] = "There was a problem with login: {$e->getMessage()}";
 } finally {
-    header("Location: $redirectUrl");
     $link->disconnect();
-    exit;
+    header("Location: $redirectUrl");
 }

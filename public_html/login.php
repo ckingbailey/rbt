@@ -1,15 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang='en'>
 <?php
 $baseDir = $_SERVER['DOCUMENT_ROOT'] . '/..';
 require "$baseDir/vendor/autoload.php";
 require "$baseDir/inc/session.php";
 require_once "$baseDir/config.php";
-
-if (!empty($_SESSION['errorMsg'])) {
-  $errorMsg = $_SESSION['errorMsg'];
-  unset($_SESSION['errorMsg']);
-}
 
 $title = PROJECT_NAME . ' - Login';
 // if user is already logged in, set navbarHeading to their name and display a warning
@@ -18,7 +13,14 @@ $navbarHeading = !empty($_SESSION['username'])
       ? $_SESSION['firstname'] . ' ' . $_SESSION['lastname']
       : $_SESSION['username'] )
   : '';
-$errorMsg = $navbarHeading ? 'User is already logged in' : '';
+
+if (!empty($_SESSION['errorMsg'])) {
+  $errorMsg = $_SESSION['errorMsg'];
+  unset($_SESSION['errorMsg']);
+} elseif (!empty($navbarHeading)) {
+  $errorMsg = 'User is already logged in';  
+}
+
 // if user is not logged in do not display any navitems
 $navItems = !empty($navbarHeading) ? '' : [];
 
@@ -48,7 +50,6 @@ $twig->display('head.html.twig', [ 'title' => $title ]);
                 <div class='thin-grey-border bg-yellow pad'>
                     <p class='mt-0 mb-0'>$errorMsg</p>
                 </div>";
-            unset($errorMsg);
           }
         ?>
         <form action="commit/loginSubmit.php" method="post">
@@ -64,4 +65,5 @@ $twig->display('head.html.twig', [ 'title' => $title ]);
         </form>
       </div>
     </main>
-<?php include('fileend.php'); ?>
+<?php
+include('fileend.php');
