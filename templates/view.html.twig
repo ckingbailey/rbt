@@ -1,0 +1,11 @@
+{% extends "card.html.twig" %}
+
+{% block breadcrumb %}
+    <a href='/{{ backto }}'>&#10094; Back to list of items</a>
+{% endblock %}
+
+{% block cardBody %}
+    {% for name, value in data %}
+        <p class='item-border-bottom mt-2 mb-0 pb-3'><span class='h5 mr-3'>{{ name }}</span>{{ value }}</p>
+    {% endfor %}
+{% endblock %}

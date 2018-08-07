@@ -1,0 +1,18 @@
+{% extends 'card.html.twig' %}
+
+{% block breadcrumb %}
+    {% if backto %}
+        <a href='/{{ backto }}'>&#10094; Back to list of items</a>
+    {% endif %}
+{% endblock %}
+{% block cardBody %}
+    <form action='{{ formTarget }}' method='POST' enctype='multipart/form-data' onsubmit=''>
+        <input type='hidden' name='target' value='{{ tableName }}'>
+        <input type='hidden' name='id' value='{{ id }}'>
+        {% for element in formCtrls %}
+            {{ element|raw }}
+        {% endfor %}
+        <button type='submit' class='btn btn-primary btn-lg'>Submit</button>
+        <button type='reset' class='btn btn-primary btn-lg'>Reset</button>
+    </form>
+{% endblock %}
