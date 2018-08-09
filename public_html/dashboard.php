@@ -46,9 +46,9 @@ $cards = [
 ];
 $queries = [
   'status' => 'SELECT S.StatusName as name, COUNT(D.Status) as count FROM deficiency D LEFT JOIN status S ON D.Status=S.StatusID GROUP BY StatusName ORDER BY StatusID',
-  'severity' => 'SELECT S.SeverityName as name, COUNT(D.Severity) as count FROM deficiency D LEFT JOIN severity S ON D.Severity=S.SeverityID WHERE D.Status=1 GROUP BY SeverityName ORDER BY S.SeverityName',
-  'system' => 'SELECT S.SystemName as name, COUNT(D.Status) as count FROM deficiency D LEFT JOIN system S ON D.GroupToResolve=S.SystemID WHERE D.Status=1 GROUP BY SystemName ORDER BY S.SystemName',
-  'location' => 'SELECT L.LocationName as name, COUNT(D.Status) as count FROM deficiency D LEFT JOIN location L ON L.LocationID=D.Location WHERE Status = 1 GROUP BY LocationName ORDER BY L.LocationName'
+  'severity' => "select s.severityName as name, count(d.severity) as count from deficiency d join severity s on d.severity = s.severityID left join status st on d.status = st.statusid where statusName = 'open' group by d.severity",
+  'system' => "select sy.systemName as name, count(d.systemAffected) as count from deficiency d join system sy on d.systemAffected = sy.systemID left join status s on d.status = s.statusID where statusName = 'open' group by d.systemAffected",
+  'location' => "select l.locationName as name, count(d.location) as count from deficiency d join location l on d.location = l.locationID left join status s on d.status = s.statusID where statusName = 'open' group by d.location"
 ];
 
 function writeDashCard($count, array $res, $card) {
