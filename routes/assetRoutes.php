@@ -133,10 +133,16 @@ function getAssetData($route) {
             return $row;
         }, $result);
         
+        $keys = array_keys($tableStructure);
+        $tableHeadings = array_reduce($keys, function($acc, $key) use ($tableStructure) {
+            $acc[$key] = $tableStructure[$key]['heading'];
+            return $acc;
+        }, []);
+        
         $context = [
             'cardHeading' => 'Click on an asset number to see details',
             'data' => $data,
-            'tableHeadings' => array_column($tableStructure, 'heading'),
+            'tableHeadings' => $tableHeadings,
             'addPath' => "assets.php/add",
             'info' => "Click on an asset ID to see details"
         ];

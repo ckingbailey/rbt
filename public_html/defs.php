@@ -62,29 +62,6 @@ try {
     exit;
 }
 
-function printInfoBox($role, $href, $dataGraphic = false) {
-    $dataContainer = $dataGraphic
-        ? "<div class='row mb-3'><div id='dataContainer' class='col-md-4 offset-md-4 d-flex flex-row flex-wrap justify-content-start'></div></div>"
-        : '';
-    $box ="
-        <div class='card item-margin-bottom'>
-            <div class='card-body grey-bg'>
-                $dataContainer
-                <div class='row'>
-                    <div class='col-12 d-flex flex-row flex-wrap justify-content-between align-items-center'>
-                        <span class='mb-2'>Click Deficiency ID number to see full details</span>
-                        %s
-                    </div>
-                </div>
-            </div>
-        </div>";
-    $btn = $role > 10 ? "<a href='%s' class='btn btn-primary'>Add New Deficiency</a>" : '';
-
-    $box = sprintf($box, $btn);
-
-    return printf($box, $href);
-}
-
 function printSearchBar($link, $get, $formAction) {
     list($collapsed, $show) = isset($get['search']) ? ['', ' show'] : ['collapsed', ''];
     $marker = '%s';
@@ -216,125 +193,6 @@ function printSearchBar($link, $get, $formAction) {
     print $form;
 }
 
-function printDefsTable($result, $tableElements, $userLvl) {
-    // echo "<pre style='color: #39d;'>";
-    // var_dump($result);
-    // echo "</pre>";
-    if (count($result)) {
-        $keys = array_keys($tableElements);
-        $headers = array_combine(
-            $keys, array_column($tableElements, 'header')
-        );
-        $cells = array_combine(
-            $keys, array_column($tableElements, 'cell')
-        );
-        echo "<table class='table table-striped table-responsive svbx-table'>";
-        printTableHeadings($headers, $userLvl);
-        populateTable($result, $cells, $userLvl);
-        echo "</table>";
-    } else
-        print "<h4 class='text-secondary text-center'>No results found for your search</h4>";
-}
-
-function printProjectDefsTable($result, $userLvl) {
-    $tdClassList = 'svbx-td';
-    $thClassList = 'svbx-th';
-    $collapseXs = 'collapse-xs';
-    $collapseSm = 'collapse-sm collapse-xs';
-    $collapseMd = 'collapse-md  collapse-sm collapse-xs';
-    $tableElements = [
-        'ID' => [
-            'header' => [ 'text' => 'ID', 'classList' => $thClassList ],
-            'cell' => [ 'classList' => $tdClassList, 'innerHtml' => "<a href='viewDef.php?defID=%s'>%s</a>" ]
-        ],
-        'location' => [
-            'header' => [ 'text' => 'Location', 'classList' => "$thClassList $collapseSm" ],
-            'cell' => [ 'classList' => "$tdClassList $collapseSm" ]
-        ],
-        'severity' => [
-            'header' => [ 'text' => 'Severity', 'classList' => "$thClassList $collapseXs" ],
-            'cell' => [ 'classList' => "$tdClassList $collapseXs" ]
-        ],
-        'dateCreated' => [
-            'header' => [ 'text' => 'Date Created', 'classList' => "$thClassList $collapseMd" ],
-            'cell' => [ 'classList' => "$tdClassList $collapseMd" ]
-        ],
-        'status' => [
-            'header' => [ 'text' => 'Status', 'classList' => $thClassList ],
-            'cell' => [ 'classList' => $tdClassList ]
-        ],
-        'systemAffected' => [
-            'header' => [ 'text' => 'System Affected', 'classList' => "$thClassList $collapseSm" ],
-            'cell' => [ 'classList' => "$tdClassList $collapseSm" ]
-        ],
-        'description' => [
-            'header' => [ 'text' => 'Brief Description', 'classList' => $thClassList ],
-            'cell' => [ 'classList' => $tdClassList ]
-        ],
-        'specLoc' => [
-            'header' =>  [ 'text' => 'Specific Location', 'classList' => "$thClassList $collapseMd" ],
-            'cell' => [ 'classList' => "$tdClassList $collapseMd" ]
-        ],
-        'lastUpdated' => [
-            'header' => [ 'auth' => 20, 'text' => 'Last Updated', 'classList' => "$thClassList $collapseMd" ],
-            'cell' => [ 'auth' => 20, 'classList' => "$tdClassList $collapseMd" ]
-        ],
-        'edit' => [
-            'header' => ['auth' => 15, 'text' => 'Edit', 'classList' => "$thClassList $collapseSm" ],
-            'cell' => [
-                'auth' => 15,
-                'classList' => "$tdClassList $collapseSm",
-                'innerHtml' => "<a id='updateDef%s' href='updateDef.php?defID=%s' class='btn btn-outline'><i class='typcn typcn-edit'></i></button>"
-            ]
-        ]
-    ];
-    printDefsTable($result, $tableElements, $userLvl);
-}
-
-function printBartDefsTable($result, $role) {
-    $thF = "<th class='%s'>%s</th>";
-    $tdClassList = 'svbx-td';
-    $thClassList = 'svbx-th';
-    $collapseXs = 'collapse-xs';
-    $collapseSm = 'collapse-sm collapse-xs';
-    $collapseMd = 'collapse-md  collapse-sm collapse-xs';
-    $tableElements = [
-        'ID' => [
-            'header' => [ 'text' => 'ID' ],
-            'cell' => [ 'innerHtml' => "<a href='viewDef.php?bartDefID=%s'>%s</a>" ]
-        ],
-        'status' => [
-            'header' => [ 'text' => 'Status' ],
-            'cell' => []
-        ],
-        'date_created' => [
-            'header' => [ 'text' => 'Date created' ],
-            'cell' => []
-        ],
-        'descriptive_title_vta' => [
-            'header' => [ 'text' => 'Description' ],
-            'cell' => []
-        ],
-        'resolution_vta' => [
-            'header' => [ 'text' => 'Resolution' ],
-            'cell' => []
-        ],
-        'next_step' => [
-            'header' => [ 'text' => 'Next step' ],
-            'cell' => []
-        ],
-        'edit' => [
-            'header' => [ 'text' => 'Edit', 'element' => sprintf($thF, "$thClassList $collapseSm", 'Edit')],
-            'cell' => [
-                'element' => sprintf("<td class='%s'><a id='updateDef%s'  href='updateBartDef.php?bartDefID=%s'><i class='typcn typcn-edit'></i></a></td>", "$thClassList $collapseSm", '%s', '%s'),
-                'innerHtml' => "<a id='updateDef%s' href='updateBartDef.php?bartDefID=%s' class='btn btn-outline'><i class='typcn typcn-edit'></i></button></form>"
-            ]
-        ]
-    ];
-
-    printDefsTable($result, $tableElements, $role);
-}
-
 // check for search params
 // if no search params show all defs that are not 'deleted'
 if(!empty($_GET['search'])) {
@@ -344,55 +202,53 @@ if(!empty($_GET['search'])) {
 } else {
     $get = null;
 }
-    // render Project Defs table and Search Fields
-    try {
-        // printSearchBar($link, $get, ['method' => 'GET', 'action' => 'defs.php']);
-    } catch (Exception $e) {
-        echo "<h1 id='searchBarCatch' style='color: #fa0;'>print search bar got issues: {$e}</h1>";
+// render Project Defs table and Search Fields
+try {
+    // printSearchBar($link, $get, ['method' => 'GET', 'action' => 'defs.php']);
+} catch (Exception $e) {
+    echo "<h1 id='searchBarCatch' style='color: #fa0;'>print search bar got issues: {$e}</h1>";
+}
+
+
+try {
+    $fields = [
+        "c.defID AS ID",
+        "l.locationName AS location",
+        "s.severityName AS severity",
+        "DATE_FORMAT(c.dateCreated, '%d %b %Y') AS dateCreated",
+        "t.statusName AS status",
+        "y.systemName AS systemAffected",
+        "SUBSTR(c.description, 1, 50) AS description",
+        "c.specLoc AS specLoc",
+        "c.lastUpdated AS lastUpdated"
+    ];
+    $joins = [
+        "location l" => "c.location = l.locationID",
+        "severity s" => "c.severity = s.severityID",
+        "status t" => "c.status = t.statusID",
+        "system y" => "c.systemAffected = y.systemID"
+    ];
+    foreach ($joins as $tableName => $on) {
+        $link->join($tableName, $on, 'LEFT');
     }
 
-    // printInfoBox($role, 'NewDef.php');
-
-    try {
-        $fields = [
-            "c.defID AS ID",
-            "l.locationName AS location",
-            "s.severityName AS severity",
-            "DATE_FORMAT(c.dateCreated, '%d %b %Y') AS dateCreated",
-            "t.statusName AS status",
-            "y.systemName AS systemAffected",
-            "SUBSTR(c.description, 1, 50) AS description",
-            "c.specLoc AS specLoc",
-            "c.lastUpdated AS lastUpdated"
-        ];
-        $joins = [
-            "location l" => "c.location = l.locationID",
-            "severity s" => "c.severity = s.severityID",
-            "status t" => "c.status = t.statusID",
-            "system y" => "c.systemAffected = y.systemID"
-        ];
-        foreach ($joins as $tableName => $on) {
-            $link->join($tableName, $on, 'LEFT');
+    if ($get) {
+        foreach ($get as $param => $val) {
+            if ($param === 'description') $link->where($param, "%{$val}%", 'LIKE');
+            else $link->where($param, $val);
         }
-
-        if ($get) {
-            foreach ($get as $param => $val) {
-                if ($param === 'description') $link->where($param, "%{$val}%", 'LIKE');
-                else $link->where($param, $val);
-            }
-        }
-
-        $link->orderBy('ID', 'ASC');
-        $link->where('c.status', 'closed', '<>');
-        
-        $context['data'] = $result = $link->get("$table c", null, $fields);
-        $template->display($context);
-        // printProjectDefsTable($result, $_SESSION['role']);
-    } catch (Twig_Error $e) {
-        echo $e->getTemplateLine . ' ' . $e->getRawMessage();
-    } catch (Exception $e) {
-        echo $e->getMessage();
     }
+
+    $link->orderBy('ID', 'ASC');
+    $link->where('c.status', 'closed', '<>');
+    
+    $context['data'] = $result = $link->get("$table c", null, $fields);
+    $template->display($context);
+} catch (Twig_Error $e) {
+    echo $e->getTemplateLine . ' ' . $e->getRawMessage();
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
 
 $link->disconnect();
 

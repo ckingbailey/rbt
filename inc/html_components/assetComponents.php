@@ -27,7 +27,7 @@ $tableStructure = [
         'href' => '/assets.php/view?assetID=', // concat this with value of assetID
         'heading' => [
             'value' => 'ID',
-            'cellWd' => 2
+            'cellWd' => 1
         ]
     ],
     'assetTag' => [
@@ -35,21 +35,21 @@ $tableStructure = [
         'heading' => [
             'value' => 'Tag #',
             'collapse' => 'xs',
-            'cellWd' => 4
+            'cellWd' => 3
         ]
     ],
     'compName' => [
         'value' => '',
         'heading' => [
             'value' => 'Component',
-            'cellWd' => 4
+            'cellWd' => 3
         ]
     ],
     'locationName' => [
         'value' => '',
         'heading' => [
             'value' => 'Location',
-            'cellWd' => 4
+            'cellWd' => 3
         ]
     ],
     'installed' => [
@@ -73,7 +73,7 @@ $tableStructure = [
         'heading' => [
             'value' => 'Edit',
             'collapse' => 'xs',
-            'cellWd' => 2
+            'cellWd' => 1
         ]
     ]
 ];
