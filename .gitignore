@@ -20,7 +20,6 @@ php_errors.log
 webColors.json
 
 # binaries
-img_uploads
 uploads
 
 # db backups
