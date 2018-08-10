@@ -1,0 +1,7 @@
+{% macro concatStyles(styleList) %}
+    style='styleList'
+{% endmacro %}
+
+{% macro concatClasses(classList) %}
+    class='{{ classList }}'
+{% endmacro %}

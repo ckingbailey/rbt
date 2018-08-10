@@ -1,0 +1,16 @@
+{% extends "page.html.twig" %}
+
+{% block breadcrumb %}
+{% endblock %}
+{% block content %}
+    <div class="card item-margin-bottom no-border-radius box-shadow">
+        <div class="card-body pad-more">
+            {% if cardHeading %}
+                <h4 class="text-secondary">{{ cardHeading }}</h4>
+                <hr class="thick-grey-line">
+            {% endif %}
+            {% block cardBody %}
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

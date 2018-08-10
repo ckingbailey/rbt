@@ -12,7 +12,7 @@
         {% set extraWd = 12 % (cols|length) %}
         {% set end = cols|keys|last %}
         {% for key, content in cols if not key is same as ('href') %}
-            {% set wd = key is same as (end) ? wd + extra : colWd %}
+            {% set wd = key is same as (end) ? wd + extraWd : colWd %}
             <div class='col-{{ wd }}'>
                 {% if key is same as ('name') %}
                     <a href='{{ cols.href }}'>{{ content }}</a>

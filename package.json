@@ -1,26 +1,28 @@
 {
-  "name": "svbx",
+  "name": "redbirdtrust",
   "version": "0.1.0",
   "description": "report and display deficiency data",
   "main": "index.php",
-  "dependencies": {
-    "d3": "^5.0.0"
+  "dependencies": {},
+  "devDependencies": {
+    "db-migrate": "^0.11.1",
+    "db-migrate-mysql": "^1.1.10",
+    "mysql": "^2.16.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rob1st/VTA.git"
+    "url": "git+https://github.com/ckingbailey/rbt"
   },
   "keywords": [
-    "svbx"
+    "redbirdtrust"
   ],
-  "author": "rob1st",
+  "author": "ckb",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/rob1st/VTA/issues"
+    "url": "https://github.com/ckingbailey/rbt"
   },
-  "homepage": "https://github.com/rob1st/VTA#readme"
+  "homepage": "https://github.com/ckingbailey/rbt"
 }

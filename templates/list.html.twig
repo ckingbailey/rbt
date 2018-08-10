@@ -1,0 +1,37 @@
+{% extends "card.html.twig" %}
+
+{% from 'template_fcns/tablelikeRow.html' import tablelikeRow %}
+
+{% block breadcrumb %}
+    {% if backto %}
+        <a href='/{{ backto }}'>&#10094; Back to list of tables</a>
+    {% endif %}
+{% endblock %}
+
+{% block cardBody %}
+    {# data array expects:
+    ## 'name' => (string)
+    ## 'href' => (string)
+    #}
+    {% if tableHeadings is iterable and tableHeadings|length %}
+        <li class='row item-margin-bottom bg-secondary text-light pad'>
+            {{ tablelikeRow(tableHeadings) }}
+        </li>
+    {% endif %}
+    <ul class="pl-0 item-margin-bottom">
+        {% if data is iterable and data|length %}
+            {% for item in data %}
+                <li class="row item-margin-bottom">
+                    {{ tablelikeRow(item) }}
+                </li>
+            {% endfor %}
+        {% else %}
+            <h5 class='text-secondary text-center'>{{errorMsg}}</h5>
+        {% endif %}
+    </ul>
+    {% if addPath %}
+        <div class='center-content'>
+            <a href='/{{ addPath }}' class='btn btn-outline'>Add new {{ tableName }}</a>
+        </div>
+    {% endif %}
+{% endblock %}
