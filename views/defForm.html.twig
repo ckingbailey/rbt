@@ -1,0 +1,52 @@
+{% extends "../templates/form.html.twig" %}
+
+{% macro setOptions(name, displayName, data, selectedOption, required) %}
+    <option value={{}}>{{}}</option>
+{% endmacro %}
+
+{% block formControls %}
+    <h5 class="grey-bg pad">Required Information</h5>
+        <section class="container">
+            <div class="row item-margin-bottom">
+                <div class="col-md-6">
+                    <select name="location" class="form-control">
+                        {% for loc in data.location %}
+                            {% set selected = data.location.selected == loc.id
+                                ? ' selected="true"' : "" %}
+                            <option value="{{ loc.id }}"{{ selected }}>{{ loc.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" name="specLoc" maxlength="55" value="{{ data.specLoc }}" class="form-control" required />
+                </div>
+            </div>
+            <div class="row item-margin-bottom">
+                <div class="col-md-6">
+                    <select name="systemAffected" class="form-control">
+                        {% for sys in data.systemAffected %}
+                            {% set selected = data.systemAffected.selected == sys.id
+                                ? ' selected="true"' : "" %}
+                            <option value="{{ sys.id }}"{{ selected }}>{{ sys.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <select name="groupToResolve" class="form-control">
+                        {% for sys in data.groupToResolve %}
+                            {% set selected = data.groupToResolve.selected == sys.id
+                                ? ' selected="true"' : "" %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </section>
+    <h5 class="grey-bg pad">Optional Information</h5>
+    <h5 class="grey-bg pad">Closure Information</h5>
+    {% if attachments %}
+        <h5 class="grey-bg pad">Attachments</h5>
+    {% endif %}
+    {% if comments %}
+        <h5 class="grey-bg pad">Comments</h5>
+    {% endif %}
+{% endblock %}

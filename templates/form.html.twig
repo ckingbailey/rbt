@@ -4,11 +4,11 @@
     <form action='{{ formAction }}' onsubmit='{{ onSubmit }}'>
         {% block formControls %}
         {% endblock %}
-        {% block buttons %}
-            <div class='text-center'>
+        <div class='text-center'>
+            {% block buttons %}
                 <button type='submit' class='btn btn-primary btn-lg'>Submit</button>
                 <button type='reset' class='btn btn-primary btn-lg'>Reset</button>
-            </div>
-        {% endblock %}
+            {% endblock %}
+        </div>
     </form>
 {% endblock %}
