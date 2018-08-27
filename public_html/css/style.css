@@ -1,5 +1,17 @@
 @import '../assets/typicons-font/src/font/typicons.css';
 
+/* Crosslinx colors:
+$cx_black:#231F20;
+$cx_orange:#ff5c0a;
+$cx_white:#fff;
+$cx_green: #82C341;
+$cx_black_light: #2B2B2B;
+$cx_grey: #DDDDDD;
+$cx_grey_dark: #2B2B2B;
+$cx_grey_light: #494848;
+$cx_form_grey: #C5C7C8;
+*/
+
 :root {
     /* Bootsrap breakpoints */
     --breakpoint-xs: 0;
