@@ -241,6 +241,46 @@
             </div>
         </section>
     <h5 class="grey-bg pad">Closure Information</h5>
+        <section class="item-margin-bottom">
+            <div class="row item-margin-bottom">
+                <div id="container_select_eviType" class="col-md-4">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label for="evidenceType">Evidence type</label>
+                        </div>
+                        <div class="col-md-6">
+                            {{forms.select("evidenceType", selectOptions.evidenceType, defData.evidenceType)}}
+                        </div>
+                    </div>
+                </div>
+                <div id="container_select_docRepo" class="col-md-4">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label for="documentRepo">Repository</label>
+                        </div>
+                        <div class="col-md-6">
+                            {{forms.select("documentRepo", selectOptions.documentRepo, defData.documentRepo)}}
+                        </div>
+                    </div>
+                </div>
+                <div id="container_text_eviLink" class="col-md-4">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label for="evidenceLink">Repo link</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input name="evidenceLink" type="text" maxlength="255" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row item-margin-bottom">
+                <div id="container_textarea_closeComment" class="col-md-6 offset-md-3">
+                    <label for="closureComments">Closure comments</label>
+                    <textarea name="closureComments" maxlength="1000" class="form-control">{{defData.closureComments}}</textarea>
+                </div>
+            </div>
+        </section>
     {% if attachments %}
         <h5 class="grey-bg pad">Attachments</h5>
     {% endif %}
