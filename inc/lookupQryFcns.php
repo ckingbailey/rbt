@@ -5,7 +5,7 @@ require_once 'utils.php';
 
 /* queries database for list of records for table name passed as arg
 **  @param string $table = name of table to get records from
-**  @param MysqliDb $link = db link object from joshcam's MySqliDB library
+**  @param MysqliDb $link = db link object from joshcam's MySqliDb library
 **  @return array $data = array of rows--as arrays--returned from query
 */
 function queryLookupTable($tableName, $action, &$link, $id = null) {

@@ -3,7 +3,7 @@ use Mailgun\Mailgun;
 
 $baseDir = $_SERVER['DOCUMENT_ROOT'] . '/..';
 require $baseDir . '/vendor/autoload.php';
-require 'sqlFunctions.php';
+// require 'sqlFunctions.php';
 require 'uploadImg.php';
 require 'session.php';
 
