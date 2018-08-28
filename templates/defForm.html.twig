@@ -25,7 +25,7 @@
 {% block formControls %}
     <h5 class="grey-bg pad">Required Information</h5>
     {#<pre>{{dump(selectOptions)}}</pre>#}
-        <section class="container">
+        <section class="container item-margin-bottom">
             <div class="row item-margin-bottom">
                 <div id="container_select_location" class="col-md-6">
                     <div class="row item-margin-bottom">
@@ -121,7 +121,7 @@
                             <label for="identifiedBy" class="required">Identified by</label>
                         </div>
                         <div class="col-md-6">
-                            <input name="identifiedBy" type="text" class="form-control" required value="{{defData.identifiedBy}}" />
+                            <input name="identifiedBy" type="text" maxlength="51" class="form-control" value="{{defData.identifiedBy}}" required/>
                         </div>
                     </div>
                 </div>
@@ -162,26 +162,28 @@
                 <div id="container_select_milestone" class="col-md-6">
                     <div class="row item-margin-bottom">
                         <div class="col-md-6">
-                            <label></label>
+                            <label for="milestone" class="required">Required for</label>
                         </div>
                         <div class="col-md-6">
+                            {{forms.select("milestone", selectOptions.milestone, defData.milestone, true)}}
                         </div>
                     </div>
                 </div>
                 <div id="container_select_safeCert" class="col-md-6">
                     <div class="row item-margin-bottom">
                         <div class="col-md-6">
-                            <label></label>
+                            <label for="safetyCert">Safety cert</label>
                         </div>
                         <div class="col-md-6">
+                            {{forms.select("safetyCert", selectOptions.safetyCert, defData.safetyCert, true)}}
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row item-margin-bottom">
                 <div id="container_textarea_descrip" class="col-md-6 offset-md-3">
-                    <label></label>
-                    <textarea class="form-control"></textarea>
+                    <label for="description">Description</label>
+                    <textarea name="description" maxlength="1000" class="form-control" value="{{defData.description}}"></textarea>
                 </div>
             </div>
         </section>
