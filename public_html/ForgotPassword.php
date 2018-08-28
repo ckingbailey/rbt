@@ -1,5 +1,5 @@
 <?php
-include('sql_functions/sqlFunctions.php');
+include('sqlFunctions.php');
 $link = f_sqlConnect(); 
 
 $show = 'emailForm'; //which form step to show by default

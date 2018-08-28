@@ -1,5 +1,5 @@
 <?PHP
-    include('sql_functions/sqlFunctions.php');
+    include('sqlFunctions.php');
     session_start();
     $table = 'location';
     

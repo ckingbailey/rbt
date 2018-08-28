@@ -2,7 +2,7 @@
     $baseDir = $_SERVER['DOCUMENT_ROOT'] . '/..';
     require 'session.php';
     require_once $baseDir . '/vendor/autoload.php';
-    include 'sql_functions/sqlFunctions.php';
+    // include 'sqlFunctions.php';
     
     // init Twig
     $loader = new Twig_Loader_Filesystem("$baseDir/templates");

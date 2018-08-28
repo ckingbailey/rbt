@@ -1,5 +1,5 @@
 <?php
-require_once 'sql_functions/sqlFunctions.php';
+require_once 'sqlFunctions.php';
 require_once 'sql/assetSql.php';
 require_once 'html_components/assetComponents.php';
 // require 'symfony_forms_setup.php';

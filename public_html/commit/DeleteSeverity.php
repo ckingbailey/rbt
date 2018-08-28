@@ -1,6 +1,6 @@
 <?php
 include('session.php');
-include('sql_functions/sqlFunctions.php');
+include('sqlFunctions.php');
 
 if(!empty($_POST)) {
     $SevID = $_POST['q'];

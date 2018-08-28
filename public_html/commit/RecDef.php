@@ -1,7 +1,7 @@
 <?PHP
 session_start();
 $baseDir = $_SERVER['DOCUMENT_ROOT'] . '/..';
-include('sql_functions/sqlFunctions.php');
+include('sqlFunctions.php');
 include('uploadImg.php');
 $updateDefSql = file_get_contents("$baseDir/inc/sql/updateDef.sql");
 

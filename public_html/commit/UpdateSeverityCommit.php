@@ -1,5 +1,5 @@
 <?php
-include('sql_functions/sqlFunctions.php');
+include('sqlFunctions.php');
 include('session.php');
 
 if(!empty($_POST)) {

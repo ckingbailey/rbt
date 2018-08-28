@@ -1,5 +1,6 @@
 <?php  
 session_start();
+require 'sqlFunctions.php';
 
 $redirectPath = '/';
 $timeout = 180;

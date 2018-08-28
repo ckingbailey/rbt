@@ -1,6 +1,6 @@
 <?php
 include('session.php');
-include('sql_functions/sqlFunctions.php');
+include('sqlFunctions.php');
 
 $user = "SELECT Username FROM users_enc WHERE UserID = ".$AUserID;
 if($result=mysqli_query($link,$user)) {

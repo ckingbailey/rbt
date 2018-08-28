@@ -1,5 +1,5 @@
 <?php
-include('sql_functions/sqlFunctions.php');
+include('sqlFunctions.php');
 
 if(isset($_POST) & !empty($_POST)) {
     $Username = $_POST['username'];

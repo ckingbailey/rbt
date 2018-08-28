@@ -1,47 +1,150 @@
+{# @params
+##     selectOptions => []
+##     defData => []
+#}
 {% extends "../templates/form.html.twig" %}
+{% from _self import select %}
 
-{% macro setOptions(name, displayName, data, selectedOption, required) %}
-    <option value={{}}>{{}}</option>
+{% macro setOptions(options, selected) %}
+    {% for option in options %}
+        {% set selected = option.id == selected
+            ? " selected" : "" %}
+        <option value="{{option.id}}" class="form-control"{{selected}}>{{option.name}}</option>
+    {% endfor %}
+{% endmacro %}
+
+{% macro select(fieldName, options, selected, required) %}
+    {% set required = required ? " required" : '' %}
+    {{ forms.setOptions(fieldName, displayName, options, selected) }}
 {% endmacro %}
 
 {% block formControls %}
     <h5 class="grey-bg pad">Required Information</h5>
         <section class="container">
             <div class="row item-margin-bottom">
-                <div class="col-md-6">
-                    <select name="location" class="form-control">
-                        {% for loc in data.location %}
-                            {% set selected = data.location.selected == loc.id
-                                ? ' selected="true"' : "" %}
-                            <option value="{{ loc.id }}"{{ selected }}>{{ loc.name }}</option>
-                        {% endfor %}
-                    </select>
+                <div id="container_select_location" class="col-md-6">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label for="location">Location</label>
+                        </div>
+                        <div class="col-md-6">
+                            <select name="location" class="form-control">
+                                {% for loc in selectOptions.location %}
+                                    {% set selected = defData.location == loc.id
+                                        ? ' selected="true"' : "" %}
+                                    <option value="{{loc.id}}"{{selected}}>{{loc.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <input type="text" name="specLoc" maxlength="55" value="{{ data.specLoc }}" class="form-control" required />
+                <div id="container_text_specLoc" class="col-md-6">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label for="specLoc">Specific location</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" name="specLoc" maxlength="55" value="{{defData.specLoc}}" class="form-control" required />
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row item-margin-bottom">
-                <div class="col-md-6">
-                    <select name="systemAffected" class="form-control">
-                        {% for sys in data.systemAffected %}
-                            {% set selected = data.systemAffected.selected == sys.id
-                                ? ' selected="true"' : "" %}
-                            <option value="{{ sys.id }}"{{ selected }}>{{ sys.name }}</option>
-                        {% endfor %}
-                    </select>
+                <div id="container_select_status" class="col-md-6">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label for="status">Status</label>
+                        </div>
+                        <div class="col-md-6">
+                            <select name="status" class="form-control">
+                                {% for status in selectOptions.status %}
+                                    {% set selected = defData.status == status.id
+                                        ? ' selected' : '' %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <select name="groupToResolve" class="form-control">
-                        {% for sys in data.groupToResolve %}
-                            {% set selected = data.groupToResolve.selected == sys.id
-                                ? ' selected="true"' : "" %}
-                        {% endfor %}
-                    </select>
+                <div class="container_select_severity">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label for="severity">Severity</label>
+                        </div>
+                        <div class="col-md-6">
+                            <select name="severity" class="form-control">
+                                {{ forms.setOptions("severity", "Severity", selectOptions.severity, defData.severity) }}
+                            </select>
+                        </div>
+                    </div>
                 </div>
+            </div>
+            <div class="row item-margin-bottom">
+                <div id="container_select_systemAffected" class="col-md-6">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label for="systemAffected">System affected</label>
+                        </div>
+                        <div class="col-md-6">
+                            <select name="systemAffected" class="form-control">
+                                {% for sys in selectOptions.systemAffected %}
+                                    {% set selected = defData.systemAffected == sys.id
+                                        ? ' selected="true"' : "" %}
+                                    <option value="{{sys.id}}"{{selected}}>{{sys.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="container_select_groupToRes" class="col-md-6">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label for="groupToResolve">Group to resolve</label>
+                        </div>
+                        <div class="col-md-6">
+                            <select name="groupToResolve" class="form-control">
+                                {% for sys in selectOptions.groupToResolve %}
+                                    {% set selected = defData.groupToResolve == sys.id
+                                        ? ' selected' : "" %}
+                                    <option value="{{status.id}}"{{selected}}>{{status.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row item-margin-bottom">
+                <div id="container_text_identifiedBy">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label for="identifiedBy" class="required">Identified by</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" required value="{{defData.identifiedBy}}" />
+                        </div>
+                    </div>
+                </div>
+                <div id="container_date_dueDate">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label for="dueDate" class="required">To be resolved by</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="date" class="form-control" value="{{defData.dueDate}}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row item-margin-bottom">
+                <div id="container_select_defType"></div>
+                <div id="container_select_contract"></div>
             </div>
         </section>
     <h5 class="grey-bg pad">Optional Information</h5>
+        <div class="row item-margin-bottom">
+            <div id="container_input_spec" class="col-md-6">
+                <input name="spec" type="text" />
+            </div>
+        </div>
     <h5 class="grey-bg pad">Closure Information</h5>
     {% if attachments %}
         <h5 class="grey-bg pad">Attachments</h5>

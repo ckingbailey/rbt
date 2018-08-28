@@ -1,7 +1,7 @@
 <?php
 require_once 'session.php';
 require_once '../vendor/autoload.php';
-require_once 'sql_functions/sqlFunctions.php';
+require_once 'sqlFunctions.php';
 require_once '../routes/assetRoutes.php';
 
 include 'html_functions/htmlTables.php';

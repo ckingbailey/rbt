@@ -1,5 +1,5 @@
 <?php
-require_once 'sql_functions/sqlFunctions.php';
+require_once 'sqlFunctions.php';
 require_once '../inc/lookupQryFcns.php';
 
 $sql = $sqlStrings['listAll'];

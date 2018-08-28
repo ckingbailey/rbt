@@ -1,6 +1,6 @@
 <?php
 include('session.php');
-include('sql_functions/sqlFunctions.php');
+include('sqlFunctions.php');
 $table = 'users';
 $title = PROJECT_NAME . " - Display Users";
 include('filestart.php');

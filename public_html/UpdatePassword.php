@@ -6,7 +6,7 @@ $UserID = $_SESSION['userID'];
 $Username = $_SESSION['username'];
 $Role = $_SESSION['role'];
 
-include('sql_functions/sqlFunctions.php');
+include('sqlFunctions.php');
 
 $table = 'users';
 $Loc = "SELECT Username, Role, firstname, lastname, Email FROM $table WHERE UserID = ".$UserID;

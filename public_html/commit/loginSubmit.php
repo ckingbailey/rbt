@@ -1,7 +1,7 @@
 <?php
 $baseDir = $_SERVER['DOCUMENT_ROOT'] . '/..';
 require_once "$baseDir/vendor/autoload.php";
-require_once 'sql_functions/sqlFunctions.php';
+// require_once 'sqlFunctions.php';
 require 'session.php';
 
 $_SESSION['timeout'] = time();
@@ -55,8 +55,8 @@ try {
         $link->where('username', $result['username']);
         $link->update('users', ['lastLogin' => 'NOW()']);
 
-        if (!$result['secQ']) $redirectUrl = '/setSQ.php';
-        else $redirectUrl = '/dashboard.php';
+        // if (!$result['secQ']) $redirectUrl = '/setSQ.php';
+        $redirectUrl = '/dashboard.php';
     } else throw new UnexpectedValueException("Incorrect password");
 } catch (UnexpectedValueException $e) {
     $_SESSION['errorMsg'] = "There was a problem with the credentials you provided: {$e->getMessage()}";
@@ -65,6 +65,6 @@ try {
 } catch (Exception $e) {
     $_SESSION['errorMsg'] = "There was a problem with login: {$e->getMessage()}";
 } finally {
-    $link->disconnect();
+    if (is_a($link->disconnect(), MysqliDb)) $link->disconnect();
     header("Location: $redirectUrl");
 }

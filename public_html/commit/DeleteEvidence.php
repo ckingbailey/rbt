@@ -3,7 +3,7 @@ include('session.php');
 ?>
 
 <?php
-include('sql_functions/sqlFunctions.php');
+include('sqlFunctions.php');
 
 if(!empty($_POST)) {
     $EviTypeID = $_POST['q'];

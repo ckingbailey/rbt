@@ -1,7 +1,7 @@
 <?php
     $baseDir = $_SERVER['DOCUMENT_ROOT'] . '/..';
     require "$baseDir/inc/session.php";
-    require "$baseDir/inc/sql_functions/sqlFunctions.php";
+    require "$baseDir/inc/sqlFunctions.php";
     $table = 'users';
     $q = $_SESSION['userID'];
     $ARole = $_SESSION['role'];
