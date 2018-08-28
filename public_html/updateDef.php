@@ -213,7 +213,7 @@ try {
     // $color = (stripos($defStatusName, 'open') !== false ? "bg-red " : "bg-success ") . "text-white";
 
     // initialize twig
-    $loader = new Twig_Loader_Filesystem("$baseDir/views");
+    $loader = new Twig_Loader_Filesystem("$baseDir/templates");
     $twig = new Twig_Environment($loader);
     
     $twig->display('defForm.html.twig', [
