@@ -65,6 +65,6 @@ try {
 } catch (Exception $e) {
     $_SESSION['errorMsg'] = "There was a problem with login: {$e->getMessage()}";
 } finally {
-    if (is_a($link->disconnect(), MysqliDb)) $link->disconnect();
+    if (is_a($link->disconnect(), 'MysqliDb')) $link->disconnect();
     header("Location: $redirectUrl");
 }

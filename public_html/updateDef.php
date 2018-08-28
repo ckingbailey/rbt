@@ -214,13 +214,14 @@ try {
 
     // initialize twig
     $loader = new Twig_Loader_Filesystem("$baseDir/templates");
-    $twig = new Twig_Environment($loader);
+    $twig = new Twig_Environment($loader, [ 'debug' => true ]);
+    $twig->addExtension(new Twig_Extension_Debug());
     
     $twig->display('defForm.html.twig', [
         'title' => "Update def #$defID",
         'navbarHeading' => $userFullName,
         'pageHeading' => "Update deficiency $defID",
-        'selectOptions' => [],
+        'selectOptions' => $selectOptions,
         'defData' => $defData,
         'footerText' => "[placeholder]",
         'copyrightText' => "[copyrightPlaceholder]"
@@ -343,8 +344,7 @@ try {
 //         </script>";
 } catch (Exception $e) {
     print "Unable to retrieve record: {$e->getMessage()}";
-    exit;
 } finally {
-    $link->close();
-    include('fileend.php');
+    if (is_a($link, 'MysqliDb')) $link->disconnect();
+    // include('fileend.php');
 }
