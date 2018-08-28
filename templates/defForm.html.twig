@@ -183,33 +183,63 @@
             <div class="row item-margin-bottom">
                 <div id="container_textarea_descrip" class="col-md-6 offset-md-3">
                     <label for="description">Description</label>
-                    <textarea name="description" maxlength="1000" class="form-control" value="{{defData.description}}"></textarea>
+                    <textarea name="description" maxlength="1000" class="form-control">{{defData.description}}</textarea>
                 </div>
             </div>
         </section>
     <h5 class="grey-bg pad">Optional Information</h5>
-        <div class="row item-margin-bottom">
-            <div id="container_text_spec" class="col-md-6">
-                <div class="row item-margin-bottom">
-                    <div class="col-md-6">
-                        <label for="spec">Spec or Code</label>
+        <section class="item-margin-bottom">
+            <div class="row item-margin-bottom">
+                <div id="container_text_spec" class="col-md-6">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label for="spec">Spec or Code</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input name="spec" type="text" class="form-control" />
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <input name="spec" type="text" class="form-control" />
+                </div>
+                <div id="container_text_owner" class="col-md-6">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label for="actionOwner">Action owner</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input name="actionOwner" type="text" class="form-control" />
+                        </div>
                     </div>
                 </div>
             </div>
-            <div id="container_text_owner" class="col-md-6">
-                <div class="row item-margin-bottom">
-                    <div class="col-md-6">
-                        <label for="actionOwner">Action owner</label>
+            <div class="row item-margin-bottom">
+                <div id="container_text_oldID" class="col-md-6">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label for="oldID">Old ID</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input name="oldID" type="text" maxlength="50" class="form-control" value="{{defData.oldID}}" />
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <input name="actionOwner" type="text" class="form-control" />
+                </div>
+                <div id="container_file_attachment" class="col-md-6">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label for="attachment">Attach file</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input name="attachment" type="file" accept="image/*" class="form-control form-control-file" />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+            <div class="row item-margin-bottom">
+                <div id="container_textarea_comment" class="col-md-6 offset-md-3">
+                    <label for="comment">Comment</label>
+                    <textarea name="comment" maxlength="1000" class="form-control"></textarea>
+                </div>
+            </div>
+        </section>
     <h5 class="grey-bg pad">Closure Information</h5>
     {% if attachments %}
         <h5 class="grey-bg pad">Attachments</h5>
