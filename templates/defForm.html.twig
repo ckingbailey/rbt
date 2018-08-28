@@ -22,6 +22,14 @@
     </select>
 {% endmacro %}
 
+{% block extraStylesheets %}
+    <link rel="stylesheet" href="/css/bootstrap-select.min.css">
+{% endblock %}
+
+{% block scripts %}
+    <script src="/js/bootstrap-select.min.js"></script>
+{% endblock %}
+
 {% block formControls %}
     <h5 class="grey-bg pad">Required Information</h5>
     {#<pre>{{dump(selectOptions)}}</pre>#}
@@ -212,23 +220,37 @@
                 </div>
             </div>
             <div class="row item-margin-bottom">
-                <div id="container_text_oldID" class="col-md-6">
+                <div id="container_text_oldID" class="col-md-4">
                     <div class="row item-margin-bottom">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label for="oldID">Old ID</label>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <input name="oldID" type="text" maxlength="50" class="form-control" value="{{defData.oldID}}" />
                         </div>
                     </div>
                 </div>
-                <div id="container_file_attachment" class="col-md-6">
+                <div id="container_select_assetLink"  class="col-md-4">
                     <div class="row item-margin-bottom">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label for="asset_link">Link assets</label>
+                        </div>
+                        <div class="col-md-8">
+                            <select name="asset_link" class="selectpicker" multiple>
+                                {% for asset in assetList %}
+                                    <option value="{{asset.id}}">{{asset.assetTag}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="container_file_attachment" class="col-md-4">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-4">
                             <label for="attachment">Attach file</label>
                         </div>
-                        <div class="col-md-6">
-                            <input name="attachment" type="file" accept="image/*" class="form-control form-control-file" />
+                        <div class="col-md-8">
+                            <input name="attachment" type="file" accept="image/*" class="form-control-file" />
                         </div>
                     </div>
                 </div>
@@ -241,7 +263,7 @@
             </div>
         </section>
     <h5 class="grey-bg pad">Closure Information</h5>
-        <section class="item-margin-bottom">
+        <section id="closureInfo" class="item-margin-bottom">
             <div class="row item-margin-bottom">
                 <div id="container_select_eviType" class="col-md-4">
                     <div class="row item-margin-bottom">
@@ -281,12 +303,11 @@
                 </div>
             </div>
         </section>
-    {% if attachments %}
+    {% if defData.attachments %}
         <h5 class="grey-bg pad">Attachments</h5>
     {% endif %}
-    {% if comments %}
+    {% if defData.comments %}
         <h5 class="grey-bg pad">Comments</h5>
     {% endif %}
-    <pre><h3>Options</h3>{{dump(selectOptions)}}</pre>
-    <pre><h3>Data</h3>{{dump(defData)}}</pre>
+    {#<pre><h3>Data</h3>{{dump(defData)}}</pre>#}
 {% endblock %}

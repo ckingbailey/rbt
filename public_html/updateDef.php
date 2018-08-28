@@ -63,6 +63,7 @@ try {
     // get data about current deficiency
     $link->where('defID', $defID);
     $defData = $link->getOne('deficiency', $fields);
+    $defData['description'] = html_entity_decode($defData['description'], ENT_QUOTES|ENT_HTML5, 'UTF-8');
     
     // collect all select options
     $selectOptions = [];
@@ -80,6 +81,8 @@ try {
     $selectOptions['defType'] = $link->get('defType', null, ['defTypeID AS defType', 'defTypeName AS name']);
     $selectOptions['evidenceType'] = $link->get('evidenceType', null, ['eviTypeID AS id', 'eviTypeName AS name']);
     $selectOptions['documentRepo'] = $link->get('documentRepo', null, ['docRepoID AS id', 'docRepoName AS name']);
+    
+    $assetList = $link->get('asset', null, ['assetID AS id', 'assetTag']);
     
     // $sql = "SELECT $fieldList FROM deficiency WHERE defID=?";
 
@@ -223,6 +226,7 @@ try {
         'pageHeading' => "Update deficiency $defID",
         'selectOptions' => $selectOptions,
         'defData' => $defData,
+        'assetList' => $assetList,
         'footerText' => "[placeholder]",
         'copyrightText' => "[copyrightPlaceholder]"
     ]);
