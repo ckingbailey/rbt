@@ -14,9 +14,12 @@
     {% endfor %}
 {% endmacro %}
 
-{% macro select(fieldName, options, selected, required) %}
-    {% set required = required ? " required" : '' %}
-    {{ forms.setOptions(fieldName, displayName, options, selected) }}
+{% macro select(fieldName, options, selected, isRequired) %}
+    {% import _self as forms %}
+    {% set required = not isRequired is empty ? " required" : '' %}
+    <select name="{{fieldName}}" class="form-control"{{required}}>
+        {{ forms.setOptions(options, selected) }}
+    </select>
 {% endmacro %}
 
 {% block formControls %}
@@ -118,7 +121,7 @@
                             <label for="identifiedBy" class="required">Identified by</label>
                         </div>
                         <div class="col-md-6">
-                            <input type="text" class="form-control" required value="{{defData.identifiedBy}}" />
+                            <input name="identifiedBy" type="text" class="form-control" required value="{{defData.identifiedBy}}" />
                         </div>
                     </div>
                 </div>
@@ -128,20 +131,81 @@
                             <label for="dueDate" class="required">To be resolved by</label>
                         </div>
                         <div class="col-md-6">
-                            <input type="date" class="form-control" value="{{defData.dueDate}}" />
+                            <input name="dueDate" type="date" class="form-control" value="{{defData.dueDate}}" />
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row item-margin-bottom">
-                <div id="container_select_defType"></div>
-                <div id="container_select_contract"></div>
+                <div id="container_select_defType" class="col-md-6">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label for="defType" class="required">Type</label>
+                        </div>
+                        <div class="col-md-6">
+                            {{forms.select("defType", selectOptions.defType, defData.defType, "require")}}
+                        </div>
+                    </div>
+                </div>
+                <div id="container_select_contract" class="col-md-6">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label for="contract">Contract</label>
+                        </div>
+                        <div class="col-md-6">
+                            {{forms.select("contract", selectOptions.contract, defData.contract, true)}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row item-margin-bottom">
+                <div id="container_select_milestone" class="col-md-6">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label></label>
+                        </div>
+                        <div class="col-md-6">
+                        </div>
+                    </div>
+                </div>
+                <div id="container_select_safeCert" class="col-md-6">
+                    <div class="row item-margin-bottom">
+                        <div class="col-md-6">
+                            <label></label>
+                        </div>
+                        <div class="col-md-6">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row item-margin-bottom">
+                <div id="container_textarea_descrip" class="col-md-6 offset-md-3">
+                    <label></label>
+                    <textarea class="form-control"></textarea>
+                </div>
             </div>
         </section>
     <h5 class="grey-bg pad">Optional Information</h5>
         <div class="row item-margin-bottom">
-            <div id="container_input_spec" class="col-md-6">
-                <input name="spec" type="text" />
+            <div id="container_text_spec" class="col-md-6">
+                <div class="row item-margin-bottom">
+                    <div class="col-md-6">
+                        <label for="spec">Spec or Code</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input name="spec" type="text" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div id="container_text_owner" class="col-md-6">
+                <div class="row item-margin-bottom">
+                    <div class="col-md-6">
+                        <label for="actionOwner">Action owner</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input name="actionOwner" type="text" class="form-control" />
+                    </div>
+                </div>
             </div>
         </div>
     <h5 class="grey-bg pad">Closure Information</h5>
