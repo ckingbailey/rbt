@@ -25,13 +25,27 @@ class Deficiency
         'evidenceLink' => null,
         'oldID' => null,
         'closureComments' => null,
-        'createdBy' => null,
-        'updatedBy' => null,
-        'dateCreated' => null,
+        'createdBy' => null, // validate
+        'updatedBy' => null, // validate
+        'dateCreated' => null, // validate
         'lastUpdated' => null,
-        'dateClosed' => null,
-        'closureRequested' => null,
-        'closureRequestedBy'
+        'dateClosed' => null, // validate against status || set
+        'closureRequested' => null, // validate against status??
+        'closureRequestedBy' => null, // validate
+        'relatedAssets' => [],
+        'comments' => [],
+        'newComment' => null,
+        'attachments' => [],
+        'newAttachment' => null
+    ];
+    
+    private $filterKeys = [
+        'defID' => true,
+        'relatedAssets' => true,
+        'comments' => true,
+        'newComment' => true,
+        'attachments' => true,
+        'newAttachment' => true
     ];
     
     public function __construct($data) {
@@ -40,9 +54,12 @@ class Deficiency
         }
     }
     
+    // TODO: add fn to handle relatedAsset, newComment, newAttachment
     public function update() {
+        // validate against user $role
         $link = new MysqliDb(DB_HOST, DB_USER, DB_PWD, DB_NAME);
         $updateData = $this->filter_data();
+        $updateData = filter_var_array($updateData, FILTER_SANITIZE_SPECIAL_CHARS);
         
         $link->where('defID', $this->defID);
         $link->update($updateData);
@@ -57,5 +74,7 @@ class Deficiency
         foreach ($data as $fieldName => $val) {
             if (empty($val) || !empty($filterKeys[$fieldName])) unset($data[$fieldName]);
         }
+        
+        return $data;
     }
 }

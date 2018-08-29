@@ -82,7 +82,7 @@ try {
     $twig->addExtension(new Twig_Extension_Debug());
     
     $twig->display('defForm.html.twig', [
-        'title' => "Update def #$defID",
+        'title' => PROJECT_NAME . " - Update def #$defID",
         'navbarHeading' => $userFullName,
         'pageHeading' => "Update deficiency $defID",
         'selectOptions' => $selectOptions,

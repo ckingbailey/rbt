@@ -19,6 +19,8 @@ class DefComment
     
     public function insert() {
         $link = new MysqliDb(DB_HOST, DB_NAME, DB_PWD, DB_USER);
-        
+        $insertData = filter_var_array($this->data, FILTER_SANITIZE_SPECIAL_CHARS);
+        $link->insert($insertData);
+        $link->disconnect();
     }
 }
