@@ -31,6 +31,9 @@
 {% endblock %}
 
 {% block formControls %}
+    {% if not defData.defID is empty %}
+        <input type="hidden" name="defID'" value="{{defData.defID}}" />
+    {% endif %}
     <h5 class="grey-bg pad">Required Information</h5>
     {#<pre>{{dump(selectOptions)}}</pre>#}
         <section class="container item-margin-bottom">

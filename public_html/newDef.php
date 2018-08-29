@@ -1,6 +1,7 @@
 <?php
 $baseDir = __DIR__ . '/..';
 require 'session.php';
+require $baseDir . '/vendor/autoload.php';
 // include('sqlFunctions.php');
 // include('html_components/defComponents.php');
 // include('html_functions/bootstrapGrid.php');
@@ -16,60 +17,73 @@ if ($role <= 10) {
     exit;
 }
 
-// initialize twig
-$loader = new Twig_Loader_Filesystem('../templates');
-$twig = new Twig_Environment($loader,
-    [
-        'debug' => $_ENV['PHP_ENV'] === 'dev' ? true : false
-    ]
-);
-if ($_ENV['PHP_ENV'] === 'dev') {
-    $twig->addExtension(new Twig_Extension_Debug());
-}
-
-try {
-    $link = connect();
-    
-    // collect all select options from lookup tables
-    $selectOptions = [];
-    
-    $selectOptions['safetyCert'] = $link->get('yesNo', null, ['yesNoID AS id', 'yesNoName AS name']);
-    $selectOptions['systemAffected'] = $selectOptions['groupToResolve'] = $link->get('system', null, ['systemID AS id', 'systemName AS name']);
-    $selectOptions['location'] = $link->get('location', null, ['locationID AS id', 'locationName AS name']);
-    
-    $link->where('statusName', 'deleted', '<>');
-    $link->orWhere('statusName', 'archived', '<>');
-    $selectOptions['status'] = $link->get('status', null, ['statusID AS id', 'statusName AS name']);
-    $selectOptions['severity'] = $link->get('severity', null, ['severityID AS id', 'severityName AS name']);
-    $selectOptions['milestone'] = $link->get('milestone', null, ['milestoneID AS id', 'milestoneName AS name']);
-    $selectOptions['contract'] = $link->get('contract', null, ['contractID AS id', 'contractName AS name']);
-    $selectOptions['defType'] = $link->get('defType', null, ['defTypeID AS defType', 'defTypeName AS name']);
-    $selectOptions['evidenceType'] = $link->get('evidenceType', null, ['eviTypeID AS id', 'eviTypeName AS name']);
-    $selectOptions['documentRepo'] = $link->get('documentRepo', null, ['docRepoID AS id', 'docRepoName AS name']);
-    
-    // get asset list for def_asset_link
-    $assetList = $link->get('asset', null, ['assetID AS id', 'assetTag']);
-    
+if (!empty($_POST)) {
+    // require 'commit/RecDef.php';
+    $newDef = new Deficiency($_POST);
+    echo "<pre id='newDefEcho style='margin-top: 1rem; margin-left: 1rem; color: blue'>";
+    print_r($newDef->insert());
+    // echo $newDef;
+    // var_dump($_POST);
+    echo "</pre>";
+    exit;
+} else {
     // initialize twig
-    $loader = new Twig_Loader_Filesystem("$baseDir/templates");
-    $twig = new Twig_Environment($loader, [ 'debug' => true ]);
-    $twig->addExtension(new Twig_Extension_Debug());
+    $loader = new Twig_Loader_Filesystem('../templates');
+    $twig = new Twig_Environment($loader,
+        [
+            'debug' => $_ENV['PHP_ENV'] === 'dev' ? true : false
+        ]
+    );
+    if ($_ENV['PHP_ENV'] === 'dev') {
+        $twig->addExtension(new Twig_Extension_Debug());
+    }
     
-    $twig->display('defForm.html.twig', [
-        'title' => PROJECT_NAME . " - Add def",
-        'navbarHeading' => $userFullName,
-        'pageHeading' => "Record new deficiency",
-        'selectOptions' => $selectOptions,
-        'defData' => null,
-        'assetList' => $assetList,
-        'footerText' => "[placeholder]",
-        'copyrightText' => "[copyrightPlaceholder]"
-    ]);
-    
-} catch (Exception $e) {
-    print "Unable to retrieve record: {$e->getMessage()}";
-} finally {
-    if (is_a($link, 'MysqliDb')) $link->disconnect();
+    try {
+        $link = connect();
+        
+        // collect all select options from lookup tables
+        $selectOptions = [];
+        
+        $selectOptions['safetyCert'] = $link->get('yesNo', null, ['yesNoID AS id', 'yesNoName AS name']);
+        $selectOptions['systemAffected'] = $selectOptions['groupToResolve'] = $link->get('system', null, ['systemID AS id', 'systemName AS name']);
+        $selectOptions['location'] = $link->get('location', null, ['locationID AS id', 'locationName AS name']);
+        
+        $link->where('statusName', 'deleted', '<>');
+        $link->orWhere('statusName', 'archived', '<>');
+        $selectOptions['status'] = $link->get('status', null, ['statusID AS id', 'statusName AS name']);
+        $selectOptions['severity'] = $link->get('severity', null, ['severityID AS id', 'severityName AS name']);
+        $selectOptions['milestone'] = $link->get('milestone', null, ['milestoneID AS id', 'milestoneName AS name']);
+        $selectOptions['contract'] = $link->get('contract', null, ['contractID AS id', 'contractName AS name']);
+        $selectOptions['defType'] = $link->get('defType', null, ['defTypeID AS id', 'defTypeName AS name']);
+        $selectOptions['evidenceType'] = $link->get('evidenceType', null, ['eviTypeID AS id', 'eviTypeName AS name']);
+        $selectOptions['documentRepo'] = $link->get('documentRepo', null, ['docRepoID AS id', 'docRepoName AS name']);
+        
+        // get asset list for def_asset_link
+        $assetList = $link->get('asset', null, ['assetID AS id', 'assetTag']);
+        
+        // initialize twig
+        $loader = new Twig_Loader_Filesystem("$baseDir/templates");
+        $twig = new Twig_Environment($loader, [ 'debug' => true ]);
+        $twig->addExtension(new Twig_Extension_Debug());
+        
+        $twig->display('defForm.html.twig', [
+            'title' => PROJECT_NAME . " - Add def",
+            'navbarHeading' => $userFullName,
+            'pageHeading' => "Record new deficiency",
+            'formAction' => $_SERVER['PHP_SELF'],
+            'onSubmit' => '',
+            'selectOptions' => $selectOptions,
+            'defData' => null,
+            'assetList' => $assetList,
+            'footerText' => "[placeholder]",
+            'copyrightText' => "[copyrightPlaceholder]"
+        ]);
+        
+    } catch (Exception $e) {
+        print "Unable to retrieve record: {$e->getMessage()}";
+    } finally {
+        if (is_a($link, 'MysqliDb')) $link->disconnect();
+    }
 }
 
 // $elements = $requiredElements + $optionalElements + $closureElements;

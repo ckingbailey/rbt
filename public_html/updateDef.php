@@ -10,11 +10,11 @@ $navbarHeading = $userFullName = !empty($_SESSION['username'])
     : $_SESSION['username'] )
   : '';
 $defID = filter_input(INPUT_GET, 'defID');
-$post = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
+// $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
 
 
 // if POST data rec'd, process it before rendering form
-if (!empty($post) && !empty($post['defID'])) {
+if (!empty($_POST) && !empty($_POST['defID'])) {
     require 'commit/updateDefCommit.php';
 }
 
@@ -22,6 +22,7 @@ try {
     $link = connect();
     
     $fields = [
+        'defID',
         'safetyCert',
         'systemAffected',
         'location',

@@ -1,13 +1,13 @@
 {% extends "page.html.twig" %}
 
 {% block content %}
-    <form action='{{ formAction }}' onsubmit='{{ onSubmit }}'>
+    <form action="{{ formAction }}" method="POST" onsubmit="{{ onSubmit }}">
         {% block formControls %}
         {% endblock %}
-        <div class='text-center'>
+        <div class="text-center">
             {% block buttons %}
-                <button type='submit' class='btn btn-primary btn-lg'>Submit</button>
-                <button type='reset' class='btn btn-primary btn-lg'>Reset</button>
+                <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                <button type="reset" class="btn btn-primary btn-lg">Reset</button>
             {% endblock %}
         </div>
     </form>

@@ -1,8 +1,6 @@
 <?php
 class Deficiency
 {
-    use MysqliDb;
-    
     private $data = [
         'defID' => null,
         'safetyCert' => null,
@@ -50,11 +48,23 @@ class Deficiency
     
     public function __construct($data) {
         foreach ($this->data as $fieldName => $val) {
-            $this->data[$fieldName] = $data[$fieldName];
+            if (empty($data[$fieldName])) continue;
+            else $this->data[$fieldName] = $data[$fieldName];
         }
     }
     
     // TODO: add fn to handle relatedAsset, newComment, newAttachment
+    public function insert() {
+        $link = new MysqliDb(DB_HOST, DB_USER, DB_PWD, DB_NAME);
+        $insertData = $this->filter_data();
+        $insertData = filter_var_array($insertData, FILTER_SANITIZE_SPECIAL_CHARS);
+        
+        $newID = $link->insert('deficiency', $insertData);
+        $link->disconnect();
+        
+        return $newID;
+    }
+    
     public function update() {
         // validate against user $role
         $link = new MysqliDb(DB_HOST, DB_USER, DB_PWD, DB_NAME);
@@ -76,5 +86,9 @@ class Deficiency
         }
         
         return $data;
+    }
+    
+    public function __toString() {
+        return print_r($this->data, true);
     }
 }
