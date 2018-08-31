@@ -15,8 +15,13 @@ $defID = filter_input(INPUT_GET, 'defID');
 
 // if POST data rec'd, process it before rendering form
 if (!empty($_POST) && !empty($_POST['defID'])) {
-    require 'commit/updateDefCommit.php';
-}
+    $updateDef = new Deficiency($_POST);
+    $_POST = [];
+    
+    echo "<pre id='updateDef' style='margin-top: 1rem; margin-left: 1rem; color: blue'>";
+    echo $updateDef;
+    echo "</pre>";
+} else {
 
 try {
     $link = connect();
@@ -70,7 +75,7 @@ try {
     $selectOptions['severity'] = $link->get('severity', null, ['severityID AS id', 'severityName AS name']);
     $selectOptions['milestone'] = $link->get('milestone', null, ['milestoneID AS id', 'milestoneName AS name']);
     $selectOptions['contract'] = $link->get('contract', null, ['contractID AS id', 'contractName AS name']);
-    $selectOptions['defType'] = $link->get('defType', null, ['defTypeID AS defType', 'defTypeName AS name']);
+    $selectOptions['defType'] = $link->get('defType', null, ['defTypeID AS id', 'defTypeName AS name']);
     $selectOptions['evidenceType'] = $link->get('evidenceType', null, ['eviTypeID AS id', 'eviTypeName AS name']);
     $selectOptions['documentRepo'] = $link->get('documentRepo', null, ['docRepoID AS id', 'docRepoName AS name']);
     
@@ -86,6 +91,8 @@ try {
         'title' => PROJECT_NAME . " - Update def #$defID",
         'navbarHeading' => $userFullName,
         'pageHeading' => "Update deficiency $defID",
+        'formAction' => $_SERVER['PHP_SELF'],
+        'onSubmit' => '',
         'selectOptions' => $selectOptions,
         'defData' => $defData,
         'assetList' => $assetList,
@@ -97,4 +104,5 @@ try {
     print "Unable to retrieve record: {$e->getMessage()}";
 } finally {
     if (is_a($link, 'MysqliDb')) $link->disconnect();
+}
 }
