@@ -32,7 +32,7 @@
 
 {% block formControls %}
     {% if not defData.defID is empty %}
-        <input type="hidden" name="defID'" value="{{defData.defID}}" />
+        <input type="hidden" name="defID" value="{{defData.defID}}" />
     {% endif %}
     <h5 class="grey-bg pad">Required Information</h5>
     {#<pre>{{dump(selectOptions)}}</pre>#}
@@ -239,9 +239,9 @@
                             <label for="asset_link">Link assets</label>
                         </div>
                         <div class="col-md-8">
-                            <select name="asset_link" class="selectpicker" multiple>
+                            <select name="assets[]" class="selectpicker" multiple>
                                 {% for asset in assetList %}
-                                    <option value="{{asset.id}}">{{asset.assetTag}}</option>
+                                    <option value="{{asset.id}}">{{asset.id}} &bull; {{asset.assetTag}}</option>
                                 {% endfor %}
                             </select>
                         </div>

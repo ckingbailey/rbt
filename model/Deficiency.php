@@ -30,7 +30,7 @@ class Deficiency
         'dateClosed' => null, // validate against status || set
         'closureRequested' => null, // validate against status??
         'closureRequestedBy' => null, // validate
-        'relatedAssets' => [],
+        'assets' => [],
         'comments' => [],
         'newComment' => null,
         'attachments' => [],
@@ -39,7 +39,7 @@ class Deficiency
     
     private $filterKeys = [
         'defID' => true,
-        'relatedAssets' => true,
+        'assets' => true,
         'comments' => true,
         'newComment' => true,
         'attachments' => true,
