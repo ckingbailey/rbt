@@ -21,6 +21,7 @@ if (!empty($_POST) && !empty($_POST['defID'])) {
     echo "<pre id='updateDef' style='margin-top: 1rem; margin-left: 1rem; color: blue'>";
     echo $updateDef;
     echo "</pre>";
+    exit;
 } else {
 
 try {
@@ -63,21 +64,21 @@ try {
     $defData['description'] = html_entity_decode($defData['description'], ENT_QUOTES|ENT_HTML5, 'UTF-8');
     
     // collect all select options from lookup tables
-    $selectOptions = [];
+    $selectOptions = Deficiency::getLookUpOptions();
     
-    $selectOptions['safetyCert'] = $link->get('yesNo', null, ['yesNoID AS id', 'yesNoName AS name']);
-    $selectOptions['systemAffected'] = $selectOptions['groupToResolve'] = $link->get('system', null, ['systemID AS id', 'systemName AS name']);
-    $selectOptions['location'] = $link->get('location', null, ['locationID AS id', 'locationName AS name']);
+    // $selectOptions['safetyCert'] = $link->get('yesNo', null, ['yesNoID AS id', 'yesNoName AS name']);
+    // $selectOptions['systemAffected'] = $selectOptions['groupToResolve'] = $link->get('system', null, ['systemID AS id', 'systemName AS name']);
+    // $selectOptions['location'] = $link->get('location', null, ['locationID AS id', 'locationName AS name']);
     
-    $link->where('statusName', 'deleted', '<>');
-    $link->orWhere('statusName', 'archived', '<>');
-    $selectOptions['status'] = $link->get('status', null, ['statusID AS id', 'statusName AS name']);
-    $selectOptions['severity'] = $link->get('severity', null, ['severityID AS id', 'severityName AS name']);
-    $selectOptions['milestone'] = $link->get('milestone', null, ['milestoneID AS id', 'milestoneName AS name']);
-    $selectOptions['contract'] = $link->get('contract', null, ['contractID AS id', 'contractName AS name']);
-    $selectOptions['defType'] = $link->get('defType', null, ['defTypeID AS id', 'defTypeName AS name']);
-    $selectOptions['evidenceType'] = $link->get('evidenceType', null, ['eviTypeID AS id', 'eviTypeName AS name']);
-    $selectOptions['documentRepo'] = $link->get('documentRepo', null, ['docRepoID AS id', 'docRepoName AS name']);
+    // $link->where('statusName', 'deleted', '<>');
+    // $link->orWhere('statusName', 'archived', '<>');
+    // $selectOptions['status'] = $link->get('status', null, ['statusID AS id', 'statusName AS name']);
+    // $selectOptions['severity'] = $link->get('severity', null, ['severityID AS id', 'severityName AS name']);
+    // $selectOptions['milestone'] = $link->get('milestone', null, ['milestoneID AS id', 'milestoneName AS name']);
+    // $selectOptions['contract'] = $link->get('contract', null, ['contractID AS id', 'contractName AS name']);
+    // $selectOptions['defType'] = $link->get('defType', null, ['defTypeID AS id', 'defTypeName AS name']);
+    // $selectOptions['evidenceType'] = $link->get('evidenceType', null, ['eviTypeID AS id', 'eviTypeName AS name']);
+    // $selectOptions['documentRepo'] = $link->get('documentRepo', null, ['docRepoID AS id', 'docRepoName AS name']);
     
     // get asset list for def_asset_link
     $assetList = $link->get('asset', null, ['assetID AS id', 'assetTag']);

@@ -46,59 +46,59 @@ class Deficiency
         'newAttachment' => true
     ];
     
-    private $foreignKeys = [
+    static private $foreignKeys = [
         'safetyCert' => [
-            'tableName' => 'yesNo',
+            'table' => 'yesNo',
             'fields' => ['yesNoID', 'yesNoName']
         ],
         'systemAffected' => [
-            'tableName' => 'system',
+            'table' => 'system',
             'fields' => ['systemID', 'systemName']
         ],
         'groupToResolve' => [
-            'tableName' => 'system',
+            'table' => 'system',
             'fields' => ['systemID', 'systemName']
         ],
         'location' => [
-            'tableName' => 'location',
+            'table' => 'location',
             'fields' => ['locationID', 'locationName']
         ],
         'status' => [
-            'tableName' => 'status',
+            'table' => 'status',
             'fields' => ['statusID', 'statusName'],
             'where' => [
                 [
                     'field' => 'statusName',
-                    'val' => 'open'
+                    'value' => 'open'
                 ],
                 [
                     'field' => 'statusName',
-                    'val' => 'closed'
+                    'value' => 'closed'
                 ]
             ]
         ],
         'severity' => [
-            'tableName' => 'severity',
+            'table' => 'severity',
             'fields' => ['severityID', 'severityName']
         ],
         'milestone' => [
-            'tableName' => 'milestone',
+            'table' => 'milestone',
             'fields' => ['milestoneID', 'milestoneName']
         ],
         'contract' => [
-            'tableName' => 'contract',
+            'table' => 'contract',
             'fields' => ['contractID', 'contractName']
         ],
         'defType' => [
-            'tableName' => 'defType',
+            'table' => 'defType',
             'fields' => ['defTypeID', 'defTypeName']
         ],
         'evidenceType' => [
-            'tableName' => 'evidenceType',
+            'table' => 'evidenceType',
             'fields' => ['eviTypeID', 'eviTypeName']
         ],
         'documentRepo' => [
-            'tableName' => 'documentRepo',
+            'table' => 'documentRepo',
             'fields' => ['docRepoID', 'docRepoName']
         ]
     ];
@@ -164,5 +164,28 @@ class Deficiency
     }
     
     static function getLookUpOptions() {
+        $link = new MysqliDb(DB_HOST, DB_USER, DB_PWD, DB_NAME);
+        $options = [];
+        
+        foreach (self::$foreignKeys as $childField => $lookup) {
+            $table = $lookup['table'];
+            $fields = $lookup['fields'];
+            $fields[0] .= ' AS id';
+            $fields[1] .= ' AS name';
+            
+            if (!empty($lookup['where'])) {
+                $i = 0;
+                foreach ($lookup['where'] as $where) {
+                    if ($i === 0) $link->where($where['field'], $where['value']);
+                    else $link->orWhere($where['field'], $where['value']);
+                    $i++;
+                }
+            }
+            
+            $options[$childField] = $link->get($table, null, $fields);
+        }
+        
+        if (is_a($link, 'MysqliDb')) $link->disconnect();
+        return $options;
     }
 }
