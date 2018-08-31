@@ -41,10 +41,10 @@
                 <div id="container_select_location" class="col-md-6">
                     <div class="row item-margin-bottom">
                         <div class="col-md-6">
-                            <label for="location">Location</label>
+                            <label for="location" class="required">Location</label>
                         </div>
                         <div class="col-md-6">
-                            <select name="location" class="form-control">
+                            <select name="location" class="form-control" required>
                                 {% for loc in selectOptions.location %}
                                     {% set selected = defData.location == loc.id
                                         ? ' selected="true"' : "" %}
@@ -57,7 +57,7 @@
                 <div id="container_text_specLoc" class="col-md-6">
                     <div class="row item-margin-bottom">
                         <div class="col-md-6">
-                            <label for="specLoc">Specific location</label>
+                            <label for="specLoc" class="required">Specific location</label>
                         </div>
                         <div class="col-md-6">
                             <input type="text" name="specLoc" maxlength="55" value="{{defData.specLoc}}" class="form-control" required />
@@ -69,10 +69,10 @@
                 <div id="container_select_status" class="col-md-6">
                     <div class="row item-margin-bottom">
                         <div class="col-md-6">
-                            <label for="status">Status</label>
+                            <label for="status" class="required">Status</label>
                         </div>
                         <div class="col-md-6">
-                            <select name="status" class="form-control">
+                            <select name="status" class="form-control" required>
                                 {{forms.setOptions(selectOptions.status, defData.status)}}
                             </select>
                         </div>
@@ -95,10 +95,10 @@
                 <div id="container_select_systemAffected" class="col-md-6">
                     <div class="row item-margin-bottom">
                         <div class="col-md-6">
-                            <label for="systemAffected">System affected</label>
+                            <label for="systemAffected" class="required">System affected</label>
                         </div>
                         <div class="col-md-6">
-                            <select name="systemAffected" class="form-control">
+                            <select name="systemAffected" class="form-control" required>
                                 {% for sys in selectOptions.systemAffected %}
                                     {% set selected = defData.systemAffected == sys.id
                                         ? ' selected="true"' : "" %}
@@ -111,10 +111,10 @@
                 <div id="container_select_groupToRes" class="col-md-6">
                     <div class="row item-margin-bottom">
                         <div class="col-md-6">
-                            <label for="groupToResolve">Group to resolve</label>
+                            <label for="groupToResolve" class="required">Group to resolve</label>
                         </div>
                         <div class="col-md-6">
-                            <select name="groupToResolve" class="form-control">
+                            <select name="groupToResolve" class="form-control" required>
                                 {% for sys in selectOptions.groupToResolve %}
                                     {% set selected = defData.groupToResolve == sys.id
                                         ? ' selected' : "" %}
@@ -142,7 +142,7 @@
                             <label for="dueDate" class="required">To be resolved by</label>
                         </div>
                         <div class="col-md-6">
-                            <input name="dueDate" type="date" class="form-control" value="{{defData.dueDate}}" />
+                            <input name="dueDate" type="date" class="form-control" value="{{defData.dueDate}}" required />
                         </div>
                     </div>
                 </div>
@@ -161,7 +161,7 @@
                 <div id="container_select_contract" class="col-md-6">
                     <div class="row item-margin-bottom">
                         <div class="col-md-6">
-                            <label for="contract">Contract</label>
+                            <label for="contract" class="required">Contract</label>
                         </div>
                         <div class="col-md-6">
                             {{forms.select("contract", selectOptions.contract, defData.contract, true)}}
@@ -183,7 +183,7 @@
                 <div id="container_select_safeCert" class="col-md-6">
                     <div class="row item-margin-bottom">
                         <div class="col-md-6">
-                            <label for="safetyCert">Safety cert</label>
+                            <label for="safetyCert" class="required">Safety cert</label>
                         </div>
                         <div class="col-md-6">
                             {{forms.select("safetyCert", selectOptions.safetyCert, defData.safetyCert, true)}}
@@ -193,8 +193,8 @@
             </div>
             <div class="row item-margin-bottom">
                 <div id="container_textarea_descrip" class="col-md-6 offset-md-3">
-                    <label for="description">Description</label>
-                    <textarea name="description" maxlength="1000" class="form-control">{{defData.description}}</textarea>
+                    <label for="description" class="required">Description</label>
+                    <textarea name="description" maxlength="1000" class="form-control" required>{{defData.description}}</textarea>
                 </div>
             </div>
         </section>
